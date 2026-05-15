@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Formulários de Visita Técnica">
+<meta name="theme-color" content="#0f2d4e">
+<link rel="manifest" href="/formularios-visita-tecnica/manifest.json">
+<link rel="icon" href="/formularios-visita-tecnica/icons/icon-192x192.png" type="image/png">
+<link rel="apple-touch-icon" href="/formularios-visita-tecnica/icons/icon-192x192.png">
 <title>Formulários de Visita Técnica</title>
 <style>
   :root {
@@ -61,5 +67,16 @@
     <strong>Nota:</strong> o formulário Maternidade foi criado como o segundo formulário para validar a estrutura e o fluxo offline. Em seguida, podemos refinar os campos e replicar para outros tipos.
   </div>
 </div>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/formularios-visita-tecnica/sw.js', {
+        scope: '/formularios-visita-tecnica/'
+      })
+      .then(reg => console.log('[PWA] SW registrado:', reg.scope))
+      .catch(err => console.log('[PWA] SW falhou:', err.message));
+    });
+  }
+</script>
 </body>
 </html>
