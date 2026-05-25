@@ -1,45 +1,46 @@
 # Arquivos de origem e mapeamento dos formulários
 
-## 1) Arquivos usados como base para os formulários
+## 1) Formulários web atualmente mantidos
 
-Os documentos abaixo estão no diretório raiz de [formularios-visita-tecnica](../):
+Os roteiros `.docx` foram removidos do diretório raiz de [formularios-visita-tecnica](../). Os formulários ativos hoje ficam nas pastas abaixo:
 
-- ROTEIRO DE VISITA TÉCNICA HOSPITAL - Atualizado.docx
-- ROTEIRO DE VISITA TÉCNICA MATERNIDADE - Atualizado.docx
-- ROTEIRO DE VISITA TÉCNICA UBS - Atualizado.docx
-- ROTEIRO DE VISITA TÉCNICA UPA - Atualizado.docx
-- ROTEIRO DE VISITA TÉCNICA SADT - Atualizado.docx
-- ROTEIRO DE VISITA TÉCNICA CAPS - Atualizado.docx
-- ROTEIRO DE VISITA TÉCNICA CENTRO DE REABILITAÇÃO -Atualizado.docx
-- ROTEIRO DE VISITA TÉCNICA VIG. EPIDEMIOLÓGICA - Atualizado.docx
+- [hospital/index.html](../hospital/index.html)
+- [maternidade/index.html](../maternidade/index.html)
+- [ubs/index.html](../ubs/index.html)
+- [upa/index.html](../upa/index.html)
+- [sadt/index.html](../sadt/index.html)
+- [caps/index.html](../caps/index.html)
+- [centro-reabilitacao/index.html](../centro-reabilitacao/index.html)
+- [vigilancia-epidemiologica/index.html](../vigilancia-epidemiologica/index.html)
 
-> Observação: não há um export do Google Forms salvo no workspace. Os arquivos `.docx` acima são os documentos de origem que usei como referência para montar os formulários.
-
-## 2) Formulários web já convertidos
-
-| Documento de origem | Formulário web | Status |
-| --- | --- | --- |
-| ROTEIRO DE VISITA TÉCNICA HOSPITAL - Atualizado.docx | [hospital/index.html](../hospital/index.html) | Pronto para uso e validado |
-| ROTEIRO DE VISITA TÉCNICA MATERNIDADE - Atualizado.docx | [maternidade/index.html](../maternidade/index.html) | Pronto para uso e validado |
-
-## 3) Estrutura atual do projeto
+## 2) Estrutura atual do projeto
 
 - [index.html](../index.html) — menu geral dos formulários
 - [hospital/index.html](../hospital/index.html) — formulário web do hospital
 - [maternidade/index.html](../maternidade/index.html) — formulário web de maternidade
+- [ubs/index.html](../ubs/index.html) — formulário web de UBS
+- [upa/index.html](../upa/index.html) — formulário web de UPA
+- [sadt/index.html](../sadt/index.html) — formulário web de SADT
+- [caps/index.html](../caps/index.html) — formulário web de CAPS
+- [centro-reabilitacao/index.html](../centro-reabilitacao/index.html) — formulário web de centro de reabilitação
+- [vigilancia-epidemiologica/index.html](../vigilancia-epidemiologica/index.html) — formulário web de vigilância epidemiológica
 - [assets](../assets) — ícones e recursos visuais
 - [config](../config) — manifest PWA
 - [scripts](../scripts) — service worker
 - [docs](.) — documentação do projeto
 
-## 4) Validação atual
+## 3) Validação atual
 
 - Hospital: sem erros de validação no editor após ajuste de compatibilidade CSS.
 - Maternidade: sem erros de validação no editor após ajuste de compatibilidade CSS.
-- O fluxo offline, envio automático, exportação CSV e registro em fila continuam no padrão já utilizado pelos dois formulários.
+- O fluxo offline, envio automático, exportação CSV e registro em fila continuam no padrão já utilizado pelos formulários.
+
+## 4) Observação
+
+- O diretório raiz foi limpo para manter apenas os arquivos web e de configuração que ainda são necessários para uso e manutenção do projeto.
 
 ## 5) Próximo passo recomendado
 
-1. Confirmar se o formulário de maternidade deve ser tratado como "municipal" ou se você quer um segundo formulário com nome diferente.
-2. Converter os demais roteiros (`UBS`, `UPA`, `SADT`, `CAPS`, `Centro de Reabilitação` e `Vigilância Epidemiológica`) usando o mesmo padrão dos formulários já validados.
-3. Atualizar o [index.html](../index.html) com os novos cards assim que os novos formulários ficarem prontos.
+1. Validar a consistência dos formulários já ativos e revisar o conteúdo específico de cada um.
+2. Manter o [index.html](../index.html) alinhado com os formulários que continuam em uso.
+3. Repetir a limpeza sempre que um roteiro antigo deixar de ser referência ou deixar de existir no projeto.

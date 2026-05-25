@@ -7,9 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Visita Maternidade">
 <meta name="theme-color" content="#0f2d4e">
-<link rel="manifest" href="/formularios-visita-tecnica/maternidade/config/manifest.json">
-<link rel="icon" type="image/png" href="../../shared/assets/logo-192.png">
-<link rel="apple-touch-icon" href="../../shared/assets/logo-192.png">
+<link rel="manifest" href="/formularios-visita-tecnica/maternidade/manifest.json">
+<link rel="icon" href="/formularios-visita-tecnica/icons/icon-192x192.png" type="image/png">
+<link rel="apple-touch-icon" href="/formularios-visita-tecnica/icons/icon-192x192.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ficha de Visita Técnica – Maternidade 2026</title>
 <style>
@@ -257,7 +257,6 @@
     min-height: 58px;
     transition: background .2s;
     -webkit-appearance: none;
-    appearance: none;
   }
   #submit-btn:active { background: var(--navy-light); transform: scale(.99); }
   #submit-btn:disabled { background: var(--gray-400); cursor: not-allowed; }
@@ -947,12 +946,11 @@
   <p class="sync-queue-info" id="queue-info"></p>
 </div>
 
-<script src="../scripts/appscript-config.js"></script>
 <script>
 // ─────────────────────────────────────────────
 // ⚙ CONFIGURAÇÃO — cole aqui a URL do Apps Script
 // ─────────────────────────────────────────────
-const APPS_SCRIPT_URL = (window.APP_SCRIPT_CONFIG && window.APP_SCRIPT_CONFIG.currentUrl) || 'https://script.google.com/macros/s/AKfycbzOPMw55x3jA4TaL-ByElRic4w8RUwTHd6bXPZD6tKsoLY9GdygGKXLB0lbsIBPT4kr/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOPMw55x3jA4TaL-ByElRic4w8RUwTHd6bXPZD6tKsoLY9GdygGKXLB0lbsIBPT4kr/exec';
 
 const FORM_META = {
   id: 'maternidade',
@@ -1520,11 +1518,11 @@ async function carregarMunicipios() {
 <iframe name="form_target" id="form_target" style="display:none"></iframe>
 
 <script>
-// ── SERVICE WORKER – registro externo (scripts/sw.js) ──
+// ── SERVICE WORKER – registro externo (sw.js) ──
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', {
-      scope: '/formularios-visita-tecnica/'
+    navigator.serviceWorker.register('/formularios-visita-tecnica/maternidade/sw.js', {
+      scope: '/formularios-visita-tecnica/maternidade/'
     })
     .then(reg => {
       console.log('[PWA] Service Worker OK:', reg.scope);
