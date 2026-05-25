@@ -1,0 +1,30 @@
+{
+  "name": "Ficha de Visita Técnica – UBS",
+  "short_name": "Visita UBS",
+  "description": "Formulário PWA de visita técnica para UBS.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0f2d4e",
+  "theme_color": "#0f2d4e",
+  "scope": "/formularios-visita-tecnica/ubs/",
+  "icons": [
+    {
+      "src": "/formularios-visita-tecnica/assets/icons/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/formularios-visita-tecnica/assets/icons/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/formularios-visita-tecnica/assets/icons/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

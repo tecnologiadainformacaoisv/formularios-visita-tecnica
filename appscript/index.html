@@ -7,9 +7,19 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Visita Hospital">
 <meta name="theme-color" content="#0f2d4e">
-<link rel="manifest" href="/formularios-visita-tecnica/hospital/config/manifest.json">
-<link rel="icon" type="image/png" href="../../shared/assets/logo-192.png">
-<link rel="apple-touch-icon" href="../../shared/assets/logo-192.png">
+<link rel="manifest" href="data:application/json,{
+  &quot;name&quot;: &quot;Ficha de Visita Técnica – Hospital&quot;,
+  &quot;short_name&quot;: &quot;Visita Hospital&quot;,
+  &quot;start_url&quot;: &quot;.&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;background_color&quot;: &quot;#0f2d4e&quot;,
+  &quot;theme_color&quot;: &quot;#0f2d4e&quot;,
+  &quot;icons&quot;: [{
+    &quot;src&quot;: &quot;https://ssl.gstatic.com/docs/spreadsheets/forms/favicon_qp2.png&quot;,
+    &quot;sizes&quot;: &quot;128x128&quot;,
+    &quot;type&quot;: &quot;image/png&quot;
+  }]
+}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ficha de Visita Técnica – Hospital 2026</title>
 <style>
@@ -257,7 +267,6 @@
     min-height: 58px;
     transition: background .2s;
     -webkit-appearance: none;
-    appearance: none;
   }
   #submit-btn:active { background: var(--navy-light); transform: scale(.99); }
   #submit-btn:disabled { background: var(--gray-400); cursor: not-allowed; }
@@ -947,12 +956,20 @@
   <p class="sync-queue-info" id="queue-info"></p>
 </div>
 
-<script src="../scripts/appscript-config.js"></script>
 <script>
 // ─────────────────────────────────────────────
 // ⚙ CONFIGURAÇÃO — cole aqui a URL do Apps Script
 // ─────────────────────────────────────────────
-const APPS_SCRIPT_URL = (window.APP_SCRIPT_CONFIG && window.APP_SCRIPT_CONFIG.currentUrl) || 'https://script.google.com/macros/s/AKfycbzOPMw55x3jA4TaL-ByElRic4w8RUwTHd6bXPZD6tKsoLY9GdygGKXLB0lbsIBPT4kr/exec';
+// URL automática – detecta se está rodando no Apps Script
+const APPS_SCRIPT_URL = (() => {
+  const url = window.location.href;
+  // Se estiver no Apps Script (/exec ou /dev), usa a mesma URL para POST
+  if (url.includes('script.google.com') || url.includes('googleusercontent.com')) {
+    return url.split('?')[0]; // remove query params
+  }
+  // Fallback para desenvolvimento local
+  return 'COLE_AQUI_A_URL_DO_APPS_SCRIPT';
+})();
 
 // ─────────────────────────────────────────────
 // DOCUMENTOS (Seção 2)
@@ -1366,7 +1383,7 @@ function salvarCSV(data) {
 // SUBMIT
 // ─────────────────────────────────────────────
 async function submitForm() {
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyAySxv-mk-8h8JKh6kp9WuLO8i86GQQKu7rIi7C5rC7YGT9D-JXyHGOrS_1KrcK__i/exec') {
+  if (APPS_SCRIPT_URL === 'COLE_AQUI_A_URL_DO_APPS_SCRIPT') {
     showMsg('error', '⚠ Configure a URL do Apps Script no arquivo HTML antes de enviar.');
     return;
   }
@@ -1501,54 +1518,72 @@ async function carregarMunicipios() {
 <iframe name="form_target" id="form_target" style="display:none"></iframe>
 
 <script>
-// ── SERVICE WORKER – registro externo (scripts/sw.js) ──
+// ── SERVICE WORKER (cache offline) ──
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', {
-      scope: '/formularios-visita-tecnica/'
-    })
+  // Service Worker inline via Blob
+  const swCode = `
+    const CACHE = 'visita-hospital-v1';
+    const URLS  = [self.location.href];
+
+    self.addEventListener('install', e => {
+      e.waitUntil(
+        caches.open(CACHE).then(c => c.addAll(URLS))
+      );
+      self.skipWaiting();
+    });
+
+    self.addEventListener('activate', e => {
+      e.waitUntil(
+        caches.keys().then(keys =>
+          Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+        )
+      );
+      self.clients.claim();
+    });
+
+    self.addEventListener('fetch', e => {
+      e.respondWith(
+        caches.match(e.request).then(cached => {
+          if (cached) return cached;
+          return fetch(e.request).then(resp => {
+            if (!resp || resp.status !== 200) return resp;
+            const clone = resp.clone();
+            caches.open(CACHE).then(c => c.put(e.request, clone));
+            return resp;
+          }).catch(() => caches.match(e.request));
+        })
+      );
+    });
+  `;
+
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+
+  navigator.serviceWorker.register(swUrl, { scope: './' })
     .then(reg => {
-      console.log('[PWA] Service Worker OK:', reg.scope);
-      reg.update();
+      console.log('[PWA] Service Worker registrado:', reg.scope);
+      // Verifica atualização
       reg.addEventListener('updatefound', () => {
-        const worker = reg.installing;
-        worker.addEventListener('statechange', () => {
-          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-            const banner = document.getElementById('offline-banner');
-            if (banner) {
-              banner.style.display = 'block';
-              banner.style.background = '#1e8dd2';
-              banner.textContent = '🔄 Nova versão disponível! Feche e reabra o app para atualizar.';
-            }
-          }
-        });
+        console.log('[PWA] Nova versão disponível – atualizando...');
       });
     })
-    .catch(err => console.warn('[PWA] SW erro:', err.message));
-  });
+    .catch(err => console.log('[PWA] SW não suportado neste contexto:', err.message));
 }
 
-// ── INSTALAR COMO APP ──
+// ── BANNER "ADICIONAR À TELA INICIAL" ──
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   deferredPrompt = e;
+  // Mostra botão de instalação
   const btn = document.getElementById('btn-instalar');
   if (btn) {
     btn.style.display = 'block';
-    btn.onclick = () => {
+    btn.addEventListener('click', () => {
       deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(() => {
-        btn.style.display = 'none';
-        deferredPrompt = null;
-      });
-    };
+      deferredPrompt.userChoice.then(() => { btn.style.display = 'none'; });
+    });
   }
-});
-
-window.addEventListener('appinstalled', () => {
-  const btn = document.getElementById('btn-instalar');
-  if (btn) btn.style.display = 'none';
 });
 </script>
 

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Visita Vigilância">
+  <meta name="theme-color" content="#0f2d4e">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/formularios-visita-tecnica/vigilancia-epidemiologica/config/manifest.json">
+  <link rel="icon" type="image/png" href="../../shared/assets/logo-192.png">
+  <link rel="apple-touch-icon" href="../../shared/assets/logo-192.png">
+  <title>Ficha de Visita Técnica – Vigilância Epidemiológica 2026</title>
+  <style>
+    :root { --navy:#0f2d4e; --navy-light:#1a3f6b; --accent:#1e8dd2; --accent-bg:#e8f4fd; --green:#16a34a; --red:#dc2626; --orange:#d97706; --gray-50:#f8fafc; --gray-100:#f1f5f9; --gray-200:#e2e8f0; --gray-400:#94a3b8; --gray-600:#475569; --gray-800:#1e293b; --white:#ffffff; --radius:10px; --shadow:0 1px 4px rgba(0,0,0,.1); --shadow-md:0 4px 10px rgba(0,0,0,.12); --touch-min:48px; --font-base:16px; }
+    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    html { font-size:var(--font-base); }
+    body { font-family:'Segoe UI', system-ui, -apple-system, sans-serif; background:var(--gray-100); color:var(--gray-800); line-height:1.55; -webkit-text-size-adjust:100%; }
+    #topbar { position:sticky; top:0; z-index:100; background:var(--navy); color:var(--white); padding:0 20px; box-shadow:var(--shadow-md); }
+    #topbar-inner { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:60px; gap:12px; }
+    #topbar h1 { font-size:15px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; }
+    #save-status { font-size:13px; color:#93c5fd; white-space:nowrap; }
+    #offline-banner { background:var(--orange); color:white; text-align:center; padding:10px 16px; font-size:14px; font-weight:600; display:none; }
+    #progress-bar-wrap { height:4px; background:rgba(255,255,255,.2); }
+    #progress-bar { height:4px; background:#38bdf8; width:0%; transition:width .4s; }
+    #form-wrap { max-width:960px; margin:0 auto; padding:20px 16px 60px; }
+    .form-header { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; margin-bottom:16px; border-left:5px solid var(--accent); }
+    .form-header h2 { font-size:20px; color:var(--navy); font-weight:700; }
+    .form-header p { color:var(--gray-600); font-size:14px; margin-top:8px; line-height:1.6; }
+    .section-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:14px; overflow:hidden; }
+    .section-head { display:flex; align-items:center; gap:14px; padding:16px 20px; cursor:pointer; background:var(--gray-50); border-bottom:1px solid var(--gray-200); min-height:var(--touch-min); user-select:none; -webkit-user-select:none; transition:background .15s; }
+    .section-head:active { background:var(--accent-bg); }
+    .section-num { background:var(--navy); color:white; width:34px; height:34px; border-radius:50%; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .section-title { font-weight:600; color:var(--navy); font-size:15px; flex:1; }
+    .section-toggle { color:var(--gray-400); font-size:20px; transition:transform .25s; line-height:1; }
+    .section-toggle.open { transform:rotate(180deg); }
+    .section-body { padding:20px; display:none; }
+    .section-body.open { display:block; }
+    .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; }
+    @media (max-width:640px) { .field-grid { grid-template-columns:1fr; } }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field label { font-size:13px; font-weight:700; color:var(--gray-600); text-transform:uppercase; letter-spacing:.4px; }
+    .field label .req { color:var(--red); margin-left:3px; }
+    input[type=text], input[type=email], input[type=date], input[type=number], textarea, select { border:2px solid var(--gray-200); border-radius:8px; padding:12px 14px; font-size:16px; color:var(--gray-800); width:100%; background:var(--white); font-family:inherit; min-height:var(--touch-min); transition:border-color .15s, box-shadow .15s; -webkit-appearance:none; appearance:none; }
+    input[type=date] { cursor:pointer; }
+    input:focus, textarea:focus, select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(30,141,210,.15); }
+    textarea { resize:vertical; min-height:100px; }
+    .radio-group, .check-group { display:flex; flex-wrap:wrap; gap:10px 12px; }
+    .radio-group label, .check-group label { display:flex; align-items:center; gap:10px; cursor:pointer; font-size:15px; font-weight:500; color:var(--gray-800); padding:10px 16px; border:2px solid var(--gray-200); border-radius:24px; min-height:var(--touch-min); transition:all .15s; -webkit-user-select:none; user-select:none; }
+    .radio-group label:active, .check-group label:active { background:var(--accent-bg); border-color:var(--accent); }
+    .radio-group label:has(input:checked), .check-group label:has(input:checked) { border-color:var(--accent); background:var(--accent-bg); color:var(--navy); font-weight:700; }
+    .radio-group input[type=radio], .check-group input[type=checkbox] { accent-color:var(--accent); cursor:pointer; width:20px; height:20px; flex-shrink:0; }
+    .subsec { margin-top:24px; padding-top:18px; border-top:1px dashed var(--gray-200); }
+    .subsec-title { font-size:12px; font-weight:800; color:var(--accent); text-transform:uppercase; letter-spacing:.7px; margin-bottom:14px; }
+    #submit-area { max-width:960px; margin:0 auto; padding:0 16px 60px; }
+    #submit-btn { width:100%; padding:18px; border:none; border-radius:var(--radius); background:var(--navy); color:white; font-size:17px; font-weight:700; cursor:pointer; letter-spacing:.5px; min-height:58px; transition:background .2s; -webkit-appearance:none; appearance:none; }
+    #submit-btn:active { background:var(--navy-light); transform:scale(.99); }
+    #submit-btn:disabled { background:var(--gray-400); cursor:not-allowed; }
+    #status-msg { margin-top:14px; padding:14px 18px; border-radius:var(--radius); font-size:15px; display:none; line-height:1.5; }
+    #status-msg.success { background:#dcfce7; color:var(--green); border:1px solid #bbf7d0; }
+    #status-msg.error { background:#fee2e2; color:var(--red); border:1px solid #fecaca; }
+    #status-msg.queued { background:#fef3c7; color:var(--orange); border:1px solid #fde68a; }
+    .sync-queue-info { font-size:13px; color:var(--gray-600); text-align:center; margin-top:10px; display:none; padding:10px; background:#fef3c7; border-radius:8px; }
+    .hint { font-size:13px; color:var(--gray-400); font-style:italic; margin-top:2px; }
+    @media (min-width:768px) and (orientation:landscape) { #form-wrap { padding:16px 24px 60px; } .field-grid { gap:14px 28px; } }
+  </style>
+</head>
+<body>
+  <div id="offline-banner">⚠ Você está sem internet. O formulário será salvo localmente e enviado quando a conexão for restaurada.</div>
+  <div id="topbar">
+    <div id="topbar-inner">
+      <h1>Ficha de Visita Técnica – Vigilância Epidemiológica 2026</h1>
+      <button id="btn-instalar" onclick="" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
+      <span id="save-status">–</span>
+    </div>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  </div>
+
+  <div id="form-wrap">
+    <div class="form-header">
+      <h2>Ficha de Visita Técnica – Vigilância Epidemiológica 2026</h2>
+      <p>Registro de alertas, notificação, biossegurança e resposta rápida em vigilância epidemiológica.</p>
+    </div>
+
+    <form id="main-form">
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">1</div>
+          <div class="section-title">Identificação</div>
+          <div class="section-toggle open">▾</div>
+        </div>
+        <div class="section-body open">
+          <div class="field-grid">
+            <div class="field"><label>Nome da unidade <span class="req">*</span></label><input type="text" name="s1_nome_unidade" required></div>
+            <div class="field"><label>Município <span class="req">*</span></label><input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required><datalist id="lista_municipios"></datalist><p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p></div>
+            <div class="field"><label>Responsável</label><input type="text" name="s1_responsavel"></div>
+            <div class="field"><label>Telefone</label><input type="text" name="s1_telefone"></div>
+            <div class="field"><label>E-mail</label><input type="email" name="s1_email"></div>
+            <div class="field"><label>Data da Visita</label><input type="date" name="s1_data_visita"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">2</div>
+          <div class="section-title">Notificação e Alertas</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field"><label>Casos suspeitos</label><input type="number" name="s2_casos_suspeitos"></div>
+            <div class="field"><label>Casos confirmados</label><input type="number" name="s2_casos_confirmados"></div>
+            <div class="field"><label>Óbitos</label><input type="number" name="s2_obitos"></div>
+            <div class="field"><label>Tempo de notificação</label><input type="text" name="s2_tempo_notificacao"></div>
+            <div class="field"><label>Disseminação de alertas</label><div class="radio-group"><label><input type="radio" name="s2_alertas" value="Sim">Sim</label><label><input type="radio" name="s2_alertas" value="Não">Não</label></div></div>
+            <div class="field"><label>Sistema de comunicação</label><input type="text" name="s2_sistema_comunicacao"></div>
+          </div>
+          <div class="subsec"><div class="field"><label>Detalhes de alertas e surtos</label><textarea name="s2_detalhes" rows="4"></textarea></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">3</div>
+          <div class="section-title">Biossegurança e Investigação</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="check-group">
+            <label><input type="checkbox" name="s3_biosseguranca" value="EPI disponível">EPI disponível</label>
+            <label><input type="checkbox" name="s3_biosseguranca" value="Luvas e máscara">Luvas e máscara</label>
+            <label><input type="checkbox" name="s3_biosseguranca" value="Higienização de mãos">Higienização de mãos</label>
+            <label><input type="checkbox" name="s3_biosseguranca" value="Descarte adequado">Descarte adequado</label>
+            <label><input type="checkbox" name="s3_biosseguranca" value="Isolamento adequado">Isolamento adequado</label>
+            <label><input type="checkbox" name="s3_biosseguranca" value="Vigilância ativa">Vigilância ativa</label>
+          </div>
+          <div class="subsec"><div class="field"><label>Metodologia de investigação</label><textarea name="s3_metodologia" rows="4"></textarea></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">4</div>
+          <div class="section-title">Campanhas e Capacitação</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="check-group">
+            <label><input type="checkbox" name="s4_capacitacao" value="Vacinação">Vacinação</label>
+            <label><input type="checkbox" name="s4_capacitacao" value="Prevenção de infecções">Prevenção de infecções</label>
+            <label><input type="checkbox" name="s4_capacitacao" value="Educação em saúde">Educação em saúde</label>
+            <label><input type="checkbox" name="s4_capacitacao" value="Treinamento de equipe">Treinamento de equipe</label>
+            <label><input type="checkbox" name="s4_capacitacao" value="Ações em escolas">Ações em escolas</label>
+          </div>
+          <div class="subsec"><div class="field-grid"><div class="field"><label>Pessoas treinadas</label><input type="number" name="s4_pessoas_treinadas"></div><div class="field"><label>Agenda de ações</label><input type="text" name="s4_agenda"></div></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">5</div>
+          <div class="section-title">Conclusão e Ações</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field"><label>Intervenções necessárias</label><input type="text" name="s5_intervencoes"></div>
+            <div class="field"><label>Responsável pela ação</label><input type="text" name="s5_responsavel_acao"></div>
+            <div class="field"><label>Prazo</label><input type="text" name="s5_prazo"></div>
+            <div class="field"><label>Conformidade</label><div class="radio-group"><label><input type="radio" name="s5_conformidade" value="Adequado">Adequado</label><label><input type="radio" name="s5_conformidade" value="Parcial">Parcial</label><label><input type="radio" name="s5_conformidade" value="Inadequado">Inadequado</label></div></div>
+          </div>
+          <div class="subsec"><div class="field"><label>Observações finais</label><textarea name="s5_observacoes" rows="4"></textarea></div></div>
+          <div class="subsec"><div class="field-grid"><div class="field"><label>Data da visita</label><input type="date" name="s5_data_visita"></div><div class="field"><label>Assinatura</label><input type="text" name="s5_assinatura"></div></div></div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div id="submit-area">
+    <button id="submit-btn" onclick="submitForm()">📤 Enviar para o Google Sheets</button>
+    <div id="status-msg"></div>
+    <p class="sync-queue-info" id="queue-info"></p>
+  </div>
+
+  <script src="../scripts/appscript-config.js"></script>
+  <script>
+    window.FORM_CONFIG = {
+      id: 'vigilancia-epidemiologica',
+      title: 'Ficha de Visita Técnica – Vigilância Epidemiológica',
+      shortName: 'Visita Vigilância Epidemiológica',
+      csvBaseName: 'vigilancia-epidemiologica'
+    };
+  </script>
+  <script src="../scripts/form-core.js"></script>
+  <iframe name="form_target" id="form_target" style="display:none"></iframe>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', { scope: '/formularios-visita-tecnica/' })
+          .then(reg => console.log('[PWA] SW registrado:', reg.scope))
+          .catch(err => console.warn('[PWA] SW falhou:', err.message));
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-instalar');
+      if (btn) {
+        btn.style.display = 'block';
+        btn.onclick = () => {
+          e.prompt();
+          e.userChoice.then(() => { btn.style.display = 'none'; });
+        };
+      }
+    });
+  </script>
+</body>
+</html>

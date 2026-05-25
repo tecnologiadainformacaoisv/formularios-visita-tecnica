@@ -5,72 +5,326 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Formulários de Visita Técnica">
-<meta name="theme-color" content="#0f2d4e">
-<link rel="manifest" href="/formularios-visita-tecnica/manifest.json">
-<link rel="icon" href="/formularios-visita-tecnica/icons/icon-192x192.png" type="image/png">
-<link rel="apple-touch-icon" href="/formularios-visita-tecnica/icons/icon-192x192.png">
+<meta name="theme-color" content="#0a3d62">
+<link rel="stylesheet" href="../shared/styles/instituto.css">
+<link rel="manifest" href="/formularios-visita-tecnica/config/manifest.json">
+<link rel="icon" type="image/png" href="../shared/assets/logo-192.png">
+<link rel="apple-touch-icon" href="../shared/assets/logo-192.png">
 <title>Formulários de Visita Técnica</title>
 <style>
-  :root {
-    color-scheme: dark light;
-    --bg: #f8fafc;
-    --panel: #ffffff;
-    --border: #cbd5e1;
-    --text: #0f172a;
-    --muted: #475569;
-    --accent: #1d4ed8;
-    --accent-2: #0f766e;
-    --radius: 18px;
-  }
-  * { box-sizing: border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
   body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: Inter, system-ui, -apple-system, sans-serif;
-    background: radial-gradient(circle at top left, rgba(59,130,246,.12), transparent 30%),
-                radial-gradient(circle at bottom right, rgba(14,165,233,.16), transparent 25%),
-                var(--bg);
-    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f0f4f8;
+    color: #2c3e50;
   }
-  .page { max-width: 960px; margin: 0 auto; padding: 32px 20px 50px; }
-  h1 { font-size: 2.2rem; margin-bottom: 12px; }
-  p { color: var(--muted); line-height: 1.75; margin: 0 0 28px; }
-  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: 0 18px 50px rgba(15,23,42,.08); transition: transform .22s ease, border-color .22s ease; }
-  .card:hover { transform: translateY(-2px); border-color: rgba(59,130,246,.35); }
-  .card h2 { margin: 0 0 10px; font-size: 1.2rem; }
-  .card p { margin: 0 0 18px; color: var(--muted); }
-  .card a { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 16px; border-radius: 999px; text-decoration: none; font-weight: 700; color: #fff; background: linear-gradient(135deg, #2563eb, #14b8a6); }
-  .note { margin-top: 26px; padding: 18px 20px; border-radius: 16px; background: #e2e8f0; color: #334155; }
-  @media (max-width: 600px) { .page { padding: 24px 16px 40px; } }
+
+  main { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+
+  .info-card,
+  .option-card,
+  .note-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .info-card {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .info-card h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .info-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #7f8c8d;
+  }
+
+  .info-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .info-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #eaf4fb;
+    color: #1e5f8a;
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .option-card {
+    border-left: 5px solid var(--accent, #2980b9);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-card .icon {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 34px;
+    opacity: 0.12;
+  }
+
+  .option-card .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    color: #475569;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .option-card h2 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .option-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #7f8c8d;
+    margin-bottom: 16px;
+  }
+
+  .option-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+
+  .option-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .option-card a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, #1e5f8a, #2980b9);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .option-card a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(41,128,185,0.25);
+  }
+
+  .note-card {
+    border-left: 4px solid #1e5f8a;
+  }
+
+  .note-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .note-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #475569;
+  }
+
+  .note-card ul {
+    margin-top: 14px;
+    padding-left: 18px;
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 900px) {
+    main { padding: 20px 16px; }
+    header { padding: 16px 20px; }
+  }
 </style>
 </head>
 <body>
-<div class="page">
-  <h1>Formulários de Visita Técnica</h1>
-  <p>Escolha o formulário que você deseja preencher. Cada ficha abre seu próprio formulário offline/PWA e envia os dados para o Google Sheets via Apps Script.</p>
+<header class="page-header">
+  <div class="header-left">
+    <h1 class="page-header__title">🏥 Formulários de Visita Técnica</h1>
+    <p class="page-header__subtitle">Escolha a ficha que deseja abrir. O fluxo segue o mesmo padrão visual do dashboard e mantém o funcionamento offline.</p>
+  </div>
+  <div class="page-header__actions">
+    <a class="btn btn-white" href="../pesquisa-satisfacao/pesquisa.html">Pesquisa de Satisfação</a>
+    <a class="btn btn-outline" href="../pesquisa-satisfacao/dashboard.html">Dashboard</a>
+  </div>
+</header>
 
-  <div class="grid">
-    <div class="card">
+<main class="page-content">
+  <section class="card-panel info-card">
+    <div>
+      <h2>Seleção rápida dos formulários</h2>
+      <p>Use este menu para abrir a ficha correta. Cada formulário mantém o comportamento offline e envia os dados para o backend quando a conexão voltar.</p>
+      <div class="info-meta">
+        <span class="info-badge">📱 PWA</span>
+        <span class="info-badge">🔄 Sincronização automática</span>
+        <span class="info-badge">💾 Backup local</span>
+      </div>
+    </div>
+    <a class="btn btn-green" href="../pesquisa-satisfacao/pesquisa.html">Abrir Pesquisa</a>
+  </section>
+
+  <section class="cards-grid">
+    <div class="card-panel option-card" style="--accent:#1e5f8a">
+      <div class="icon">🏥</div>
+      <div class="badge">Formulário ativo</div>
       <h2>Hospital</h2>
-      <p>Ficha atual de visita técnica para hospitais. Funciona offline com envio automático quando a conexão retorna.</p>
+      <p>Ficha atual de visita técnica para hospitais, com fluxo offline e envio automático quando houver conexão.</p>
+      <div class="option-meta">
+        <span>📶 Online/Offline</span>
+        <span>📊 Envio automático</span>
+      </div>
       <a href="hospital/">Abrir Hospital</a>
     </div>
-    <div class="card">
+
+    <div class="card-panel option-card" style="--accent:#16a085">
+      <div class="icon">👶</div>
+      <div class="badge">Em teste</div>
       <h2>Maternidade</h2>
-      <p>Nova pasta de formulário Maternidade, clonada do modelo Hospital para teste inicial do fluxo.</p>
+      <p>Segunda ficha clonada do modelo Hospital para validar o fluxo e ajustar o conteúdo específico do serviço.</p>
+      <div class="option-meta">
+        <span>🧪 Validação</span>
+        <span>🔧 Ajustes próximos</span>
+      </div>
       <a href="maternidade/">Abrir Maternidade</a>
     </div>
-  </div>
 
-  <div class="note">
-    <strong>Nota:</strong> o formulário Maternidade foi criado como o segundo formulário para validar a estrutura e o fluxo offline. Em seguida, podemos refinar os campos e replicar para outros tipos.
-  </div>
-</div>
+    <div class="card-panel option-card" style="--accent:#0f766e">
+      <div class="icon">🩺</div>
+      <div class="badge">Novo</div>
+      <h2>UBS</h2>
+      <p>Formulário completo para unidades básicas de saúde, com estrutura, equipes, programas e indicadores de saúde bucal.</p>
+      <div class="option-meta">
+        <span>📥 Automático</span>
+        <span>🗂️ Salvo localmente</span>
+      </div>
+      <a href="ubs/">Abrir UBS</a>
+    </div>
+
+    <div class="card-panel option-card" style="--accent:#7c3aed">
+      <div class="icon">🚑</div>
+      <div class="badge">Novo</div>
+      <h2>UPA</h2>
+      <p>Ficha de visita técnica para unidades de pronto atendimento, cobrindo estrutura, classificação de risco e segurança.</p>
+      <div class="option-meta">
+        <span>🧾 Documentação</span>
+        <span>⚙️ Operacional</span>
+      </div>
+      <a href="upa/">Abrir UPA</a>
+    </div>
+
+    <div class="card-panel option-card" style="--accent:#ea580c">
+      <div class="icon">🏠</div>
+      <div class="badge">Novo</div>
+      <h2>SADT</h2>
+      <p>Formulário para serviços de atenção domiciliar terapêutica com indicadores de acompanhamento e segurança.</p>
+      <div class="option-meta">
+        <span>📍 Domiciliar</span>
+        <span>🔎 Indicadores</span>
+      </div>
+      <a href="sadt/">Abrir SADT</a>
+    </div>
+
+    <div class="card-panel option-card" style="--accent:#2563eb">
+      <div class="icon">🧠</div>
+      <div class="badge">Novo</div>
+      <h2>CAPS</h2>
+      <p>Ficha para centros de atenção psicossocial com avaliação de infraestrutura, fluxo e programas assistenciais.</p>
+      <div class="option-meta">
+        <span>👥 Multidisciplinar</span>
+        <span>📘 Qualidade</span>
+      </div>
+      <a href="caps/">Abrir CAPS</a>
+    </div>
+
+    <div class="card-panel option-card" style="--accent:#0f172a">
+      <div class="icon">🦽</div>
+      <div class="badge">Novo</div>
+      <h2>Centro de Reabilitação</h2>
+      <p>Formulário de visita técnica para centros de reabilitação, incluindo equipe interdisciplinar, equipamentos e resultados.</p>
+      <div class="option-meta">
+        <span>🛠️ Infraestrutura</span>
+        <span>📊 Resultados</span>
+      </div>
+      <a href="centro-reabilitacao/">Abrir Reabilitação</a>
+    </div>
+
+    <div class="card-panel option-card" style="--accent:#b45309">
+      <div class="icon">🦠</div>
+      <div class="badge">Novo</div>
+      <h2>Vigilância Epidemiológica</h2>
+      <p>Ficha voltada para monitoramento de alertas, biossegurança, capacitação e ações em vigilância epidemiológica.</p>
+      <div class="option-meta">
+        <span>🚨 Alertas</span>
+        <span>🛡️ Biossegurança</span>
+      </div>
+      <a href="vigilancia-epidemiologica/">Abrir Vigilância</a>
+    </div>
+  </section>
+
+  <section class="card-panel note-card">
+    <h3>Observações</h3>
+    <p>Este menu foi estruturado no mesmo padrão visual do dashboard para facilitar a navegação e deixar a seleção dos formulários mais consistente.</p>
+    <ul>
+      <li>Os formulários continuam abrindo em páginas independentes.</li>
+      <li>O comportamento offline e a fila de envio permanecem intactos.</li>
+      <li>As novas fichas já estão incluídas no menu e no cache do service worker.</li>
+    </ul>
+  </section>
+</main>
+
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/formularios-visita-tecnica/sw.js', {
+      navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', {
         scope: '/formularios-visita-tecnica/'
       })
       .then(reg => console.log('[PWA] SW registrado:', reg.scope))

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Visita UPA">
+  <meta name="theme-color" content="#0f2d4e">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/formularios-visita-tecnica/upa/config/manifest.json">
+  <link rel="icon" type="image/png" href="../../shared/assets/logo-192.png">
+  <link rel="apple-touch-icon" href="../../shared/assets/logo-192.png">
+  <title>Ficha de Visita Técnica – UPA 2026</title>
+  <style>
+    :root { --navy:#0f2d4e; --navy-light:#1a3f6b; --accent:#1e8dd2; --accent-bg:#e8f4fd; --green:#16a34a; --red:#dc2626; --orange:#d97706; --gray-50:#f8fafc; --gray-100:#f1f5f9; --gray-200:#e2e8f0; --gray-400:#94a3b8; --gray-600:#475569; --gray-800:#1e293b; --white:#ffffff; --radius:10px; --shadow:0 1px 4px rgba(0,0,0,.1); --shadow-md:0 4px 10px rgba(0,0,0,.12); --touch-min:48px; --font-base:16px; }
+    * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+    html { font-size:var(--font-base); }
+    body { font-family:'Segoe UI', system-ui, -apple-system, sans-serif; background:var(--gray-100); color:var(--gray-800); line-height:1.55; -webkit-text-size-adjust:100%; }
+    #topbar { position:sticky; top:0; z-index:100; background:var(--navy); color:var(--white); padding:0 20px; box-shadow:var(--shadow-md); }
+    #topbar-inner { max-width:960px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:60px; gap:12px; }
+    #topbar h1 { font-size:15px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; }
+    #save-status { font-size:13px; color:#93c5fd; white-space:nowrap; }
+    #offline-banner { background:var(--orange); color:white; text-align:center; padding:10px 16px; font-size:14px; font-weight:600; display:none; }
+    #progress-bar-wrap { height:4px; background:rgba(255,255,255,.2); }
+    #progress-bar { height:4px; background:#38bdf8; width:0%; transition:width .4s; }
+    #form-wrap { max-width:960px; margin:0 auto; padding:20px 16px 60px; }
+    .form-header { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; margin-bottom:16px; border-left:5px solid var(--accent); }
+    .form-header h2 { font-size:20px; color:var(--navy); font-weight:700; }
+    .form-header p { color:var(--gray-600); font-size:14px; margin-top:8px; line-height:1.6; }
+    .section-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); margin-bottom:14px; overflow:hidden; }
+    .section-head { display:flex; align-items:center; gap:14px; padding:16px 20px; cursor:pointer; background:var(--gray-50); border-bottom:1px solid var(--gray-200); min-height:var(--touch-min); user-select:none; -webkit-user-select:none; transition:background .15s; }
+    .section-head:active { background:var(--accent-bg); }
+    .section-num { background:var(--navy); color:white; width:34px; height:34px; border-radius:50%; font-size:14px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .section-title { font-weight:600; color:var(--navy); font-size:15px; flex:1; }
+    .section-toggle { color:var(--gray-400); font-size:20px; transition:transform .25s; line-height:1; }
+    .section-toggle.open { transform:rotate(180deg); }
+    .section-body { padding:20px; display:none; }
+    .section-body.open { display:block; }
+    .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; }
+    @media (max-width:640px) { .field-grid { grid-template-columns:1fr; } }
+    .field { display:flex; flex-direction:column; gap:6px; }
+    .field label { font-size:13px; font-weight:700; color:var(--gray-600); text-transform:uppercase; letter-spacing:.4px; }
+    .field label .req { color:var(--red); margin-left:3px; }
+    input[type=text], input[type=email], input[type=date], input[type=number], textarea, select { border:2px solid var(--gray-200); border-radius:8px; padding:12px 14px; font-size:16px; color:var(--gray-800); width:100%; background:var(--white); font-family:inherit; min-height:var(--touch-min); transition:border-color .15s, box-shadow .15s; -webkit-appearance:none; appearance:none; }
+    input[type=date] { cursor:pointer; }
+    input:focus, textarea:focus, select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(30,141,210,.15); }
+    textarea { resize:vertical; min-height:100px; }
+    .radio-group, .check-group { display:flex; flex-wrap:wrap; gap:10px 12px; }
+    .radio-group label, .check-group label { display:flex; align-items:center; gap:10px; cursor:pointer; font-size:15px; font-weight:500; color:var(--gray-800); padding:10px 16px; border:2px solid var(--gray-200); border-radius:24px; min-height:var(--touch-min); transition:all .15s; -webkit-user-select:none; user-select:none; }
+    .radio-group label:active, .check-group label:active { background:var(--accent-bg); border-color:var(--accent); }
+    .radio-group label:has(input:checked), .check-group label:has(input:checked) { border-color:var(--accent); background:var(--accent-bg); color:var(--navy); font-weight:700; }
+    .radio-group input[type=radio], .check-group input[type=checkbox] { accent-color:var(--accent); cursor:pointer; width:20px; height:20px; flex-shrink:0; }
+    .subsec { margin-top:24px; padding-top:18px; border-top:1px dashed var(--gray-200); }
+    .subsec-title { font-size:12px; font-weight:800; color:var(--accent); text-transform:uppercase; letter-spacing:.7px; margin-bottom:14px; }
+    #submit-area { max-width:960px; margin:0 auto; padding:0 16px 60px; }
+    #submit-btn { width:100%; padding:18px; border:none; border-radius:var(--radius); background:var(--navy); color:white; font-size:17px; font-weight:700; cursor:pointer; letter-spacing:.5px; min-height:58px; transition:background .2s; -webkit-appearance:none; appearance:none; }
+    #submit-btn:active { background:var(--navy-light); transform:scale(.99); }
+    #submit-btn:disabled { background:var(--gray-400); cursor:not-allowed; }
+    #status-msg { margin-top:14px; padding:14px 18px; border-radius:var(--radius); font-size:15px; display:none; line-height:1.5; }
+    #status-msg.success { background:#dcfce7; color:var(--green); border:1px solid #bbf7d0; }
+    #status-msg.error { background:#fee2e2; color:var(--red); border:1px solid #fecaca; }
+    #status-msg.queued { background:#fef3c7; color:var(--orange); border:1px solid #fde68a; }
+    .sync-queue-info { font-size:13px; color:var(--gray-600); text-align:center; margin-top:10px; display:none; padding:10px; background:#fef3c7; border-radius:8px; }
+    .hint { font-size:13px; color:var(--gray-400); font-style:italic; margin-top:2px; }
+    .required-note { font-size:13px; color:var(--gray-400); margin-bottom:16px; }
+    @media (min-width:768px) and (orientation:landscape) { #form-wrap { padding:16px 24px 60px; } .field-grid { gap:14px 28px; } }
+  </style>
+</head>
+<body>
+  <div id="offline-banner">⚠ Você está sem internet. O formulário será salvo localmente e enviado quando a conexão for restaurada.</div>
+  <div id="topbar">
+    <div id="topbar-inner">
+      <h1>Ficha de Visita Técnica – UPA 2026</h1>
+      <button id="btn-instalar" onclick="" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
+      <span id="save-status">–</span>
+    </div>
+    <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+  </div>
+
+  <div id="form-wrap">
+    <div class="form-header">
+      <h2>Ficha de Visita Técnica – UPA 2026</h2>
+      <p>Documentação, estrutura, recursos humanos e segurança do paciente para unidades de pronto atendimento.</p>
+    </div>
+
+    <form id="main-form">
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">1</div>
+          <div class="section-title">Identificação da Unidade</div>
+          <div class="section-toggle open">▾</div>
+        </div>
+        <div class="section-body open">
+          <div class="field-grid">
+            <div class="field"><label>Nome da UPA <span class="req">*</span></label><input type="text" name="s1_nome_upa" required></div>
+            <div class="field"><label>Município <span class="req">*</span></label><input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required><datalist id="lista_municipios"></datalist><p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p></div>
+            <div class="field"><label>Porte</label><div class="radio-group"><label><input type="radio" name="s1_porte" value="I">I</label><label><input type="radio" name="s1_porte" value="II">II</label><label><input type="radio" name="s1_porte" value="III">III</label><label><input type="radio" name="s1_porte" value="IV">IV</label></div></div>
+            <div class="field"><label>Gestão</label><div class="radio-group"><label><input type="radio" name="s1_gestao" value="Municipal">Municipal</label><label><input type="radio" name="s1_gestao" value="Estadual">Estadual</label><label><input type="radio" name="s1_gestao" value="OS">OS</label><label><input type="radio" name="s1_gestao" value="Federal">Federal</label></div></div>
+            <div class="field"><label>Endereço</label><input type="text" name="s1_endereco"></div>
+            <div class="field"><label>CEP</label><input type="text" name="s1_cep"></div>
+            <div class="field"><label>Telefone</label><input type="text" name="s1_telefone"></div>
+            <div class="field"><label>E-mail</label><input type="email" name="s1_email"></div>
+            <div class="field"><label>Coordenador Geral</label><input type="text" name="s1_coord_geral"></div>
+            <div class="field"><label>Coordenador Médico</label><input type="text" name="s1_coord_medico"></div>
+            <div class="field"><label>Coordenador de Enfermagem</label><input type="text" name="s1_coord_enfermagem"></div>
+            <div class="field"><label>Farmacêutico Responsável</label><input type="text" name="s1_farmaceutico"></div>
+            <div class="field"><label>Responsável Técnico</label><input type="text" name="s1_rt"></div>
+            <div class="field"><label>Data da Visita</label><input type="date" name="s1_data_visita"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">2</div>
+          <div class="section-title">Documentação e Conformidades</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="check-group">
+            <label><input type="checkbox" name="s2_documentacao" value="Regimento Interno">Regimento Interno</label>
+            <label><input type="checkbox" name="s2_documentacao" value="Livro/Registro de Ocorrências">Livro/Registro de Ocorrências</label>
+            <label><input type="checkbox" name="s2_documentacao" value="POPs implantados">POPs implantados</label>
+            <label><input type="checkbox" name="s2_documentacao" value="Protocolos de classificação de risco">Protocolos de classificação de risco</label>
+            <label><input type="checkbox" name="s2_documentacao" value="Plano de Segurança do Paciente">Plano de Segurança do Paciente</label>
+            <label><input type="checkbox" name="s2_documentacao" value="CCIH / Plano de IRAS">CCIH / Plano de IRAS</label>
+            <label><input type="checkbox" name="s2_documentacao" value="PGRSS">PGRSS</label>
+            <label><input type="checkbox" name="s2_documentacao" value="Alvará Sanitário">Alvará Sanitário</label>
+            <label><input type="checkbox" name="s2_documentacao" value="Certificado de Bombeiros">Certificado de Bombeiros</label>
+            <label><input type="checkbox" name="s2_documentacao" value="Escalas afixadas e assinadas">Escalas afixadas e assinadas</label>
+          </div>
+          <div class="subsec"><div class="field"><label>Observações de documentação</label><textarea name="s2_observacoes" rows="4"></textarea></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">3</div>
+          <div class="section-title">Acolhimento e Classificação de Risco</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field"><label>Sistema utilizado</label><div class="radio-group"><label><input type="radio" name="s3_sistema" value="Manchester">Manchester</label><label><input type="radio" name="s3_sistema" value="Protocolo do MS">Protocolo do MS</label><label><input type="radio" name="s3_sistema" value="Outro">Outro</label></div></div>
+            <div class="field"><label>Outro sistema</label><input type="text" name="s3_sistema_outro"></div>
+            <div class="field"><label>Sala de acolhimento</label><div class="radio-group"><label><input type="radio" name="s3_acolhimento" value="Adequada">Adequada</label><label><input type="radio" name="s3_acolhimento" value="Inadequada">Inadequada</label></div></div>
+            <div class="field"><label>Profissional habilitado</label><div class="radio-group"><label><input type="radio" name="s3_profissional_habilitado" value="Sim">Sim</label><label><input type="radio" name="s3_profissional_habilitado" value="Não">Não</label></div></div>
+            <div class="field"><label>Tempo médio de classificação</label><input type="number" name="s3_tempo_classificacao"></div>
+            <div class="field"><label>Fluxo de urgência</label><div class="radio-group"><label><input type="radio" name="s3_fluxo_urgencia" value="Organizado">Organizado</label><label><input type="radio" name="s3_fluxo_urgencia" value="Parcial">Parcial</label><label><input type="radio" name="s3_fluxo_urgencia" value="Caótico">Caótico</label></div></div>
+          </div>
+          <div class="subsec"><div class="field"><label>Observações</label><textarea name="s3_observacoes" rows="4"></textarea></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">4</div>
+          <div class="section-title">Estrutura Física e Ambiência</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="check-group">
+            <label><input type="checkbox" name="s4_ambiencia" value="Limpeza adequada">Limpeza adequada</label>
+            <label><input type="checkbox" name="s4_ambiencia" value="Iluminação adequada">Iluminação adequada</label>
+            <label><input type="checkbox" name="s4_ambiencia" value="Ventilação adequada">Ventilação adequada</label>
+            <label><input type="checkbox" name="s4_ambiencia" value="Sala de espera adequada">Sala de espera adequada</label>
+            <label><input type="checkbox" name="s4_ambiencia" value="Sinalização adequada">Sinalização adequada</label>
+            <label><input type="checkbox" name="s4_ambiencia" value="Acessibilidade adequada">Acessibilidade adequada</label>
+            <label><input type="checkbox" name="s4_ambiencia" value="Banheiros adequados">Banheiros adequados</label>
+            <label><input type="checkbox" name="s4_ambiencia" value="Segurança patrimonial">Segurança patrimonial</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">5</div>
+          <div class="section-title">Salas e Setores Obrigatórios</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="check-group">
+            <label><input type="checkbox" name="s5_setores" value="Sala de classificação de risco">Sala de classificação de risco</label>
+            <label><input type="checkbox" name="s5_setores" value="Sala de medicação">Sala de medicação</label>
+            <label><input type="checkbox" name="s5_setores" value="Sala de nebulização">Sala de nebulização</label>
+            <label><input type="checkbox" name="s5_setores" value="Sala de suturas">Sala de suturas</label>
+            <label><input type="checkbox" name="s5_setores" value="Sala de curativos">Sala de curativos</label>
+            <label><input type="checkbox" name="s5_setores" value="Consultórios médicos">Consultórios médicos</label>
+            <label><input type="checkbox" name="s5_setores" value="Consultório de enfermagem">Consultório de enfermagem</label>
+            <label><input type="checkbox" name="s5_setores" value="Sala amarela">Sala amarela</label>
+            <label><input type="checkbox" name="s5_setores" value="Sala vermelha">Sala vermelha</label>
+            <label><input type="checkbox" name="s5_setores" value="Leitos de observação">Leitos de observação</label>
+            <label><input type="checkbox" name="s5_setores" value="Sala de isolamento">Sala de isolamento</label>
+            <label><input type="checkbox" name="s5_setores" value="Sala de reanimação">Sala de reanimação</label>
+          </div>
+          <div class="subsec"><div class="field-grid"><div class="field"><label>Quantidade de leitos de observação</label><input type="number" name="s5_leitos_observacao"></div><div class="field"><label>Quantidade de consultórios</label><input type="number" name="s5_consultorios"></div></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">6</div>
+          <div class="section-title">Equipamentos e Diagnóstico</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="check-group">
+            <label><input type="checkbox" name="s6_equipamentos" value="Ventilador mecânico">Ventilador mecânico</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="Desfibrilador">Desfibrilador</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="Monitor multiparamétrico">Monitor multiparamétrico</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="Bomba de infusão">Bomba de infusão</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="ECG">ECG</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="Ambu adulto/infantil">Ambu adulto/infantil</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="Aspirador">Aspirador</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="O2 / ar comprimido / vácuo">O2 / ar comprimido / vácuo</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="Raio-X portátil">Raio-X portátil</label>
+            <label><input type="checkbox" name="s6_equipamentos" value="Ultrassom">Ultrassom</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">7</div>
+          <div class="section-title">Farmácia, Manutenção e Segurança</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field"><label>Farmácia interna</label><div class="radio-group"><label><input type="radio" name="s7_farmacia" value="Sim">Sim</label><label><input type="radio" name="s7_farmacia" value="Não">Não</label></div></div>
+            <div class="field"><label>Estoque adequado</label><div class="radio-group"><label><input type="radio" name="s7_estoque" value="Sim">Sim</label><label><input type="radio" name="s7_estoque" value="Não">Não</label></div></div>
+            <div class="field"><label>PMOC atualizado</label><div class="radio-group"><label><input type="radio" name="s7_pmoc" value="Sim">Sim</label><label><input type="radio" name="s7_pmoc" value="Não">Não</label></div></div>
+            <div class="field"><label>Manutenção preventiva em dia</label><div class="radio-group"><label><input type="radio" name="s7_manutencao" value="Em dia">Em dia</label><label><input type="radio" name="s7_manutencao" value="Atrasada">Atrasada</label></div></div>
+            <div class="field"><label>Extintores válidos</label><div class="radio-group"><label><input type="radio" name="s7_extintores" value="Sim">Sim</label><label><input type="radio" name="s7_extintores" value="Não">Não</label></div></div>
+            <div class="field"><label>Grupo gerador funcionando</label><div class="radio-group"><label><input type="radio" name="s7_gerador" value="Sim">Sim</label><label><input type="radio" name="s7_gerador" value="Não">Não</label></div></div>
+          </div>
+          <div class="subsec"><div class="field"><label>Observações de manutenção e segurança</label><textarea name="s7_observacoes" rows="4"></textarea></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">8</div>
+          <div class="section-title">Recursos Humanos e Transporte</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field"><label>Médicos previstos</label><input type="number" name="s8_medicos"></div>
+            <div class="field"><label>Enfermeiros previstos</label><input type="number" name="s8_enfermeiros"></div>
+            <div class="field"><label>Técnicos de enfermagem</label><input type="number" name="s8_tecnicos"></div>
+            <div class="field"><label>Fisioterapeutas</label><input type="number" name="s8_fisioterapeutas"></div>
+            <div class="field"><label>Assistente social</label><input type="number" name="s8_assistente_social"></div>
+            <div class="field"><label>Farmacêutico</label><input type="number" name="s8_farmaceutico"></div>
+            <div class="field"><label>Motoristas</label><input type="number" name="s8_motoristas"></div>
+            <div class="field"><label>Administrativos</label><input type="number" name="s8_administrativos"></div>
+          </div>
+          <div class="subsec"><div class="field-grid"><div class="field"><label>Transporte sanitário</label><div class="radio-group"><label><input type="radio" name="s8_transporte" value="Ambulância básica">Ambulância básica</label><label><input type="radio" name="s8_transporte" value="Ambulância UTI">Ambulância UTI</label><label><input type="radio" name="s8_transporte" value="Não possui">Não possui</label></div></div><div class="field"><label>Condutor habilitado</label><div class="radio-group"><label><input type="radio" name="s8_condutor" value="Sim">Sim</label><label><input type="radio" name="s8_condutor" value="Não">Não</label></div></div></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">9</div>
+          <div class="section-title">Indicadores e Recomendações</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field"><label>Ocupação atual</label><input type="text" name="s9_ocupacao"></div>
+            <div class="field"><label>Tempo médio de permanência</label><input type="text" name="s9_tempo_permanencia"></div>
+            <div class="field"><label>Taxa de transferência hospitalar</label><input type="text" name="s9_transferencia"></div>
+            <div class="field"><label>Mortalidade na UPA</label><input type="text" name="s9_mortalidade"></div>
+            <div class="field"><label>Tempo porta-médico</label><input type="text" name="s9_porta_medico"></div>
+            <div class="field"><label>Tempo porta-classificação</label><input type="text" name="s9_porta_classificacao"></div>
+          </div>
+          <div class="subsec"><div class="field-grid"><div class="field"><label>Não conformidades</label><textarea name="s9_nao_conformidades" rows="4"></textarea></div><div class="field"><label>Recomendações da visita</label><textarea name="s9_recomendacoes" rows="4"></textarea></div></div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">10</div>
+          <div class="section-title">Finalização</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field"><label>Data da visita</label><input type="date" name="s10_data_visita"></div>
+            <div class="field"><label>Responsável pela visita</label><input type="text" name="s10_responsavel"></div>
+            <div class="field"><label>Coordenador da UPA</label><input type="text" name="s10_coord_upa"></div>
+            <div class="field"><label>Assinatura</label><input type="text" name="s10_assinatura"></div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div id="submit-area">
+    <button id="submit-btn" onclick="submitForm()">📤 Enviar para o Google Sheets</button>
+    <div id="status-msg"></div>
+    <p class="sync-queue-info" id="queue-info"></p>
+  </div>
+
+  <script src="../scripts/appscript-config.js"></script>
+  <script>
+    window.FORM_CONFIG = {
+      id: 'upa',
+      title: 'Ficha de Visita Técnica – UPA',
+      shortName: 'Visita UPA',
+      csvBaseName: 'upa'
+    };
+  </script>
+  <script src="../scripts/form-core.js"></script>
+  <iframe name="form_target" id="form_target" style="display:none"></iframe>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', { scope: '/formularios-visita-tecnica/' })
+          .then(reg => console.log('[PWA] SW registrado:', reg.scope))
+          .catch(err => console.warn('[PWA] SW falhou:', err.message));
+      });
+    }
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-instalar');
+      if (btn) {
+        btn.style.display = 'block';
+        btn.onclick = () => {
+          e.prompt();
+          e.userChoice.then(() => { btn.style.display = 'none'; });
+        };
+      }
+    });
+  </script>
+</body>
+</html>
