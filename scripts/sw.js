@@ -1,8 +1,13 @@
-const CACHE_NAME = 'visita-formularios-v1';
+const CACHE_NAME = 'visita-formularios-v2';
 const URLS = [
   '/formularios-visita-tecnica/',
   '/formularios-visita-tecnica/index.html',
   '/formularios-visita-tecnica/config/manifest.json',
+  '/formularios-visita-tecnica/shared/styles/instituto.css',
+  '/formularios-visita-tecnica/shared/assets/logo-192.png',
+  '/formularios-visita-tecnica/pesquisa-satisfacao/',
+  '/formularios-visita-tecnica/pesquisa-satisfacao/pesquisa.html',
+  '/formularios-visita-tecnica/pesquisa-satisfacao/dashboard.html',
   '/formularios-visita-tecnica/hospital/',
   '/formularios-visita-tecnica/hospital/index.html',
   '/formularios-visita-tecnica/hospital/config/manifest.json',
