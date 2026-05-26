@@ -1214,69 +1214,33 @@ async function trySyncQueue() {
   }
 }
 
-// postData usa o iframe fixo (para envio do formulário principal)
+// postData usa o endpoint direto do Apps Script
 function postData(data) {
   return postDataComIframe(data, 'form_target');
 }
 
-// Função base — aceita qualquer iframe pelo id
+// Função base — envia via fetch para evitar bloqueio do iframe pelo Google
 function postDataComIframe(data, iframeId) {
-  return new Promise((resolve) => {
-    try {
-      // Remove iframe anterior com mesmo id, se existir
-      const anterior = document.getElementById(iframeId);
-      if (anterior && iframeId !== 'form_target') anterior.remove();
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      // Cria iframe novo para sync (não mexe no iframe fixo da página)
-      let iframe;
-      if (iframeId === 'form_target') {
-        iframe = document.getElementById('form_target');
-      } else {
-        iframe = document.createElement('iframe');
-        iframe.name = iframeId;
-        iframe.id   = iframeId;
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-      }
-
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = APPS_SCRIPT_URL;
-      form.target = iframeId;
-      form.style.display = 'none';
-
-      const inp = document.createElement('input');
-      inp.type  = 'hidden';
-      inp.name  = 'payload';
-      inp.value = JSON.stringify(data);
-      form.appendChild(inp);
-      document.body.appendChild(form);
-
-      const onLoad = () => {
-        iframe.removeEventListener('load', onLoad);
-        try { document.body.removeChild(form); } catch(e) {}
-        if (iframeId !== 'form_target') {
-          try { document.body.removeChild(iframe); } catch(e) {}
-        }
-        resolve(true);
-      };
-      iframe.addEventListener('load', onLoad);
-
-      setTimeout(() => {
-        iframe.removeEventListener('load', onLoad);
-        try { document.body.removeChild(form); } catch(e) {}
-        if (iframeId !== 'form_target') {
-          try { document.body.removeChild(iframe); } catch(e) {}
-        }
-        resolve(false);
-      }, 10000);
-
-      form.submit();
-    } catch(e) {
-      console.error('[POST] Erro:', e.message);
-      resolve(false);
-    }
-  });
+  return fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    },
+    body: new URLSearchParams({ payload: JSON.stringify(data) }),
+    signal: controller.signal
+  })
+    .then(async (res) => {
+      clearTimeout(timeoutId);
+      const text = await res.text();
+      return res.ok && text.includes('✅ Dados salvos com sucesso.');
+    })
+    .catch(() => {
+      clearTimeout(timeoutId);
+      return false;
+    });
 }
 
 // ─────────────────────────────────────────────
@@ -1515,8 +1479,8 @@ async function carregarMunicipios() {
 // ── SERVICE WORKER – registro externo (sw.js) ──
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/formularios-visita-tecnica/hospital/sw.js', {
-      scope: '/formularios-visita-tecnica/hospital/'
+    navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', {
+      scope: '/formularios-visita-tecnica/'
     })
     .then(reg => {
       console.log('[PWA] Service Worker OK:', reg.scope);
