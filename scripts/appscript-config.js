@@ -1,5 +1,5 @@
 (function () {
-  const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbzOPMw55x3jA4TaL-ByElRic4w8RUwTHd6bXPZD6tKsoLY9GdygGKXLB0lbsIBPT4kr/exec';
+  const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbygENDGFKSfazR-csNlIgiQ3n5FP1uDJCOd-EeaS6mhlbAJfyap_27d87nFSFPF0QPo/exec';
   const PLACEHOLDER_URL = 'https://script.google.com/macros/s/AKfycbyAySxv-mk-8h8JKh6kp9WuLO8i86GQQKu7rIi7C5rC7YGT9D-JXyHGOrS_1KrcK__i/exec';
 
   const params = new URLSearchParams(window.location.search || '');

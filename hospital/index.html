@@ -950,7 +950,15 @@
 // ─────────────────────────────────────────────
 // ⚙ CONFIGURAÇÃO — cole aqui a URL do Apps Script
 // ─────────────────────────────────────────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOPMw55x3jA4TaL-ByElRic4w8RUwTHd6bXPZD6tKsoLY9GdygGKXLB0lbsIBPT4kr/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygENDGFKSfazR-csNlIgiQ3n5FP1uDJCOd-EeaS6mhlbAJfyap_27d87nFSFPF0QPo/exec';
+
+const FORM_META = {
+  id: 'hospital',
+  title: 'Ficha de Visita Técnica – Hospital',
+  shortName: 'Visita Hospital',
+  version: '2026',
+  tipo: 'cer'
+};
 
 // ─────────────────────────────────────────────
 // DOCUMENTOS (Seção 2)
@@ -1049,6 +1057,11 @@ function collectFormData() {
   for (let key in checkboxGroups) {
     data[key] = checkboxGroups[key];
   }
+
+  data.form_id = FORM_META.id;
+  data.form_tipo = FORM_META.tipo;
+  data.form_title = FORM_META.title;
+  data.form_version = FORM_META.version;
 
   return data;
 }

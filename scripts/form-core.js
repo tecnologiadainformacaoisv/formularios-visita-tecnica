@@ -1,5 +1,5 @@
 (function () {
-  const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOPMw55x3jA4TaL-ByElRic4w8RUwTHd6bXPZD6tKsoLY9GdygGKXLB0lbsIBPT4kr/exec';
+  const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygENDGFKSfazR-csNlIgiQ3n5FP1uDJCOd-EeaS6mhlbAJfyap_27d87nFSFPF0QPo/exec';
 
   function getAppsScriptUrl() {
     if (window.APP_SCRIPT_CONFIG && window.APP_SCRIPT_CONFIG.currentUrl) {
@@ -47,6 +47,11 @@
     for (let key in checkboxGroups) {
       data[key] = checkboxGroups[key];
     }
+
+    data.form_id = FORM_META.id;
+    data.form_tipo = (FORM_META.tipo || FORM_META.id || 'geral').toString().toLowerCase();
+    data.form_title = FORM_META.title || '';
+    data.form_version = FORM_META.version || '';
 
     return data;
   }
