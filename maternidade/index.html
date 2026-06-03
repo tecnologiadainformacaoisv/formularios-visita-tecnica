@@ -13,7 +13,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ficha de Visita Técnica – Maternidade 2026</title>
 <style>
-  /* ── RESET & BASE ── */
   :root {
     --navy:       #0f2d4e;
     --navy-light: #1a3f6b;
@@ -32,261 +31,76 @@
     --radius:     10px;
     --shadow:     0 1px 4px rgba(0,0,0,.1);
     --shadow-md:  0 4px 10px rgba(0,0,0,.12);
-    /* Tamanhos touch-friendly */
     --touch-min:  48px;
     --font-base:  16px;
     --font-sm:    15px;
     --font-xs:    13px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   html { font-size: var(--font-base); }
-
-  body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: var(--gray-100);
-    color: var(--gray-800);
-    line-height: 1.55;
-    /* Evita zoom indesejado no iOS/Android */
-    -webkit-text-size-adjust: 100%;
-  }
-
-  /* ── TOP BAR ── */
-  #topbar {
-    position: sticky; top: 0; z-index: 100;
-    background: var(--navy); color: var(--white);
-    padding: 0 20px;
-    box-shadow: var(--shadow-md);
-  }
-  #topbar-inner {
-    max-width: 960px; margin: 0 auto;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 60px; gap: 12px;
-  }
-  #topbar h1 {
-    font-size: 15px; font-weight: 700;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1;
-  }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--gray-100); color: var(--gray-800); line-height: 1.55; -webkit-text-size-adjust: 100%; }
+  #topbar { position: sticky; top: 0; z-index: 100; background: var(--navy); color: var(--white); padding: 0 20px; box-shadow: var(--shadow-md); }
+  #topbar-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; gap: 12px; }
+  #topbar h1 { font-size: 15px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
   #save-status { font-size: 13px; color: #93c5fd; white-space: nowrap; }
-  #offline-banner {
-    background: var(--orange); color: white; text-align: center;
-    padding: 10px 16px; font-size: 14px; font-weight: 600; display: none;
-  }
+  #offline-banner { background: var(--orange); color: white; text-align: center; padding: 10px 16px; font-size: 14px; font-weight: 600; display: none; }
   #progress-bar-wrap { height: 4px; background: rgba(255,255,255,.2); }
   #progress-bar { height: 4px; background: #38bdf8; width: 0%; transition: width .4s; }
-
-  /* ── LAYOUT ── */
-  #form-wrap {
-    max-width: 960px; margin: 0 auto;
-    padding: 20px 16px 60px;
-  }
-  .form-header {
-    background: var(--white); border-radius: var(--radius);
-    box-shadow: var(--shadow); padding: 24px 24px;
-    margin-bottom: 16px; border-left: 5px solid var(--accent);
-  }
+  #form-wrap { max-width: 960px; margin: 0 auto; padding: 20px 16px 60px; }
+  .form-header { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; margin-bottom: 16px; border-left: 5px solid var(--accent); }
   .form-header h2 { font-size: 20px; color: var(--navy); font-weight: 700; }
   .form-header p  { color: var(--gray-600); font-size: 14px; margin-top: 8px; line-height: 1.6; }
-
-  /* ── SECTION CARD ── */
-  .section-card {
-    background: var(--white); border-radius: var(--radius);
-    box-shadow: var(--shadow); margin-bottom: 14px; overflow: hidden;
-  }
-  .section-head {
-    display: flex; align-items: center; gap: 14px;
-    padding: 16px 20px; cursor: pointer;
-    background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
-    /* Touch target mínimo */
-    min-height: var(--touch-min);
-    user-select: none;
-    -webkit-user-select: none;
-    transition: background .15s;
-  }
+  .section-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 14px; overflow: hidden; }
+  .section-head { display: flex; align-items: center; gap: 14px; padding: 16px 20px; cursor: pointer; background: var(--gray-50); border-bottom: 1px solid var(--gray-200); min-height: var(--touch-min); user-select: none; -webkit-user-select: none; transition: background .15s; }
   .section-head:active { background: var(--accent-bg); }
-  .section-num {
-    background: var(--navy); color: white;
-    width: 34px; height: 34px; border-radius: 50%;
-    font-size: 14px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
+  .section-num { background: var(--navy); color: white; width: 34px; height: 34px; border-radius: 50%; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .section-title { font-weight: 600; color: var(--navy); font-size: 15px; flex: 1; }
   .section-toggle { color: var(--gray-400); font-size: 20px; transition: transform .25s; line-height: 1; }
   .section-toggle.open { transform: rotate(180deg); }
-  .section-body { padding: 20px 20px; display: none; }
+  .section-body { padding: 20px; display: none; }
   .section-body.open { display: block; }
-
-  /* ── FIELD GROUPS ── */
-  /* Em tablet (≥600px) 2 colunas; abaixo disso 1 coluna */
   .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 24px; }
   .field-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
   .field-grid.cols-1 { grid-template-columns: 1fr; }
-
-  @media (max-width: 640px) {
-    .field-grid,
-    .field-grid.cols-3 { grid-template-columns: 1fr; }
-  }
-
+  @media (max-width: 640px) { .field-grid, .field-grid.cols-3 { grid-template-columns: 1fr; } }
   .field { display: flex; flex-direction: column; gap: 6px; }
-
-  .field label {
-    font-size: 13px; font-weight: 700;
-    color: var(--gray-600);
-    text-transform: uppercase; letter-spacing: .4px;
-  }
+  .field label { font-size: 13px; font-weight: 700; color: var(--gray-600); text-transform: uppercase; letter-spacing: .4px; }
   .field label .req { color: var(--red); margin-left: 3px; }
-
-  /* ── INPUTS ── */
-  /* font-size 16px evita zoom automático no iOS */
-  input[type=text],
-  input[type=email],
-  input[type=date],
-  input[type=number],
-  textarea, select {
-    border: 2px solid var(--gray-200);
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 16px;
-    color: var(--gray-800);
-    width: 100%;
-    background: var(--white);
-    font-family: inherit;
-    min-height: var(--touch-min);
-    transition: border-color .15s, box-shadow .15s;
-    -webkit-appearance: none;
-    appearance: none;
-  }
+  input[type=text], input[type=email], input[type=date], input[type=number], textarea, select { border: 2px solid var(--gray-200); border-radius: 8px; padding: 12px 14px; font-size: 16px; color: var(--gray-800); width: 100%; background: var(--white); font-family: inherit; min-height: var(--touch-min); transition: border-color .15s, box-shadow .15s; -webkit-appearance: none; appearance: none; }
   input[type=date] { cursor: pointer; }
-  input:focus, textarea:focus, select:focus {
-    outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(30,141,210,.15);
-  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(30,141,210,.15); }
   textarea { resize: vertical; min-height: 100px; }
-
-  /* ── RADIO & CHECKBOX PILLS ── */
-  /* Grandes o suficiente para toque preciso no tablet */
-  .radio-group, .check-group {
-    display: flex; flex-wrap: wrap; gap: 10px 12px;
-  }
-  .radio-group label,
-  .check-group label {
-    display: flex; align-items: center; gap: 10px;
-    cursor: pointer;
-    font-size: 15px; font-weight: 500; color: var(--gray-800);
-    padding: 10px 16px;
-    border: 2px solid var(--gray-200); border-radius: 24px;
-    min-height: var(--touch-min);
-    transition: all .15s;
-    -webkit-user-select: none; user-select: none;
-  }
-  .radio-group label:active,
-  .check-group label:active { background: var(--accent-bg); border-color: var(--accent); }
-  .radio-group label:has(input:checked),
-  .check-group label:has(input:checked) {
-    border-color: var(--accent);
-    background: var(--accent-bg);
-    color: var(--navy);
-    font-weight: 700;
-  }
-  .radio-group input[type=radio],
-  .check-group input[type=checkbox] {
-    accent-color: var(--accent);
-    cursor: pointer;
-    width: 20px; height: 20px;
-    flex-shrink: 0;
-  }
-
-  /* ── GRID TABLE ── */
-  .grid-table-wrap {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: var(--radius);
-    border: 1px solid var(--gray-200);
-  }
+  .radio-group, .check-group { display: flex; flex-wrap: wrap; gap: 10px 12px; }
+  .radio-group label, .check-group label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--gray-800); padding: 10px 16px; border: 2px solid var(--gray-200); border-radius: 24px; min-height: var(--touch-min); transition: all .15s; -webkit-user-select: none; user-select: none; }
+  .radio-group label:active, .check-group label:active { background: var(--accent-bg); border-color: var(--accent); }
+  .radio-group label:has(input:checked), .check-group label:has(input:checked) { border-color: var(--accent); background: var(--accent-bg); color: var(--navy); font-weight: 700; }
+  .radio-group input[type=radio], .check-group input[type=checkbox] { accent-color: var(--accent); cursor: pointer; width: 20px; height: 20px; flex-shrink: 0; }
+  .grid-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: var(--radius); border: 1px solid var(--gray-200); }
   .grid-table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  .grid-table th {
-    background: var(--navy); color: var(--white);
-    padding: 12px 16px; text-align: center;
-    font-size: 13px; font-weight: 700;
-    letter-spacing: .4px; white-space: nowrap;
-  }
-  .grid-table th:first-child { text-align: left; min-width: 200px; }
-  .grid-table td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--gray-100);
-    vertical-align: middle;
-  }
-  .grid-table td:not(:first-child) { text-align: center; }
+  .grid-table th { background: var(--navy); color: var(--white); padding: 12px 16px; text-align: center; font-size: 13px; font-weight: 700; letter-spacing: .4px; white-space: nowrap; }
+  .grid-table th:first-child { text-align: left; min-width: 220px; }
+  .grid-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+  .grid-table td:not(:first-child) { text-align: center; min-width: 70px; cursor: pointer; }
   .grid-table tr:last-child td { border-bottom: none; }
   .grid-table tr:nth-child(even) { background: var(--gray-50); }
   .grid-table td:first-child { font-weight: 500; color: var(--gray-800); }
-  /* Radio/checkbox dentro da tabela — área de toque generosa */
-  .grid-table input[type=radio],
-  .grid-table input[type=checkbox] {
-    accent-color: var(--accent);
-    cursor: pointer;
-    width: 22px; height: 22px;
-  }
-  /* Cada célula de radio/checkbox tem área de toque mínima */
-  .grid-table td:not(:first-child) {
-    min-width: 70px;
-    cursor: pointer;
-  }
-
-  /* ── SUBSECTION ── */
+  .grid-table input[type=radio], .grid-table input[type=checkbox] { accent-color: var(--accent); cursor: pointer; width: 22px; height: 22px; }
   .subsec { margin-top: 24px; padding-top: 18px; border-top: 1px dashed var(--gray-200); }
-  .subsec-title {
-    font-size: 12px; font-weight: 800; color: var(--accent);
-    text-transform: uppercase; letter-spacing: .7px; margin-bottom: 14px;
-  }
-
-  /* ── SUBMIT AREA ── */
-  #submit-area {
-    max-width: 960px; margin: 0 auto;
-    padding: 0 16px 60px;
-  }
-  #submit-btn {
-    width: 100%;
-    padding: 18px;
-    border: none; border-radius: var(--radius);
-    background: var(--navy); color: white;
-    font-size: 17px; font-weight: 700;
-    cursor: pointer; letter-spacing: .5px;
-    min-height: 58px;
-    transition: background .2s;
-    -webkit-appearance: none;
-  }
+  .subsec-title { font-size: 12px; font-weight: 800; color: var(--accent); text-transform: uppercase; letter-spacing: .7px; margin-bottom: 14px; }
+  #submit-area { max-width: 960px; margin: 0 auto; padding: 0 16px 60px; }
+  #submit-btn { width: 100%; padding: 18px; border: none; border-radius: var(--radius); background: var(--navy); color: white; font-size: 17px; font-weight: 700; cursor: pointer; letter-spacing: .5px; min-height: 58px; transition: background .2s; -webkit-appearance: none; }
   #submit-btn:active { background: var(--navy-light); transform: scale(.99); }
   #submit-btn:disabled { background: var(--gray-400); cursor: not-allowed; }
-
-  #status-msg {
-    margin-top: 14px; padding: 14px 18px;
-    border-radius: var(--radius); font-size: 15px;
-    display: none; line-height: 1.5;
-  }
+  #status-msg { margin-top: 14px; padding: 14px 18px; border-radius: var(--radius); font-size: 15px; display: none; line-height: 1.5; }
   #status-msg.success { background: #dcfce7; color: var(--green); border: 1px solid #bbf7d0; }
   #status-msg.error   { background: #fee2e2; color: var(--red);   border: 1px solid #fecaca; }
   #status-msg.queued  { background: #fef3c7; color: var(--orange); border: 1px solid #fde68a; }
-
-  .sync-queue-info {
-    font-size: 13px; color: var(--gray-600);
-    text-align: center; margin-top: 10px; display: none;
-    padding: 10px; background: #fef3c7; border-radius: 8px;
-  }
-
-  /* ── MISC ── */
+  .sync-queue-info { font-size: 13px; color: var(--gray-600); text-align: center; margin-top: 10px; display: none; padding: 10px; background: #fef3c7; border-radius: 8px; }
   .hint { font-size: 13px; color: var(--gray-400); font-style: italic; margin-top: 2px; }
   .mt-12 { margin-top: 12px; }
   .mt-8  { margin-top: 8px; }
   .required-note { font-size: 13px; color: var(--gray-400); margin-bottom: 16px; }
-
-  /* ── LANDSCAPE TABLET ── */
-  @media (min-width: 768px) and (orientation: landscape) {
-    #form-wrap { padding: 16px 24px 60px; }
-    .field-grid { gap: 14px 28px; }
-  }
+  @media (min-width: 768px) and (orientation: landscape) { #form-wrap { padding: 16px 24px 60px; } .field-grid { gap: 14px 28px; } }
 </style>
 </head>
 <body>
@@ -296,8 +110,8 @@
 <div id="topbar">
   <div id="topbar-inner">
     <h1>Ficha de Visita Técnica – Maternidade 2026</h1>
-     <button id="btn-instalar" onclick="" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
-  <span id="save-status">–</span>
+    <button id="btn-instalar" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
+    <span id="save-status">–</span>
   </div>
   <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
 </div>
@@ -308,637 +122,471 @@
     <p>Instituto São Vicente &nbsp;|&nbsp; (088) 3536-1280 &nbsp;|&nbsp; institutosaovicente@gmail.com<br>
     BR 230 – Bairro Virgílio de Aguiar Gurgel – CEP 63300-000 – Lavras da Mangabeira – CE</p>
   </div>
-    <div style="background:#fef3c7;border:2px solid #d97706;border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#92400e;">
-    <strong>⚙ MODO DE TESTE</strong> — Apenas "Nome da Maternidade" é obrigatório. Substitua pelo arquivo original para uso real.
-  </div>
-  <p class="required-note" style="display:none">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
 
   <form id="main-form" novalidate>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 1 – IDENTIFICAÇÃO                    -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 1 – IDENTIFICAÇÃO DA UNIDADE -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">1</div>
-      <div class="section-title">Identificação Institucional</div>
+      <div class="section-title">Identificação da Unidade</div>
       <div class="section-toggle open">▾</div>
     </div>
     <div class="section-body open">
-      <div class="field-grid cols-1">
-        <div class="field"><label>Nome da Maternidade <span class="req">*</span></label><input type="text" name="s1_nome_hospital" required></div>
+      <div class="field-grid">
+        <div class="field"><label>Nome da Maternidade/Hospital <span class="req">*</span></label><input type="text" name="s1_nome_unidade" required></div>
+        <div class="field"><label>Município <span class="req">*</span></label><input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required><datalist id="lista_municipios"></datalist><p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p></div>
+        <div class="field"><label>CEP</label><input type="text" name="s1_cep"></div>
+        <div class="field"><label>Endereço</label><input type="text" name="s1_endereco"></div>
+        <div class="field"><label>Telefone</label><input type="text" name="s1_telefone"></div>
+        <div class="field"><label>E-mail</label><input type="email" name="s1_email"></div>
+        <div class="field"><label>CNPJ / CNES</label><input type="text" name="s1_cnpj_cnes"></div>
+        <div class="field"><label>Data da Visita</label><input type="date" name="s1_data_visita"></div>
       </div>
-      <div class="field-grid mt-12">
-        <div class="field">
-          <label>Gestão </label>
-          <div class="radio-group">
-            <label><input type="radio" name="s1_gestao" value="Municipal"><span>Municipal</span></label>
-            <label><input type="radio" name="s1_gestao" value="Estadual"><span>Estadual</span></label>
-            <label><input type="radio" name="s1_gestao" value="Federal"><span>Federal</span></label>
-            <label><input type="radio" name="s1_gestao" value="OS"><span>OS</span></label>
-            <label><input type="radio" name="s1_gestao" value="Filantrópico"><span>Filantrópico</span></label>
-            <label><input type="radio" name="s1_gestao" value="Privado"><span>Privado</span></label>
-          </div>
-        </div>
-        <div class="field">
-          <label>Natureza </label>
-          <div class="radio-group">
-            <label><input type="radio" name="s1_natureza" value="Urgência e Emergência"><span>Urgência e Emergência</span></label>
-            <label><input type="radio" name="s1_natureza" value="Maternidade"><span>Maternidade</span></label>
-            <label><input type="radio" name="s1_natureza" value="Especializado"><span>Especializado</span></label>
-          </div>
+      <div class="subsec">
+        <div class="subsec-title">Gestão</div>
+        <div class="field-grid">
+          <div class="field"><label>Diretor Geral</label><input type="text" name="s1_diretor_geral"></div>
+          <div class="field"><label>CRM – Diretor Geral</label><input type="text" name="s1_diretor_crm"></div>
+          <div class="field"><label>Diretor Clínico</label><input type="text" name="s1_diretor_clinico"></div>
+          <div class="field"><label>CRM – Diretor Clínico</label><input type="text" name="s1_diretor_clinico_crm"></div>
+          <div class="field"><label>Coordenador Obstétrico</label><input type="text" name="s1_coord_obstetrico"></div>
+          <div class="field"><label>COREN – Coord. Obstétrico</label><input type="text" name="s1_coord_obstetrico_coren"></div>
+          <div class="field"><label>Coordenador Neonatal</label><input type="text" name="s1_coord_neonatal"></div>
+          <div class="field"><label>COREN – Coord. Neonatal</label><input type="text" name="s1_coord_neonatal_coren"></div>
+          <div class="field"><label>Coordenador de Enfermagem</label><input type="text" name="s1_coord_enfermagem"></div>
+          <div class="field"><label>COREN – Coord. Enfermagem</label><input type="text" name="s1_coord_enfermagem_coren"></div>
+          <div class="field"><label>Coordenador Administrativo</label><input type="text" name="s1_coord_adm"></div>
+          <div class="field"><label>Responsável Técnico</label><input type="text" name="s1_resp_tecnico"></div>
         </div>
       </div>
-      <div class="field-grid mt-12">
-        <div class="field"><label>Endereço </label><input type="text" name="s1_endereco"></div>
-        <div class="field">
-          <label>Município <span class="req">*</span></label>
-          <input type="text" name="s1_municipio" id="campo_municipio"
-            list="lista_municipios" autocomplete="off"
-            placeholder="Digite ou selecione o município..." required>
-          <datalist id="lista_municipios"></datalist>
-          <p class="hint" id="hint_municipio" style="margin-top:4px">🔄 Carregando municípios do Ceará...</p>
-        </div>
-        <div class="field"><label>CEP </label><input type="text" name="s1_cep"></div>
-        <div class="field"><label>Telefone </label><input type="text" name="s1_telefone"></div>
-        <div class="field"><label>E-mail </label><input type="email" name="s1_email"></div>
-        <div class="field"><label>Diretor Geral </label><input type="text" name="s1_diretor_geral"></div>
-        <div class="field"><label>CRM / Registro do Diretor Geral </label><input type="text" name="s1_crm_diretor_geral"></div>
-        <div class="field"><label>Diretor Médico </label><input type="text" name="s1_diretor_medico"></div>
-        <div class="field"><label>CRM do Diretor Médico </label><input type="text" name="s1_crm_diretor_medico"></div>
-        <div class="field"><label>Coordenador de Enfermagem </label><input type="text" name="s1_coord_enfermagem"></div>
-        <div class="field"><label>COREN </label><input type="text" name="s1_coren"></div>
-        <div class="field"><label>Diretor Administrativo-Financeiro </label><input type="text" name="s1_diretor_adm"></div>
-        <div class="field"><label>CRC </label><input type="text" name="s1_crc"></div>
-        <div class="field"><label>Responsável Técnico </label><input type="text" name="s1_resp_tecnico"></div>
-        <div class="field"><label>Data da Visita </label><input type="date" name="s1_data_visita"></div>
-        <div class="field"><label>Responsável(is) pela Visita </label><input type="text" name="s1_responsavel_visita"></div>
+      <div class="subsec">
+        <div class="field"><label>Responsáveis pela Auditoria/Visita</label><input type="text" name="s1_equipe_visita"></div>
       </div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 2 – DOCUMENTAÇÃO                     -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 2 – HABILITAÇÃO – REDE ALYNE -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">2</div>
-      <div class="section-title">Documentação, Governança e Conformidade</div>
+      <div class="section-title">Habilitação – Rede Alyne</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="grid-table-wrap">
-        <table class="grid-table">
-          <thead><tr><th>Documento</th><th>Possui</th><th>Não possui</th><th>Atualizado?</th></tr></thead>
-          <tbody id="docs-table"></tbody>
-        </table>
+      <div class="field">
+        <label>A unidade é habilitada como serviço da Rede Alyne?</label>
+        <div class="radio-group">
+          <label><input type="radio" name="s2_habilitada"><span>Sim</span></label>
+          <label><input type="radio" name="s2_habilitada" value="Não"><span>Não</span></label>
+          <label><input type="radio" name="s2_habilitada" value="Em processo"><span>Em processo</span></label>
+        </div>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s2_obs" placeholder="Observações sobre a documentação..."></textarea></div>
+      <div class="subsec">
+        <div class="subsec-title">Estrutura exigida pela Rede Alyne</div>
+        <div class="grid-table-wrap">
+          <table class="grid-table">
+            <thead><tr><th>Requisito</th><th>Sim</th><th>Não</th></tr></thead>
+            <tbody id="rede-alyne-table"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s2_obs" placeholder="Observações sobre a Rede Alyne..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 3 – HOTELARIA / AMBIÊNCIA            -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 3 – DOCUMENTAÇÃO INSTITUCIONAL OBRIGATÓRIA -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">3</div>
-      <div class="section-title">Hotelaria, Ambiência e Infraestrutura</div>
+      <div class="section-title">Documentação Institucional Obrigatória</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="field-grid">
-        <div class="field"><label>Limpeza </label><div class="radio-group"><label><input type="radio" name="s3_limpeza" value="Boa"><span>Boa</span></label><label><input type="radio" name="s3_limpeza" value="Regular"><span>Regular</span></label><label><input type="radio" name="s3_limpeza" value="Ruim"><span>Ruim</span></label></div></div>
-        <div class="field"><label>Ventilação / Climatização </label><div class="radio-group"><label><input type="radio" name="s3_ventilacao" value="Adequada"><span>Adequada</span></label><label><input type="radio" name="s3_ventilacao" value="Inadequada"><span>Inadequada</span></label></div></div>
-        <div class="field"><label>Sinalização Interna </label><div class="radio-group"><label><input type="radio" name="s3_sinalizacao" value="Adequada"><span>Adequada</span></label><label><input type="radio" name="s3_sinalizacao" value="Inadequada"><span>Inadequada</span></label></div></div>
-        <div class="field"><label>Acessibilidade </label><div class="radio-group"><label><input type="radio" name="s3_acessibilidade" value="Adequada"><span>Adequada</span></label><label><input type="radio" name="s3_acessibilidade" value="Parcial"><span>Parcial</span></label><label><input type="radio" name="s3_acessibilidade" value="Inadequada"><span>Inadequada</span></label></div></div>
-        <div class="field"><label>Iluminação </label><div class="radio-group"><label><input type="radio" name="s3_iluminacao" value="Boa"><span>Boa</span></label><label><input type="radio" name="s3_iluminacao" value="Regular"><span>Regular</span></label><label><input type="radio" name="s3_iluminacao" value="Ruim"><span>Ruim</span></label></div></div>
-        <div class="field"><label>Segurança Patrimonial </label><div class="radio-group"><label><input type="radio" name="s3_seguranca_patrimonial" value="Adequada"><span>Adequada</span></label><label><input type="radio" name="s3_seguranca_patrimonial" value="Parcial"><span>Parcial</span></label><label><input type="radio" name="s3_seguranca_patrimonial" value="Inadequada"><span>Inadequada</span></label></div></div>
-        <div class="field"><label>Controle de Vetores </label><div class="radio-group"><label><input type="radio" name="s3_controle_vetores" value="Adequado"><span>Adequado</span></label><label><input type="radio" name="s3_controle_vetores" value="Inadequado"><span>Inadequado</span></label></div></div>
+      <div class="grid-table-wrap">
+        <table class="grid-table">
+          <thead><tr><th>Documento</th><th>Sim</th><th>Não</th><th>Atualizado?</th></tr></thead>
+          <tbody id="docs-table"></tbody>
+        </table>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s3_obs" placeholder="Observações sobre hotelaria e ambiência..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s3_obs" placeholder="Observações sobre documentação..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 4 – SADT                             -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 4 – ACOLHIMENTO E CLASSIFICAÇÃO DE RISCO OBSTÉTRICO -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">4</div>
-      <div class="section-title">SADT – Diagnóstico por Imagem</div>
+      <div class="section-title">Acolhimento e Classificação de Risco Obstétrico</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="subsec-title">Estrutura Física</div>
-      <div class="grid-table-wrap">
-        <table class="grid-table">
-          <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
-          <tbody>
-            <tr><td>Recepção própria</td><td><input type="radio" name="s4_recepcao_propria" value="Sim"></td><td><input type="radio" name="s4_recepcao_propria" value="Não"></td></tr>
-            <tr><td>Sala de preparo</td><td><input type="radio" name="s4_sala_preparo" value="Sim"></td><td><input type="radio" name="s4_sala_preparo" value="Não"></td></tr>
-            <tr><td>Sala de laudos</td><td><input type="radio" name="s4_sala_laudos" value="Sim"></td><td><input type="radio" name="s4_sala_laudos" value="Não"></td></tr>
-            <tr><td>Conectividade e PACS</td><td><input type="radio" name="s4_pacs" value="Sim"></td><td><input type="radio" name="s4_pacs" value="Não"></td></tr>
-          </tbody>
-        </table>
+      <div class="field-grid">
+        <div class="field"><label>Classificação de risco é realizada?</label><div class="radio-group"><label><input type="radio" name="s4_classif_realizada" value="Sim"><span>Sim</span></label><label><input type="radio" name="s4_classif_realizada" value="Não"><span>Não</span></label><label><input type="radio" name="s4_classif_realizada" value="Parcial"><span>Parcial</span></label></div></div>
+        <div class="field"><label>Método</label><div class="radio-group"><label><input type="radio" name="s4_metodo" value="Manchester"><span>Manchester</span></label><label><input type="radio" name="s4_metodo" value="Obstétrico"><span>Obstétrico</span></label><label><input type="radio" name="s4_metodo" value="Outro"><span>Outro</span></label></div></div>
+        <div class="field"><label>Acolhimento humanizado</label><div class="radio-group"><label><input type="radio" name="s4_acolhimento_humanizado" value="Sim"><span>Sim</span></label><label><input type="radio" name="s4_acolhimento_humanizado" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Prioridade para gestantes de alto risco</label><div class="radio-group"><label><input type="radio" name="s4_prioridade_alto_risco" value="Sim"><span>Sim</span></label><label><input type="radio" name="s4_prioridade_alto_risco" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Sala exclusiva para classificação</label><div class="radio-group"><label><input type="radio" name="s4_sala_exclusiva" value="Sim"><span>Sim</span></label><label><input type="radio" name="s4_sala_exclusiva" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Redirecionamento por nível de risco</label><div class="radio-group"><label><input type="radio" name="s4_redirecionamento" value="Sim"><span>Sim</span></label><label><input type="radio" name="s4_redirecionamento" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Tempo médio de espera (min)</label><input type="number" name="s4_tempo_espera" min="0"></div>
       </div>
-      <div class="subsec mt-12">
-        <div class="subsec-title">Equipamentos de Imagem</div>
-        <div class="grid-table-wrap">
-          <table class="grid-table">
-            <thead><tr><th>Equipamento</th><th>Funciona</th><th>Não funciona</th><th>Não tem</th><th>Manutenção OK</th><th>Manutenção N/A</th></tr></thead>
-            <tbody id="equip-imagem-table"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s4_obs" placeholder="Observações sobre SADT..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s4_obs" placeholder="Observações sobre acolhimento obstétrico..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 5 – AMBULATÓRIO                      -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 5 – CENTRO OBSTÉTRICO (CO) -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">5</div>
-      <div class="section-title">Ambulatório – Consultas e Procedimentos</div>
+      <div class="section-title">Centro Obstétrico (CO)</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
+      <div class="subsec-title">Estrutura</div>
       <div class="field-grid">
-        <div class="field"><label>Nº de Consultórios </label><input type="number" name="s5_n_consultorios" min="0"></div>
-        <div class="field"><label>Média de Consultas / dia </label><input type="number" name="s5_media_consultas" min="0"></div>
-        <div class="field"><label>Absenteísmo (%) </label><input type="number" name="s5_absenteismo" min="0" max="100" step="0.1"></div>
+        <div class="field"><label>Salas de Parto Normal</label><input type="number" name="s5_salas_parto_normal" min="0"></div>
+        <div class="field"><label>Salas PPP</label><input type="number" name="s5_salas_ppp" min="0"></div>
+        <div class="field"><label>Salas de Cesariana</label><input type="number" name="s5_salas_cesarea" min="0"></div>
+        <div class="field"><label>Sala de Admissão</label><div class="radio-group"><label><input type="radio" name="s5_sala_admissao" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_sala_admissao" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Sala de Recuperação</label><div class="radio-group"><label><input type="radio" name="s5_sala_recuperacao" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_sala_recuperacao" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Sala de Pré-parto</label><div class="radio-group"><label><input type="radio" name="s5_sala_pre_parto" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_sala_pre_parto" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Quarto Humanizado</label><div class="radio-group"><label><input type="radio" name="s5_quarto_humanizado" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_quarto_humanizado" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="field-grid mt-12">
-        <div class="field"><label>Sala de Pequenos Procedimentos </label><div class="radio-group"><label><input type="radio" name="s5_sala_proc" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_sala_proc" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Sala de Exames Rápidos </label><div class="radio-group"><label><input type="radio" name="s5_sala_exames" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_sala_exames" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Sinalização e Fluxo </label><div class="radio-group"><label><input type="radio" name="s5_sinalizacao_fluxo" value="Adequados"><span>Adequados</span></label><label><input type="radio" name="s5_sinalizacao_fluxo" value="Inadequados"><span>Inadequados</span></label></div></div>
-      </div>
-      <div class="field mt-12">
-        <label>Especialidades Ativas </label>
-        <div class="check-group">
-          <label><input type="checkbox" name="s5_especialidades" value="Clínico Geral"><span>Clínico Geral</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Cirurgia"><span>Cirurgia</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Ortopedia"><span>Ortopedia</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Cardiologia"><span>Cardiologia</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Neurologia"><span>Neurologia</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Pediatria"><span>Pediatria</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Obstetrícia"><span>Obstetrícia</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Ginecologia"><span>Ginecologia</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Infectologia"><span>Infectologia</span></label>
-          <label><input type="checkbox" name="s5_especialidades" value="Psiquiatria"><span>Psiquiatria</span></label>
+      <div class="subsec">
+        <div class="subsec-title">Equipamentos Essenciais</div>
+        <div class="field-grid">
+          <div class="field"><label>Cardiotocógrafo</label><div class="radio-group"><label><input type="radio" name="s5_cardiotocografo" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_cardiotocografo" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>USG à Beira Leito</label><div class="radio-group"><label><input type="radio" name="s5_usg_beira_leito" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_usg_beira_leito" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Monitor Multiparamétrico</label><div class="radio-group"><label><input type="radio" name="s5_monitor" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_monitor" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Mesa Ginecológica</label><div class="radio-group"><label><input type="radio" name="s5_mesa_ginecologica" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_mesa_ginecologica" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Material Estéril</label><div class="radio-group"><label><input type="radio" name="s5_material_esteril" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_material_esteril" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Painel de Gases Funcionando</label><div class="radio-group"><label><input type="radio" name="s5_painel_gases" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_painel_gases" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Berço Aquecido</label><div class="radio-group"><label><input type="radio" name="s5_berco_aquecido" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_berco_aquecido" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Incubadora de Transporte</label><div class="radio-group"><label><input type="radio" name="s5_incubadora_transporte" value="Sim"><span>Sim</span></label><label><input type="radio" name="s5_incubadora_transporte" value="Não"><span>Não</span></label></div></div>
         </div>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s5_obs" placeholder="Observações sobre ambulatório..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s5_obs" placeholder="Observações sobre o Centro Obstétrico..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 6 – U/E                              -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 6 – PRÁTICAS BASEADAS EM EVIDÊNCIA -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">6</div>
-      <div class="section-title">Urgência e Emergência</div>
+      <div class="section-title">Práticas Baseadas em Evidência (Rede Alyne + OMS)</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="subsec-title">Leitos por Área</div>
-      <div class="field-grid cols-3">
-        <div class="field"><label>Sala Vermelha – Leitos </label><input type="number" name="s6_leitos_vermelha" min="0"></div>
-        <div class="field"><label>Sala Amarela – Leitos </label><input type="number" name="s6_leitos_amarela" min="0"></div>
-        <div class="field"><label>Sala Verde – Leitos </label><input type="number" name="s6_leitos_verde" min="0"></div>
-        <div class="field"><label>Sala de Reanimação – Leitos </label><input type="number" name="s6_leitos_reanimacao" min="0"></div>
-        <div class="field"><label>Leitos de Observação </label><input type="number" name="s6_leitos_observacao" min="0"></div>
+      <div class="grid-table-wrap">
+        <table class="grid-table">
+          <thead><tr><th>Prática</th><th>Cumpre</th><th>Não cumpre</th></tr></thead>
+          <tbody id="praticas-table"></tbody>
+        </table>
       </div>
-      <div class="subsec mt-12">
-        <div class="subsec-title">Condição das Áreas</div>
-        <div class="grid-table-wrap">
-          <table class="grid-table">
-            <thead><tr><th>Área</th><th>OK</th><th>Com problemas</th></tr></thead>
-            <tbody>
-              <tr><td>Sala Vermelha</td><td><input type="radio" name="s6_cond_vermelha" value="OK"></td><td><input type="radio" name="s6_cond_vermelha" value="Com problemas"></td></tr>
-              <tr><td>Sala Amarela</td><td><input type="radio" name="s6_cond_amarela" value="OK"></td><td><input type="radio" name="s6_cond_amarela" value="Com problemas"></td></tr>
-              <tr><td>Sala Verde</td><td><input type="radio" name="s6_cond_verde" value="OK"></td><td><input type="radio" name="s6_cond_verde" value="Com problemas"></td></tr>
-              <tr><td>Sala de Reanimação</td><td><input type="radio" name="s6_cond_reanimacao" value="OK"></td><td><input type="radio" name="s6_cond_reanimacao" value="Com problemas"></td></tr>
-              <tr><td>Leitos de Observação</td><td><input type="radio" name="s6_cond_observacao" value="OK"></td><td><input type="radio" name="s6_cond_observacao" value="Com problemas"></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="field mt-12">
-        <label>Equipamentos Críticos – U/E </label>
-        <div class="check-group">
-          <label><input type="checkbox" name="s6_equipamentos" value="Desfibrilador"><span>Desfibrilador</span></label>
-          <label><input type="checkbox" name="s6_equipamentos" value="Ventilador mecânico"><span>Ventilador mecânico</span></label>
-          <label><input type="checkbox" name="s6_equipamentos" value="Fontes O₂ / ar / vácuo"><span>Fontes O₂ / ar / vácuo</span></label>
-          <label><input type="checkbox" name="s6_equipamentos" value="Monitor multiparamétrico"><span>Monitor multiparamétrico</span></label>
-          <label><input type="checkbox" name="s6_equipamentos" value="Bombas de Infusão"><span>Bombas de Infusão</span></label>
-          <label><input type="checkbox" name="s6_equipamentos" value="Laringoscópio"><span>Laringoscópio</span></label>
-          <label><input type="checkbox" name="s6_equipamentos" value="Aspirador"><span>Aspirador</span></label>
-        </div>
-      </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s6_obs" placeholder="Observações sobre U/E..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s6_obs" placeholder="Observações sobre práticas baseadas em evidência..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 7 – INTERNAMENTO                     -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 7 – ASSISTÊNCIA AO RECÉM-NASCIDO -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">7</div>
-      <div class="section-title">Internamento – Leitos por Clínica</div>
+      <div class="section-title">Assistência ao Recém-Nascido</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <p class="hint mb-8" style="margin-bottom:10px">Formato: Planejados | Operacionais | Pacientes (ex: 20 | 18 | 15)</p>
-      <div class="field-grid">
-        <div class="field"><label>Clínica Médica</label><input type="text" name="s7_clinica_medica" placeholder="Planejados | Operacionais | Pacientes"></div>
-        <div class="field"><label>Cirúrgica</label><input type="text" name="s7_cirurgica" placeholder="Planejados | Operacionais | Pacientes"></div>
-        <div class="field"><label>Ortopedia</label><input type="text" name="s7_ortopedia" placeholder="Planejados | Operacionais | Pacientes"></div>
-        <div class="field"><label>Pediatria</label><input type="text" name="s7_pediatria" placeholder="Planejados | Operacionais | Pacientes"></div>
-        <div class="field"><label>Obstetrícia</label><input type="text" name="s7_obstetricia" placeholder="Planejados | Operacionais | Pacientes"></div>
-        <div class="field"><label>Psiquiatria</label><input type="text" name="s7_psiquiatria" placeholder="Planejados | Operacionais | Pacientes"></div>
-        <div class="field"><label>Oncologia</label><input type="text" name="s7_oncologia" placeholder="Planejados | Operacionais | Pacientes"></div>
-        <div class="field"><label>Cardiologia</label><input type="text" name="s7_cardiologia" placeholder="Planejados | Operacionais | Pacientes"></div>
+      <div class="subsec-title">Na Sala de Parto</div>
+      <div class="grid-table-wrap">
+        <table class="grid-table">
+          <thead><tr><th>Equipamento / Procedimento</th><th>Sim</th><th>Não</th></tr></thead>
+          <tbody id="assist-rn-table"></tbody>
+        </table>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s7_obs" placeholder="Observações sobre internamento..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s7_obs" placeholder="Observações sobre assistência ao RN..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 8 – CENTRO OBSTÉTRICO                -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 8 – ALOJAMENTO CONJUNTO -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">8</div>
-      <div class="section-title">Centro Obstétrico / Sala de Parto</div>
+      <div class="section-title">Alojamento Conjunto</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="field-grid cols-3">
-        <div class="field"><label>Pré-parto – Leitos</label><input type="number" name="s8_preparto_leitos" min="0"></div>
-        <div class="field"><label>Parto Normal – Salas</label><input type="number" name="s8_parto_normal_salas" min="0"></div>
-        <div class="field"><label>Cesárea – Salas</label><input type="number" name="s8_cesarea_salas" min="0"></div>
-        <div class="field"><label>Sala PPP</label><input type="number" name="s8_ppp" min="0"></div>
-        <div class="field"><label>Sala de Recuperação – Leitos</label><input type="number" name="s8_recuperacao" min="0"></div>
+      <div class="field-grid">
+        <div class="field"><label>Leitos Suficientes</label><div class="radio-group"><label><input type="radio" name="s8_leitos" value="Adequado"><span>Adequado</span></label><label><input type="radio" name="s8_leitos" value="Inadequado"><span>Inadequado</span></label></div></div>
+        <div class="field"><label>Condições Ambientais</label><div class="radio-group"><label><input type="radio" name="s8_cond_ambientais" value="Adequado"><span>Adequado</span></label><label><input type="radio" name="s8_cond_ambientais" value="Inadequado"><span>Inadequado</span></label></div></div>
+        <div class="field"><label>Aleitamento Orientado</label><div class="radio-group"><label><input type="radio" name="s8_aleitamento" value="Sim"><span>Sim</span></label><label><input type="radio" name="s8_aleitamento" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Testes Neonatais Realizados</label><div class="radio-group"><label><input type="radio" name="s8_testes_neonatais" value="Sim"><span>Sim</span></label><label><input type="radio" name="s8_testes_neonatais" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Equipe Capacitada</label><div class="radio-group"><label><input type="radio" name="s8_equipe_capacitada" value="Sim"><span>Sim</span></label><label><input type="radio" name="s8_equipe_capacitada" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="field mt-12">
-        <label>Boas Práticas Implementadas</label>
-        <div class="check-group">
-          <label><input type="checkbox" name="s8_boas_praticas" value="Alojamento Conjunto"><span>Alojamento Conjunto</span></label>
-          <label><input type="checkbox" name="s8_boas_praticas" value="Contato pele a pele"><span>Contato pele a pele</span></label>
-          <label><input type="checkbox" name="s8_boas_praticas" value="Partograma utilizado"><span>Partograma</span></label>
-          <label><input type="checkbox" name="s8_boas_praticas" value="Humanização"><span>Humanização</span></label>
-        </div>
-      </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s8_obs" placeholder="Observações sobre centro obstétrico..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s8_obs" placeholder="Observações sobre alojamento conjunto..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 9 – CENTRO CIRÚRGICO                 -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 9 – UCI E UTI NEONATAL -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">9</div>
-      <div class="section-title">Centro Cirúrgico</div>
+      <div class="section-title">UCI e UTI Neonatal</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="field-grid cols-3">
-        <div class="field"><label>Salas Operacionais </label><input type="number" name="s9_salas_operacionais" min="0"></div>
-        <div class="field"><label>Salas Inativas </label><input type="number" name="s9_salas_inativas" min="0"></div>
-        <div class="field"><label>SRPA – Leitos disponíveis </label><input type="number" name="s9_srpa_leitos" min="0"></div>
+      <div class="field-grid">
+        <div class="field"><label>Leitos UCI Neonatal</label><input type="number" name="s9_uci_leitos" min="0"></div>
+        <div class="field"><label>Leitos UTI Neonatal</label><input type="number" name="s9_uti_leitos" min="0"></div>
+        <div class="field"><label>Taxa de Ocupação (%)</label><input type="number" name="s9_ocupacao" min="0" max="100"></div>
       </div>
-      <div class="field mt-12">
-        <label>Equipamentos Críticos do CC </label>
-        <div class="check-group">
-          <label><input type="checkbox" name="s9_equipamentos" value="Foco cirúrgico"><span>Foco cirúrgico</span></label>
-          <label><input type="checkbox" name="s9_equipamentos" value="Mesa cirúrgica"><span>Mesa cirúrgica</span></label>
-          <label><input type="checkbox" name="s9_equipamentos" value="Arco cirúrgico"><span>Arco cirúrgico</span></label>
-          <label><input type="checkbox" name="s9_equipamentos" value="Ventilador"><span>Ventilador</span></label>
-          <label><input type="checkbox" name="s9_equipamentos" value="Aspiradores"><span>Aspiradores</span></label>
-          <label><input type="checkbox" name="s9_equipamentos" value="Monitor multiparamétrico"><span>Monitor multiparamétrico</span></label>
-          <label><input type="checkbox" name="s9_equipamentos" value="Carrinho de anestesia"><span>Carrinho de anestesia</span></label>
+      <div class="subsec">
+        <div class="subsec-title">Equipamentos</div>
+        <div class="field-grid">
+          <div class="field"><label>Ventilador Neonatal</label><div class="radio-group"><label><input type="radio" name="s9_ventilador_neonatal" value="Sim"><span>Sim</span></label><label><input type="radio" name="s9_ventilador_neonatal" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>CPAP</label><div class="radio-group"><label><input type="radio" name="s9_cpap" value="Sim"><span>Sim</span></label><label><input type="radio" name="s9_cpap" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Bomba de Infusão</label><div class="radio-group"><label><input type="radio" name="s9_bomba_infusao" value="Sim"><span>Sim</span></label><label><input type="radio" name="s9_bomba_infusao" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Monitor Multiparamétrico</label><div class="radio-group"><label><input type="radio" name="s9_monitor_neo" value="Sim"><span>Sim</span></label><label><input type="radio" name="s9_monitor_neo" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Berço Aquecido</label><div class="radio-group"><label><input type="radio" name="s9_berco_aquecido_neo" value="Sim"><span>Sim</span></label><label><input type="radio" name="s9_berco_aquecido_neo" value="Não"><span>Não</span></label></div></div>
         </div>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s9_obs" placeholder="Observações sobre centro cirúrgico..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s9_obs" placeholder="Observações sobre UCI/UTI Neonatal..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 10 – UTI                             -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 10 – BANCO DE LEITE HUMANO / LACTÁRIO -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">10</div>
-      <div class="section-title">UTI – Adulto, Pediátrica e Neonatal</div>
+      <div class="section-title">Banco de Leite Humano / Lactário</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="field-grid cols-3">
-        <div class="field"><label>Leitos Autorizados </label><input type="number" name="s10_leitos_autorizados" min="0"></div>
-        <div class="field"><label>Leitos Operacionais </label><input type="number" name="s10_leitos_operacionais" min="0"></div>
-        <div class="field"><label>Taxa de Ocupação (%) </label><input type="number" name="s10_taxa_ocupacao" min="0" max="100" step="0.1"></div>
+      <div class="field-grid">
+        <div class="field"><label>Banco de Leite Completo</label><div class="radio-group"><label><input type="radio" name="s10_banco_completo" value="Sim"><span>Sim</span></label><label><input type="radio" name="s10_banco_completo" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Sala de Ordenha</label><div class="radio-group"><label><input type="radio" name="s10_sala_ordenha" value="Sim"><span>Sim</span></label><label><input type="radio" name="s10_sala_ordenha" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Pasteurização</label><div class="radio-group"><label><input type="radio" name="s10_pasteurizacao" value="Sim"><span>Sim</span></label><label><input type="radio" name="s10_pasteurizacao" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Coleta Domiciliar</label><div class="radio-group"><label><input type="radio" name="s10_coleta_domiciliar" value="Sim"><span>Sim</span></label><label><input type="radio" name="s10_coleta_domiciliar" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Equipe Habilitada</label><div class="radio-group"><label><input type="radio" name="s10_equipe_habilitada" value="Sim"><span>Sim</span></label><label><input type="radio" name="s10_equipe_habilitada" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="subsec mt-12">
-        <div class="subsec-title">Equipamentos por Leito de UTI</div>
-        <div class="grid-table-wrap">
-          <table class="grid-table">
-            <thead><tr><th>Equipamento</th><th>OK</th><th>Com problema</th><th>Não tem</th></tr></thead>
-            <tbody>
-              <tr><td>Ventilador</td><td><input type="radio" name="s10_vent" value="OK"></td><td><input type="radio" name="s10_vent" value="Com problema"></td><td><input type="radio" name="s10_vent" value="Não tem"></td></tr>
-              <tr><td>Monitor multiparamétrico</td><td><input type="radio" name="s10_monitor" value="OK"></td><td><input type="radio" name="s10_monitor" value="Com problema"></td><td><input type="radio" name="s10_monitor" value="Não tem"></td></tr>
-              <tr><td>Capnógrafo</td><td><input type="radio" name="s10_capnografo" value="OK"></td><td><input type="radio" name="s10_capnografo" value="Com problema"></td><td><input type="radio" name="s10_capnografo" value="Não tem"></td></tr>
-              <tr><td>Arterial Line</td><td><input type="radio" name="s10_arterial_line" value="OK"></td><td><input type="radio" name="s10_arterial_line" value="Com problema"></td><td><input type="radio" name="s10_arterial_line" value="Não tem"></td></tr>
-              <tr><td>Bomba de infusão</td><td><input type="radio" name="s10_bomba" value="OK"></td><td><input type="radio" name="s10_bomba" value="Com problema"></td><td><input type="radio" name="s10_bomba" value="Não tem"></td></tr>
-              <tr><td>O₂ / Ar / Vácuo</td><td><input type="radio" name="s10_o2" value="OK"></td><td><input type="radio" name="s10_o2" value="Com problema"></td><td><input type="radio" name="s10_o2" value="Não tem"></td></tr>
-              <tr><td>Raio-X Portátil</td><td><input type="radio" name="s10_rx_portatil" value="OK"></td><td><input type="radio" name="s10_rx_portatil" value="Com problema"></td><td><input type="radio" name="s10_rx_portatil" value="Não tem"></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s10_obs" placeholder="Observações sobre UTI..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s10_obs" placeholder="Observações sobre banco de leite..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 11 – HEMODIÁLISE                     -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 11 – AMBULATÓRIO DA MULHER / PRÉ-NATAL -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">11</div>
-      <div class="section-title">Hemodiálise</div>
+      <div class="section-title">Ambulatório da Mulher / Pré-natal</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
       <div class="field-grid">
-        <div class="field"><label>Tipo de Serviço </label><div class="radio-group"><label><input type="radio" name="s11_servico" value="Próprio"><span>Próprio</span></label><label><input type="radio" name="s11_servico" value="Terceirizado"><span>Terceirizado</span></label><label><input type="radio" name="s11_servico" value="Não possui"><span>Não possui</span></label></div></div>
-        <div class="field"><label>Sala Exclusiva</label><div class="radio-group"><label><input type="radio" name="s11_sala_exclusiva" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_sala_exclusiva" value="Não"><span>Não</span></label><label><input type="radio" name="s11_sala_exclusiva" value="Não se aplica"><span>N/A</span></label></div></div>
-        <div class="field"><label>Nº de Máquinas</label><input type="number" name="s11_n_maquinas" min="0"></div>
-        <div class="field"><label>Nº de Pacientes</label><input type="number" name="s11_n_pacientes" min="0"></div>
+        <div class="field"><label>Pré-natal Risco Habitual</label><div class="radio-group"><label><input type="radio" name="s11_prenatal_habitual" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_prenatal_habitual" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Pré-natal Alto Risco</label><div class="radio-group"><label><input type="radio" name="s11_prenatal_alto_risco" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_prenatal_alto_risco" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Ultrassonografia Disponível</label><div class="radio-group"><label><input type="radio" name="s11_usg" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_usg" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s11_obs" placeholder="Observações sobre hemodiálise..."></textarea></div>
+      <div class="subsec">
+        <div class="subsec-title">Exames Obrigatórios Ofertados</div>
+        <div class="field-grid">
+          <div class="field"><label>Sífilis</label><div class="radio-group"><label><input type="radio" name="s11_sifilis" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_sifilis" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>HIV</label><div class="radio-group"><label><input type="radio" name="s11_hiv" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_hiv" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Hepatite</label><div class="radio-group"><label><input type="radio" name="s11_hepatite" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_hepatite" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Teste Rápido</label><div class="radio-group"><label><input type="radio" name="s11_teste_rapido" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_teste_rapido" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Hemograma</label><div class="radio-group"><label><input type="radio" name="s11_hemograma" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_hemograma" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Glicemia</label><div class="radio-group"><label><input type="radio" name="s11_glicemia" value="Sim"><span>Sim</span></label><label><input type="radio" name="s11_glicemia" value="Não"><span>Não</span></label></div></div>
+        </div>
+      </div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s11_obs" placeholder="Observações sobre ambulatório/pré-natal..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 12 – FARMÁCIA                        -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 12 – AMBULATÓRIO DE SEGUIMENTO (A-SEG) -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">12</div>
-      <div class="section-title">Farmácia da Maternidade</div>
+      <div class="section-title">Ambulatório de Seguimento (A-SEG) – Obrigatório Rede Alyne</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
       <div class="field-grid">
-        <div class="field"><label>Sistema Informatizado </label><div class="radio-group"><label><input type="radio" name="s12_sistema_info" value="Sim"><span>Sim</span></label><label><input type="radio" name="s12_sistema_info" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Validades Auditadas </label><div class="radio-group"><label><input type="radio" name="s12_validades" value="Sim"><span>Sim</span></label><label><input type="radio" name="s12_validades" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Controle de Psicotrópicos </label><div class="radio-group"><label><input type="radio" name="s12_psicotr" value="Adequado"><span>Adequado</span></label><label><input type="radio" name="s12_psicotr" value="Inadequado"><span>Inadequado</span></label></div></div>
+        <div class="field"><label>RN Egressos Acompanhados</label><div class="radio-group"><label><input type="radio" name="s12_rn_acompanhados" value="Sim"><span>Sim</span></label><label><input type="radio" name="s12_rn_acompanhados" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Curvas de Crescimento</label><div class="radio-group"><label><input type="radio" name="s12_curvas_crescimento" value="Sim"><span>Sim</span></label><label><input type="radio" name="s12_curvas_crescimento" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Avaliação de Risco</label><div class="radio-group"><label><input type="radio" name="s12_avaliacao_risco" value="Sim"><span>Sim</span></label><label><input type="radio" name="s12_avaliacao_risco" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Interface com APS</label><div class="radio-group"><label><input type="radio" name="s12_interface_aps" value="Sim"><span>Sim</span></label><label><input type="radio" name="s12_interface_aps" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="field mt-12"><label>Medicamentos Faltantes ou com Problemas</label><textarea name="s12_medicamentos_faltantes" placeholder="Liste medicamentos faltantes..."></textarea></div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s12_obs" placeholder="Observações sobre farmácia..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s12_obs" placeholder="Observações sobre A-SEG..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 13 – LABORATÓRIO                     -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 13 – TRANSPORTE -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">13</div>
-      <div class="section-title">Laboratório</div>
+      <div class="section-title">Transporte Obstétrico e Neonatal</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
+      <div class="subsec-title">Transporte Obstétrico</div>
       <div class="field-grid">
-        <div class="field"><label>Funcionamento </label><div class="radio-group"><label><input type="radio" name="s13_funcionamento" value="24h"><span>24h</span></label><label><input type="radio" name="s13_funcionamento" value="Até 12h"><span>Até 12h</span></label><label><input type="radio" name="s13_funcionamento" value="Parcial"><span>Parcial</span></label></div></div>
-        <div class="field"><label>Processamento Próprio </label><div class="radio-group"><label><input type="radio" name="s13_processamento" value="Sim"><span>Sim</span></label><label><input type="radio" name="s13_processamento" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Transporte para Referência </label><div class="radio-group"><label><input type="radio" name="s13_transporte" value="Adequado"><span>Adequado</span></label><label><input type="radio" name="s13_transporte" value="Inadequado"><span>Inadequado</span></label></div></div>
+        <div class="field"><label>Ambulância Obstétrica</label><div class="radio-group"><label><input type="radio" name="s13_amb_obstetrica" value="Sim"><span>Sim</span></label><label><input type="radio" name="s13_amb_obstetrica" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Monitorização Fetal</label><div class="radio-group"><label><input type="radio" name="s13_monitor_fetal" value="Sim"><span>Sim</span></label><label><input type="radio" name="s13_monitor_fetal" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Condutor Treinado</label><div class="radio-group"><label><input type="radio" name="s13_condutor_obs" value="Sim"><span>Sim</span></label><label><input type="radio" name="s13_condutor_obs" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s13_obs" placeholder="Observações sobre laboratório..."></textarea></div>
+      <div class="subsec">
+        <div class="subsec-title">Transporte Neonatal</div>
+        <div class="field-grid">
+          <div class="field"><label>Incubadora de Transporte</label><div class="radio-group"><label><input type="radio" name="s13_incubadora" value="Sim"><span>Sim</span></label><label><input type="radio" name="s13_incubadora" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Respirador Neonatal</label><div class="radio-group"><label><input type="radio" name="s13_resp_neonatal" value="Sim"><span>Sim</span></label><label><input type="radio" name="s13_resp_neonatal" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Equipe Treinada</label><div class="radio-group"><label><input type="radio" name="s13_equipe_neonatal" value="Sim"><span>Sim</span></label><label><input type="radio" name="s13_equipe_neonatal" value="Não"><span>Não</span></label></div></div>
+          <div class="field"><label>Suporte Avançado Neonatal</label><div class="radio-group"><label><input type="radio" name="s13_suporte_avancado" value="Sim"><span>Sim</span></label><label><input type="radio" name="s13_suporte_avancado" value="Não"><span>Não</span></label></div></div>
+        </div>
+      </div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s13_obs" placeholder="Observações sobre transporte..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 14 – CME                             -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 14 – SADT -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">14</div>
-      <div class="section-title">Central de Materiais e Esterilização (CME)</div>
+      <div class="section-title">SADT – Serviços Diagnósticos</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
       <div class="field-grid">
-        <div class="field"><label>Tipo de Esterilização </label><div class="radio-group"><label><input type="radio" name="s14_esterilizacao" value="Autoclave"><span>Autoclave</span></label><label><input type="radio" name="s14_esterilizacao" value="Termodesinfectadora"><span>Termodesinfectadora</span></label><label><input type="radio" name="s14_esterilizacao" value="Ambas"><span>Ambas</span></label></div></div>
-        <div class="field"><label>Fluxo Limpo / Sujo </label><div class="radio-group"><label><input type="radio" name="s14_fluxo" value="Adequado"><span>Adequado</span></label><label><input type="radio" name="s14_fluxo" value="Inadequado"><span>Inadequado</span></label></div></div>
-        <div class="field"><label>Rastreabilidade das Caixas </label><div class="radio-group"><label><input type="radio" name="s14_rastreabilidade" value="Sim"><span>Sim</span></label><label><input type="radio" name="s14_rastreabilidade" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Laboratório 24h</label><div class="radio-group"><label><input type="radio" name="s14_lab_24h" value="Sim"><span>Sim</span></label><label><input type="radio" name="s14_lab_24h" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Ultrassom Obstétrico</label><div class="radio-group"><label><input type="radio" name="s14_usg_obstetrico" value="Sim"><span>Sim</span></label><label><input type="radio" name="s14_usg_obstetrico" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Raio-X</label><div class="radio-group"><label><input type="radio" name="s14_raio_x" value="Sim"><span>Sim</span></label><label><input type="radio" name="s14_raio_x" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Tomografia</label><div class="radio-group"><label><input type="radio" name="s14_tomografia" value="Sim"><span>Sim</span></label><label><input type="radio" name="s14_tomografia" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Coleta Externa / Domiciliar</label><div class="radio-group"><label><input type="radio" name="s14_coleta_externa" value="Sim"><span>Sim</span></label><label><input type="radio" name="s14_coleta_externa" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s14_obs" placeholder="Observações sobre CME..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s14_obs" placeholder="Observações sobre SADT..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 15 – MANUTENÇÃO                      -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 15 – FARMÁCIA E MEDICAMENTOS ESSENCIAIS -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">15</div>
-      <div class="section-title">Manutenção e Engenharia Clínica</div>
+      <div class="section-title">Farmácia e Medicamentos Essenciais</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
+      <div class="subsec-title">Lista Obstétrica</div>
       <div class="field-grid">
-        <div class="field"><label>PMOC Atualizado </label><div class="radio-group"><label><input type="radio" name="s15_pmoc" value="Sim"><span>Sim</span></label><label><input type="radio" name="s15_pmoc" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Extintores com Validade em Dia </label><div class="radio-group"><label><input type="radio" name="s15_extintores" value="Sim"><span>Sim</span></label><label><input type="radio" name="s15_extintores" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Manutenção Preventiva </label><div class="radio-group"><label><input type="radio" name="s15_manutencao_prev" value="Em dia"><span>Em dia</span></label><label><input type="radio" name="s15_manutencao_prev" value="Atrasada"><span>Atrasada</span></label></div></div>
+        <div class="field"><label>Sulfato de Magnésio</label><div class="radio-group"><label><input type="radio" name="s15_sulfato_mg" value="Disponível"><span>Disponível</span></label><label><input type="radio" name="s15_sulfato_mg" value="Indisponível"><span>Indisponível</span></label></div></div>
+        <div class="field"><label>Ocitocina</label><div class="radio-group"><label><input type="radio" name="s15_ocitocina" value="Disponível"><span>Disponível</span></label><label><input type="radio" name="s15_ocitocina" value="Indisponível"><span>Indisponível</span></label></div></div>
+        <div class="field"><label>Misoprostol</label><div class="radio-group"><label><input type="radio" name="s15_misoprostol" value="Disponível"><span>Disponível</span></label><label><input type="radio" name="s15_misoprostol" value="Indisponível"><span>Indisponível</span></label></div></div>
+        <div class="field"><label>Antibiótico Profilaxia</label><div class="radio-group"><label><input type="radio" name="s15_antibiotico" value="Disponível"><span>Disponível</span></label><label><input type="radio" name="s15_antibiotico" value="Indisponível"><span>Indisponível</span></label></div></div>
+        <div class="field"><label>Anti-hemorrágicos</label><div class="radio-group"><label><input type="radio" name="s15_anti_hemorragicos" value="Disponível"><span>Disponível</span></label><label><input type="radio" name="s15_anti_hemorragicos" value="Indisponível"><span>Indisponível</span></label></div></div>
+        <div class="field"><label>Anticonvulsivantes</label><div class="radio-group"><label><input type="radio" name="s15_anticonvulsivantes" value="Disponível"><span>Disponível</span></label><label><input type="radio" name="s15_anticonvulsivantes" value="Indisponível"><span>Indisponível</span></label></div></div>
+        <div class="field"><label>Controle de Validade</label><div class="radio-group"><label><input type="radio" name="s15_controle_validade" value="OK"><span>OK</span></label><label><input type="radio" name="s15_controle_validade" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s15_obs" placeholder="Observações sobre manutenção..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s15_obs" placeholder="Observações sobre farmácia..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 16 – NUTRIÇÃO                        -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 16 – HIGIENIZAÇÃO / HOTELARIA / PGRSS -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">16</div>
-      <div class="section-title">Nutrição e Dietética</div>
+      <div class="section-title">Higienização / Hotelaria / PGRSS</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="grid-table-wrap">
-        <table class="grid-table">
-          <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
-          <tbody>
-            <tr><td>Dietoterapia adequada</td><td><input type="radio" name="s16_dietoterapia" value="Sim"></td><td><input type="radio" name="s16_dietoterapia" value="Não"></td></tr>
-            <tr><td>Controle de validade dos alimentos</td><td><input type="radio" name="s16_controle_validade" value="Sim"></td><td><input type="radio" name="s16_controle_validade" value="Não"></td></tr>
-            <tr><td>Cocção e áreas limpas</td><td><input type="radio" name="s16_coccao" value="Sim"></td><td><input type="radio" name="s16_coccao" value="Não"></td></tr>
-          </tbody>
-        </table>
+      <div class="field-grid">
+        <div class="field"><label>Limpeza Concorrente</label><div class="radio-group"><label><input type="radio" name="s16_limpeza_concorrente" value="Adequada"><span>Adequada</span></label><label><input type="radio" name="s16_limpeza_concorrente" value="Inadequada"><span>Inadequada</span></label></div></div>
+        <div class="field"><label>Limpeza Terminal</label><div class="radio-group"><label><input type="radio" name="s16_limpeza_terminal" value="Sim"><span>Sim</span></label><label><input type="radio" name="s16_limpeza_terminal" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Controle de Resíduos NR-32</label><div class="radio-group"><label><input type="radio" name="s16_residuos_nr32" value="Sim"><span>Sim</span></label><label><input type="radio" name="s16_residuos_nr32" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Perfurocortantes Corretos</label><div class="radio-group"><label><input type="radio" name="s16_perfurocortantes" value="Sim"><span>Sim</span></label><label><input type="radio" name="s16_perfurocortantes" value="Não"><span>Não</span></label></div></div>
+        <div class="field"><label>Rouparia Suficiente</label><div class="radio-group"><label><input type="radio" name="s16_rouparia" value="Sim"><span>Sim</span></label><label><input type="radio" name="s16_rouparia" value="Não"><span>Não</span></label></div></div>
       </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s16_obs" placeholder="Observações sobre nutrição..."></textarea></div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s16_obs" placeholder="Observações sobre higienização/hotelaria..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 17 – HIGIENIZAÇÃO                    -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 17 – RECURSOS HUMANOS -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
       <div class="section-num">17</div>
-      <div class="section-title">Higienização e Limpeza</div>
-      <div class="section-toggle">▾</div>
-    </div>
-    <div class="section-body">
-      <div class="field-grid">
-        <div class="field"><label>Rotinas seguindo RDC 50/ANVISA </label><div class="radio-group"><label><input type="radio" name="s17_rdc50" value="Sim"><span>Sim</span></label><label><input type="radio" name="s17_rdc50" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Limpeza Concorrente </label><div class="radio-group"><label><input type="radio" name="s17_limpeza_concorrente" value="Adequada"><span>Adequada</span></label><label><input type="radio" name="s17_limpeza_concorrente" value="Inadequada"><span>Inadequada</span></label></div></div>
-        <div class="field"><label>Limpeza Terminal </label><div class="radio-group"><label><input type="radio" name="s17_limpeza_terminal" value="Realizada regularmente"><span>Realizada regularmente</span></label><label><input type="radio" name="s17_limpeza_terminal" value="Não realizada"><span>Não realizada</span></label></div></div>
-      </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s17_obs" placeholder="Observações sobre higienização..."></textarea></div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 18 – LAVANDERIA                      -->
-  <!-- ══════════════════════════════════════════ -->
-  <div class="section-card">
-    <div class="section-head" onclick="toggleSection(this)">
-      <div class="section-num">18</div>
-      <div class="section-title">Hotelaria / Lavanderia</div>
-      <div class="section-toggle">▾</div>
-    </div>
-    <div class="section-body">
-      <div class="field-grid">
-        <div class="field"><label>Roupas Limpas em Qtd Suficiente </label><div class="radio-group"><label><input type="radio" name="s18_roupas" value="Sim"><span>Sim</span></label><label><input type="radio" name="s18_roupas" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Tipo de Lavanderia </label><div class="radio-group"><label><input type="radio" name="s18_lavanderia" value="Própria"><span>Própria</span></label><label><input type="radio" name="s18_lavanderia" value="Terceirizada"><span>Terceirizada</span></label></div></div>
-        <div class="field"><label>Separação Sujo / Limpo </label><div class="radio-group"><label><input type="radio" name="s18_separacao" value="Adequada"><span>Adequada</span></label><label><input type="radio" name="s18_separacao" value="Inadequada"><span>Inadequada</span></label></div></div>
-      </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s18_obs" placeholder="Observações sobre lavanderia..."></textarea></div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 19 – SEGURANÇA DO PACIENTE           -->
-  <!-- ══════════════════════════════════════════ -->
-  <div class="section-card">
-    <div class="section-head" onclick="toggleSection(this)">
-      <div class="section-num">19</div>
-      <div class="section-title">Segurança do Paciente</div>
-      <div class="section-toggle">▾</div>
-    </div>
-    <div class="section-body">
-      <div class="grid-table-wrap">
-        <table class="grid-table">
-          <thead><tr><th>Item</th><th>OK</th><th>Com problema</th></tr></thead>
-          <tbody>
-            <tr><td>Identificação de leito (etiqueta/placa)</td><td><input type="radio" name="s19_id_leito" value="OK"></td><td><input type="radio" name="s19_id_leito" value="Com problema"></td></tr>
-            <tr><td>Pulseiras de identificação utilizadas</td><td><input type="radio" name="s19_pulseiras" value="OK"></td><td><input type="radio" name="s19_pulseiras" value="Com problema"></td></tr>
-            <tr><td>Notificação de eventos adversos</td><td><input type="radio" name="s19_notificacao" value="OK"></td><td><input type="radio" name="s19_notificacao" value="Com problema"></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s19_obs" placeholder="Observações sobre segurança do paciente..."></textarea></div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 20 – ADMINISTRATIVO                  -->
-  <!-- ══════════════════════════════════════════ -->
-  <div class="section-card">
-    <div class="section-head" onclick="toggleSection(this)">
-      <div class="section-num">20</div>
-      <div class="section-title">Administrativo e Faturamento</div>
-      <div class="section-toggle">▾</div>
-    </div>
-    <div class="section-body">
-      <div class="field-grid">
-        <div class="field"><label>Faturamento SUS </label><div class="radio-group"><label><input type="radio" name="s20_faturamento" value="OK – sem falhas"><span>OK – sem falhas</span></label><label><input type="radio" name="s20_faturamento" value="Com falhas"><span>Com falhas</span></label></div></div>
-        <div class="field"><label>Produção Atualizada </label><div class="radio-group"><label><input type="radio" name="s20_producao" value="Sim"><span>Sim</span></label><label><input type="radio" name="s20_producao" value="Não"><span>Não</span></label></div></div>
-        <div class="field"><label>Indicadores Atualizados </label><div class="radio-group"><label><input type="radio" name="s20_indicadores" value="Sim"><span>Sim</span></label><label><input type="radio" name="s20_indicadores" value="Não"><span>Não</span></label></div></div>
-      </div>
-      <div class="field mt-12"><label>Observações</label><textarea name="s20_obs" placeholder="Observações sobre administrativo..."></textarea></div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 21 – RECURSOS HUMANOS                -->
-  <!-- ══════════════════════════════════════════ -->
-  <div class="section-card">
-    <div class="section-head" onclick="toggleSection(this)">
-      <div class="section-num">21</div>
       <div class="section-title">Recursos Humanos</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
       <p class="hint" style="margin-bottom:10px">Formato: Previsto | Existente | Déficit (ex: 10 | 8 | 2)</p>
       <div class="field-grid">
-        <div class="field"><label>Médicos</label><input type="text" name="s21_medicos" placeholder="Previsto | Existente | Déficit"></div>
-        <div class="field"><label>Enfermeiros</label><input type="text" name="s21_enfermeiros" placeholder="Previsto | Existente | Déficit"></div>
-        <div class="field"><label>Técnicos de Enfermagem</label><input type="text" name="s21_tec_enfermagem" placeholder="Previsto | Existente | Déficit"></div>
-        <div class="field"><label>Fisioterapeutas</label><input type="text" name="s21_fisioterapeutas" placeholder="Previsto | Existente | Déficit"></div>
-        <div class="field"><label>Psicólogos</label><input type="text" name="s21_psicologos" placeholder="Previsto | Existente | Déficit"></div>
-        <div class="field"><label>Assistentes Sociais</label><input type="text" name="s21_assist_sociais" placeholder="Previsto | Existente | Déficit"></div>
-        <div class="field"><label>Farmacêuticos</label><input type="text" name="s21_farmaceuticos" placeholder="Previsto | Existente | Déficit"></div>
-        <div class="field"><label>Nutricionistas</label><input type="text" name="s21_nutricionistas" placeholder="Previsto | Existente | Déficit"></div>
+        <div class="field"><label>Obstetras</label><input type="text" name="s17_obstetras" placeholder="Previsto | Existente | Déficit"></div>
+        <div class="field"><label>Neonatologistas</label><input type="text" name="s17_neonatologistas" placeholder="Previsto | Existente | Déficit"></div>
+        <div class="field"><label>Anestesistas</label><input type="text" name="s17_anestesistas" placeholder="Previsto | Existente | Déficit"></div>
+        <div class="field"><label>Enfermagem Obstétrica</label><input type="text" name="s17_enferm_obstetrica" placeholder="Previsto | Existente | Déficit"></div>
+        <div class="field"><label>Técnicos de Enfermagem</label><input type="text" name="s17_tec_enfermagem" placeholder="Previsto | Existente | Déficit"></div>
+        <div class="field"><label>Fisioterapeutas</label><input type="text" name="s17_fisioterapeutas" placeholder="Previsto | Existente | Déficit"></div>
+        <div class="field"><label>Assistente Social</label><input type="text" name="s17_assist_social" placeholder="Previsto | Existente | Déficit"></div>
+        <div class="field"><label>Psicólogo</label><input type="text" name="s17_psicologo" placeholder="Previsto | Existente | Déficit"></div>
       </div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s17_obs" placeholder="Observações sobre recursos humanos..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 22 – NÃO CONFORMIDADES               -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 18 – INDICADORES OBRIGATÓRIOS REDE ALYNE -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
-      <div class="section-num">22</div>
+      <div class="section-num">18</div>
+      <div class="section-title">Indicadores Obrigatórios Rede Alyne</div>
+      <div class="section-toggle">▾</div>
+    </div>
+    <div class="section-body">
+      <div class="grid-table-wrap">
+        <table class="grid-table">
+          <thead><tr><th>Indicador</th><th>OK</th><th>Necessita Melhoria</th></tr></thead>
+          <tbody id="indicadores-table"></tbody>
+        </table>
+      </div>
+      <div class="field mt-12"><label>Observações</label><textarea name="s18_obs" placeholder="Observações sobre indicadores Rede Alyne..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO 19 – NÃO CONFORMIDADES -->
+  <div class="section-card">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div class="section-num">19</div>
       <div class="section-title">Não Conformidades</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="field"><textarea name="s22_nao_conformidades" rows="6" placeholder="Descreva as não conformidades identificadas durante a visita..."></textarea></div>
+      <div class="field"><textarea name="s19_nao_conformidades" rows="6" placeholder="Descreva as não conformidades identificadas durante a visita..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 23 – RECOMENDAÇÕES                   -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 20 – RECOMENDAÇÕES -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
-      <div class="section-num">23</div>
+      <div class="section-num">20</div>
       <div class="section-title">Recomendações</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
-      <div class="field"><textarea name="s23_recomendacoes" rows="6" placeholder="Recomendações da equipe visitante, ações prioritárias e prazos sugeridos..."></textarea></div>
+      <div class="field"><textarea name="s20_recomendacoes" rows="6" placeholder="Recomendações da equipe visitante, ações prioritárias e prazos sugeridos..."></textarea></div>
     </div>
   </div>
 
-  <!-- ══════════════════════════════════════════ -->
-  <!-- SEÇÃO 24 – ASSINATURAS                     -->
-  <!-- ══════════════════════════════════════════ -->
+  <!-- SEÇÃO 21 – ASSINATURAS -->
   <div class="section-card">
     <div class="section-head" onclick="toggleSection(this)">
-      <div class="section-num">24</div>
+      <div class="section-num">21</div>
       <div class="section-title">Assinaturas</div>
       <div class="section-toggle">▾</div>
     </div>
     <div class="section-body">
       <div class="field-grid">
-        <div class="field"><label>Nome do Responsável pela Visita </label><input type="text" name="s24_resp_visita"></div>
-        <div class="field"><label>Cargo / Função </label><input type="text" name="s24_cargo_resp"></div>
-        <div class="field"><label>Nome do Responsável pela Maternidade </label><input type="text" name="s24_resp_hospital"></div>
+        <div class="field"><label>Responsável pela Visita</label><input type="text" name="s21_resp_visita"></div>
+        <div class="field"><label>Responsável pela Unidade</label><input type="text" name="s21_resp_unidade"></div>
+        <div class="field"><label>Data</label><input type="date" name="s21_data"></div>
       </div>
     </div>
   </div>
 
-  </form><!-- fim do form -->
-</div><!-- fim do form-wrap -->
+  </form>
+</div>
 
 <div id="submit-area">
   <button id="submit-btn" onclick="submitForm()">📤 Enviar para o Google Sheets</button>
@@ -947,9 +595,6 @@
 </div>
 
 <script>
-// ─────────────────────────────────────────────
-// ⚙ CONFIGURAÇÃO — cole aqui a URL do Apps Script
-// ─────────────────────────────────────────────
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbygENDGFKSfazR-csNlIgiQ3n5FP1uDJCOd-EeaS6mhlbAJfyap_27d87nFSFPF0QPo/exec';
 
 const FORM_META = {
@@ -962,49 +607,92 @@ const FORM_META = {
 };
 
 const STORAGE_KEYS = {
-  data: `${FORM_META.id}_form_data`,
+  data:    `${FORM_META.id}_form_data`,
   savedAt: `${FORM_META.id}_form_saved_at`,
-  queue: `${FORM_META.id}_form_queue`
+  queue:   `${FORM_META.id}_form_queue`
 };
 
-// ─────────────────────────────────────────────
-// DOCUMENTOS (Seção 2)
-// ─────────────────────────────────────────────
+// Seção 2 – Rede Alyne
+const REDE_ALYNE = [
+  ['s2_prenatal',                'Pré-natal Qualificado'],
+  ['s2_parto_nascimento',        'Atenção ao Parto e Nascimento'],
+  ['s2_rn_risco',                'Atendimento ao RN de Risco'],
+  ['s2_aseg',                    'Ambulatório de Seguimento (A-SEG)'],
+  ['s2_leitos_regulados',        'Leitos Obstétricos Regulados'],
+  ['s2_uci_neonatal',            'UCI Neonatal'],
+  ['s2_uti_neonatal',            'UTI Neonatal'],
+  ['s2_banco_leite',             'Banco de Leite ou Lactário'],
+  ['s2_transp_obstetrico',       'Transporte Obstétrico'],
+  ['s2_transp_neonatal',         'Transporte Neonatal'],
+  ['s2_protocolos_padronizados', 'Protocolos Clínicos Padronizados'],
+  ['s2_comissao_mortalidade',    'Comissão de Mortalidade Materna/Infantil'],
+];
+
+// Seção 3 – Documentação (Sim/Não + Atualizado)
 const DOCUMENTOS = [
-  ['s2_regimento_interno',  'Regimento Interno'],
-  ['s2_organograma',        'Organograma'],
-  ['s2_plano_diretor',      'Plano Diretor da Maternidade'],
-  ['s2_pops_protocolos',    'POPs e Protocolos'],
-  ['s2_plano_contingencia', 'Plano de Contingência'],
-  ['s2_plano_emergencia',   'Plano de Emergência e Brigada'],
-  ['s2_pgrss',              'PGRSS (Resíduos)'],
-  ['s2_plano_riscos',       'Plano de Gerenciamento de Riscos'],
-  ['s2_plano_seguranca',    'Plano de Segurança do Paciente'],
-  ['s2_relatorio_nsp',      'Relatório NSP/CCIH mensal'],
-  ['s2_escalas',            'Escalas atualizadas e assinadas'],
-  ['s2_alvara',             'Alvará Sanitário'],
-  ['s2_cert_bombeiros',     'Certificado do Corpo de Bombeiros'],
-  ['s2_registro_anvisa',    'Registro ANVISA de equipamentos'],
+  ['s3_regimento',        'Regimento Interno'],
+  ['s3_prot_obstetricia', 'Protocolos de Obstetrícia'],
+  ['s3_prot_rn',          'Protocolos de Assistência ao RN'],
+  ['s3_prot_hemorragia',  'Protocolo de Hemorragia'],
+  ['s3_prot_eclampsia',   'Protocolo Pré-eclâmpsia/Eclâmpsia'],
+  ['s3_prot_sepse',       'Protocolo Sepse Materna'],
+  ['s3_prot_ilcor',       'Protocolo ILCOR (Reanimação Neonatal)'],
+  ['s3_plano_seguranca',  'Plano de Segurança do Paciente'],
+  ['s3_nsp',              'NSP Implantado – RDC 36'],
+  ['s3_ccih',             'CCIH – Plano de Prevenção IRAS'],
+  ['s3_pgrss',            'PGRSS – Resíduos'],
+  ['s3_alvara',           'Alvará Sanitário'],
+  ['s3_bombeiros',        'Certificado do Corpo de Bombeiros'],
 ];
 
-const EQUIP_IMAGEM = [
-  ['s4_rxdigital',    'Raio-X Digital'],
-  ['s4_rxconv',       'Raio-X Convencional'],
-  ['s4_ultrassom',    'Ultrassom'],
-  ['s4_mamografia',   'Mamografia'],
-  ['s4_tomografia',   'Tomografia'],
-  ['s4_rm',           'Ressonância Magnética'],
-  ['s4_arco',         'Arco Cirúrgico'],
-  ['s4_densitometria','Densitometria'],
-  ['s4_endoscopia',   'Endoscopia / Colonoscopia'],
+// Seção 6 – Práticas baseadas em evidência
+const PRATICAS_EBM = [
+  ['s6_acompanhante',          'Acompanhante 24h Garantido'],
+  ['s6_metodo_dor',            'Método de Dor Não Farmacológico'],
+  ['s6_partograma',            'Partograma'],
+  ['s6_pele_a_pele',           'Contato Pele a Pele Imediato'],
+  ['s6_clampeamento',          'Clampeamento Oportuno'],
+  ['s6_amamentacao_1h',        'Amamentação na 1ª Hora'],
+  ['s6_restricao_episiotomia', 'Restrição de Episiotomia'],
+  ['s6_nao_kristeller',        'NÃO Uso de Kristeller'],
 ];
 
-// ─────────────────────────────────────────────
-// CONSTRUÇÃO DAS TABELAS DINÂMICAS
-// ─────────────────────────────────────────────
+// Seção 7 – Assistência ao RN
+const ASSIST_RN = [
+  ['s7_reanimacao_neonatal', 'Reanimação Neonatal'],
+  ['s7_radiant_warmer',      'Radiant Warmer'],
+  ['s7_balanca_neonatal',    'Balança Neonatal'],
+  ['s7_o2_ar_vacuo',         'O2 / Ar / Vácuo'],
+  ['s7_aspiracao',           'Material de Aspiração'],
+  ['s7_pulseira_dupla',      'Pulseira Dupla Mãe/Bebê'],
+  ['s7_anti_rapto',          'Trava Eletrônica Anti-rapto'],
+  ['s7_imp_plantar',         'Impressão Plantar/Digital'],
+];
+
+// Seção 18 – Indicadores Rede Alyne
+const INDICADORES = [
+  ['s18_mort_materna',        'Mortalidade Materna'],
+  ['s18_near_miss',           'Near Miss Materno'],
+  ['s18_mort_neonatal',       'Mortalidade Neonatal'],
+  ['s18_transfusao',          'Transfusão Pós-parto'],
+  ['s18_parto_seguro',        'Parto Seguro'],
+  ['s18_praticas_evidencias', 'Adesão a Práticas Baseadas em Evidências'],
+];
+
+function buildRedeAlyneTable() {
+  const tbody = document.getElementById('rede-alyne-table');
+  REDE_ALYNE.forEach(function([key, label]) {
+    tbody.innerHTML += `<tr>
+      <td>${label}</td>
+      <td><input type="radio" name="${key}" value="Sim"></td>
+      <td><input type="radio" name="${key}" value="Não"></td>
+    </tr>`;
+  });
+}
+
 function buildDocsTable() {
   const tbody = document.getElementById('docs-table');
-  DOCUMENTOS.forEach(([key, label]) => {
+  DOCUMENTOS.forEach(function([key, label]) {
     tbody.innerHTML += `<tr>
       <td>${label}</td>
       <td><input type="radio" name="${key}" value="Sim"></td>
@@ -1014,23 +702,39 @@ function buildDocsTable() {
   });
 }
 
-function buildEquipTable() {
-  const tbody = document.getElementById('equip-imagem-table');
-  EQUIP_IMAGEM.forEach(([key, label]) => {
+function buildPraticasTable() {
+  const tbody = document.getElementById('praticas-table');
+  PRATICAS_EBM.forEach(function([key, label]) {
     tbody.innerHTML += `<tr>
       <td>${label}</td>
-      <td><input type="radio" name="${key}_func" value="Funciona"></td>
-      <td><input type="radio" name="${key}_func" value="Não funciona"></td>
-      <td><input type="radio" name="${key}_func" value="Não tem"></td>
-      <td><input type="radio" name="${key}_manut" value="Sim"></td>
-      <td><input type="radio" name="${key}_manut" value="Não se aplica"></td>
+      <td><input type="radio" name="${key}" value="Sim"></td>
+      <td><input type="radio" name="${key}" value="Não"></td>
     </tr>`;
   });
 }
 
-// ─────────────────────────────────────────────
-// ACCORDION
-// ─────────────────────────────────────────────
+function buildAssistRNTable() {
+  const tbody = document.getElementById('assist-rn-table');
+  ASSIST_RN.forEach(function([key, label]) {
+    tbody.innerHTML += `<tr>
+      <td>${label}</td>
+      <td><input type="radio" name="${key}" value="Sim"></td>
+      <td><input type="radio" name="${key}" value="Não"></td>
+    </tr>`;
+  });
+}
+
+function buildIndicadoresTable() {
+  const tbody = document.getElementById('indicadores-table');
+  INDICADORES.forEach(function([key, label]) {
+    tbody.innerHTML += `<tr>
+      <td>${label}</td>
+      <td><input type="radio" name="${key}" value="OK"></td>
+      <td><input type="radio" name="${key}" value="Necessita Melhoria"></td>
+    </tr>`;
+  });
+}
+
 function toggleSection(head) {
   const body = head.nextElementSibling;
   const arrow = head.querySelector('.section-toggle');
@@ -1039,9 +743,6 @@ function toggleSection(head) {
   arrow.classList.toggle('open', !isOpen);
 }
 
-// ─────────────────────────────────────────────
-// COLETA DE DADOS DO FORMULÁRIO
-// ─────────────────────────────────────────────
 function collectFormData() {
   const data = { timestamp_envio: new Date().toISOString() };
   const form = document.getElementById('main-form');
@@ -1065,34 +766,36 @@ function collectFormData() {
     data[key] = checkboxGroups[key];
   }
 
-  data.form_id = FORM_META.id;
-  data.form_tipo = FORM_META.tipo;
-  data.form_title = FORM_META.title;
+  data.form_id      = FORM_META.id;
+  data.form_tipo    = FORM_META.tipo;
+  data.form_title   = FORM_META.title;
   data.form_version = FORM_META.version;
 
   const labelMap = {
-    timestamp_envio: 'Data/Hora', form_id: 'ID Formulário',
-    form_tipo: 'Tipo', form_title: 'Título', form_version: 'Versão',
-    s2_obs:  'Obs. Documentação',
-    s3_obs:  'Obs. Hotelaria',
-    s4_obs:  'Obs. SADT',
-    s5_obs:  'Obs. Ambulatório',
-    s6_obs:  'Obs. Urgência/Emergência',
-    s7_obs:  'Obs. Internamento',
-    s8_obs:  'Obs. C. Obstétrico',
-    s9_obs:  'Obs. C. Cirúrgico',
-    s10_obs: 'Obs. UTI',
-    s11_obs: 'Obs. Hemodiálise',
-    s12_obs: 'Obs. Farmácia',
-    s13_obs: 'Obs. Laboratório',
-    s14_obs: 'Obs. CME',
-    s15_obs: 'Obs. Manutenção',
-    s16_obs: 'Obs. Nutrição',
-    s17_obs: 'Obs. Higienização',
-    s18_obs: 'Obs. Lavanderia',
-    s19_obs: 'Obs. Seg. Paciente',
-    s20_obs: 'Obs. Administrativo'
+    timestamp_envio: 'Data/Hora',
+    form_id:         'ID Formulário',
+    form_tipo:       'Tipo',
+    form_title:      'Título',
+    form_version:    'Versão',
+    s2_obs:  'Obs. Rede Alyne',
+    s3_obs:  'Obs. Documentação',
+    s4_obs:  'Obs. Acolhimento Obstétrico',
+    s5_obs:  'Obs. Centro Obstétrico',
+    s6_obs:  'Obs. Práticas Baseadas em Evidência',
+    s7_obs:  'Obs. Assistência ao RN',
+    s8_obs:  'Obs. Alojamento Conjunto',
+    s9_obs:  'Obs. UCI/UTI Neonatal',
+    s10_obs: 'Obs. Banco de Leite',
+    s11_obs: 'Obs. Ambulatório/Pré-natal',
+    s12_obs: 'Obs. A-SEG',
+    s13_obs: 'Obs. Transporte',
+    s14_obs: 'Obs. SADT',
+    s15_obs: 'Obs. Farmácia Maternidade',
+    s16_obs: 'Obs. Higienização/Hotelaria',
+    s17_obs: 'Obs. Recursos Humanos',
+    s18_obs: 'Obs. Indicadores Rede Alyne',
   };
+
   form.querySelectorAll('.field').forEach(function(field) {
     const lbl = field.querySelector(':scope > label');
     if (!lbl) return;
@@ -1101,27 +804,30 @@ function collectFormData() {
       if (el.name && !labelMap[el.name]) labelMap[el.name] = txt;
     });
   });
+
+  REDE_ALYNE.forEach(function([key, label]) {
+    if (!labelMap[key]) labelMap[key] = label;
+  });
   DOCUMENTOS.forEach(function([key, label]) {
     if (!labelMap[key]) labelMap[key] = label;
-    if (!labelMap[key + '_atual']) labelMap[key + '_atual'] = label + ' (Atual)';
+    if (!labelMap[key + '_atual']) labelMap[key + '_atual'] = label + ' (Atualizado)';
   });
-  EQUIP_IMAGEM.forEach(function([key, label]) {
-    if (!labelMap[key + '_func']) labelMap[key + '_func'] = label + ' – Status';
-    if (!labelMap[key + '_manut']) labelMap[key + '_manut'] = label + ' – Manutenção';
+  PRATICAS_EBM.forEach(function([key, label]) {
+    if (!labelMap[key]) labelMap[key] = label;
   });
-  data._labels = labelMap;
+  ASSIST_RN.forEach(function([key, label]) {
+    if (!labelMap[key]) labelMap[key] = label;
+  });
+  INDICADORES.forEach(function([key, label]) {
+    if (!labelMap[key]) labelMap[key] = label;
+  });
 
+  data._labels = labelMap;
   return data;
 }
 
-// ─────────────────────────────────────────────
-// AUTO-SAVE (localStorage)
-// ─────────────────────────────────────────────
 let saveTimer;
-function scheduleAutoSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveToLocal, 1200);
-}
+function scheduleAutoSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveToLocal, 1200); }
 
 function saveToLocal() {
   try {
@@ -1140,108 +846,67 @@ function loadFromLocal() {
     if (!saved) return;
     const data = JSON.parse(saved);
     const form = document.getElementById('main-form');
-
     for (let key in data) {
       const val = data[key];
       if (Array.isArray(val)) {
-        val.forEach(v => {
-          const el = form.querySelector(`input[name="${key}"][value="${v}"]`);
-          if (el) el.checked = true;
-        });
+        val.forEach(v => { const el = form.querySelector(`input[name="${key}"][value="${v}"]`); if (el) el.checked = true; });
       } else {
-        const els = form.querySelectorAll(`[name="${key}"]`);
-        els.forEach(el => {
-          if (el.type === 'radio') {
-            if (el.value === val) el.checked = true;
-          } else if (el.type === 'checkbox') {
-            el.checked = (el.value === val);
-          } else {
-            el.value = val;
-          }
+        form.querySelectorAll(`[name="${key}"]`).forEach(el => {
+          if (el.type === 'radio') { if (el.value === val) el.checked = true; }
+          else if (el.type === 'checkbox') { el.checked = (el.value === val); }
+          else { el.value = val; }
         });
       }
     }
-
     const savedAt = localStorage.getItem(STORAGE_KEYS.savedAt);
     document.getElementById('save-status').textContent = savedAt ? '✓ Rascunho de ' + savedAt : '';
     updateProgress();
   } catch(e) {}
 }
 
-// ─────────────────────────────────────────────
-// PROGRESSO
-// ─────────────────────────────────────────────
 function updateProgress() {
   const form = document.getElementById('main-form');
   const required = form.querySelectorAll('[required]');
   let filled = 0;
   const radioGroups = {};
   required.forEach(el => {
-    if (el.type === 'radio') {
-      radioGroups[el.name] = radioGroups[el.name] || false;
-      if (el.checked) radioGroups[el.name] = true;
-    } else if (el.value && el.value.trim()) filled++;
+    if (el.type === 'radio') { radioGroups[el.name] = radioGroups[el.name] || false; if (el.checked) radioGroups[el.name] = true; }
+    else if (el.value && el.value.trim()) filled++;
   });
   filled += Object.values(radioGroups).filter(Boolean).length;
-  const total = (form.querySelectorAll('input[required]:not([type=radio])').length) + Object.keys(radioGroups).length;
+  const total = form.querySelectorAll('input[required]:not([type=radio])').length + Object.keys(radioGroups).length;
   const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
   document.getElementById('progress-bar').style.width = pct + '%';
 }
 
-// ─────────────────────────────────────────────
-// OFFLINE DETECTION
-// ─────────────────────────────────────────────
 function updateOnlineStatus() {
   const banner = document.getElementById('offline-banner');
   const isOnline = navigator.onLine;
   banner.style.display = isOnline ? 'none' : 'block';
   if (isOnline) {
     const q = getQueue();
-    if (q.length > 0) {
-      showMsg('queued', `🔄 Conexão restaurada! Sincronizando ${q.length} envio(s) pendente(s)...`);
-      setTimeout(trySyncQueue, 1500); // pequeno delay para garantir conexão estável
-    }
+    if (q.length > 0) { showMsg('queued', `🔄 Conexão restaurada! Sincronizando ${q.length} envio(s) pendente(s)...`); setTimeout(trySyncQueue, 1500); }
   }
 }
 window.addEventListener('online',  updateOnlineStatus);
 window.addEventListener('offline', updateOnlineStatus);
 
-// ─────────────────────────────────────────────
-// FILA OFFLINE (sync queue)
-// ─────────────────────────────────────────────
 function createQueueKey(data) {
   const copy = Object.assign({}, data || {});
   delete copy.timestamp_envio;
-  return JSON.stringify(Object.keys(copy).sort().reduce((acc, key) => {
-    acc[key] = copy[key];
-    return acc;
-  }, {}));
+  return JSON.stringify(Object.keys(copy).sort().reduce((acc, key) => { acc[key] = copy[key]; return acc; }, {}));
 }
 
-function getQueue() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.queue) || '[]'); } catch(e) { return []; }
-}
+function getQueue() { try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.queue) || '[]'); } catch(e) { return []; } }
 
 function saveQueue(q) {
   const unique = [];
   const seen = new Set();
-
-  q.forEach(item => {
-    const key = createQueueKey(item);
-    if (!seen.has(key)) {
-      seen.add(key);
-      unique.push(item);
-    }
-  });
-
+  q.forEach(item => { const key = createQueueKey(item); if (!seen.has(key)) { seen.add(key); unique.push(item); } });
   localStorage.setItem(STORAGE_KEYS.queue, JSON.stringify(unique));
   const info = document.getElementById('queue-info');
-  if (unique.length > 0) {
-    info.textContent = `📦 ${unique.length} envio(s) pendente(s) – será(ão) enviado(s) automaticamente quando houver conexão.`;
-    info.style.display = 'block';
-  } else {
-    info.style.display = 'none';
-  }
+  if (unique.length > 0) { info.textContent = `📦 ${unique.length} envio(s) pendente(s) – será(ão) enviado(s) automaticamente quando houver conexão.`; info.style.display = 'block'; }
+  else { info.style.display = 'none'; }
 }
 
 let syncInProgress = false;
@@ -1249,216 +914,104 @@ let syncInProgress = false;
 function enqueueSubmission(data) {
   const q = getQueue();
   const key = createQueueKey(data);
-  const jaExiste = q.some(item => createQueueKey(item) === key);
-  if (!jaExiste) {
-    q.push(data);
-  }
+  if (!q.some(item => createQueueKey(item) === key)) q.push(data);
   saveQueue(q);
 }
 
-// Envia itens da fila um por vez, com delay entre eles
 async function trySyncQueue() {
   if (syncInProgress) return;
   syncInProgress = true;
-
   const q = getQueue();
-  if (q.length === 0) {
-    syncInProgress = false;
-    return;
-  }
-
-  console.log('[SYNC] Iniciando sincronização de', q.length, 'item(ns)');
+  if (q.length === 0) { syncInProgress = false; return; }
   const remaining = [];
-
   for (let i = 0; i < q.length; i++) {
-    const item = q[i];
     showMsg('queued', `🔄 Sincronizando ${i + 1} de ${q.length}...`);
-    console.log('[SYNC] Enviando item', i + 1);
-
-    // Cria um iframe dedicado por envio para evitar conflito
-    const iframeId = 'sync_iframe_' + Date.now();
-    const ok = await postDataComIframe(item, iframeId);
-
-    if (ok) {
-      console.log('[SYNC] Item', i + 1, 'enviado com sucesso');
-    } else {
-      console.log('[SYNC] Item', i + 1, 'falhou – mantendo na fila');
-      remaining.push(item);
-    }
-
-    // Delay de 1s entre envios
+    const ok = await postDataComIframe(q[i], 'sync_iframe_' + Date.now());
+    if (!ok) remaining.push(q[i]);
     if (i < q.length - 1) await new Promise(r => setTimeout(r, 1000));
   }
-
   saveQueue(remaining);
-
-  if (remaining.length === 0) {
-    showMsg('success', '✅ Todos os envios pendentes foram sincronizados com sucesso!');
-    console.log('[SYNC] Fila limpa!');
-  } else {
-    showMsg('error', `⚠ ${remaining.length} envio(s) ainda com falha. Tente novamente.`);
-  }
-
+  if (remaining.length === 0) showMsg('success', '✅ Todos os envios pendentes foram sincronizados com sucesso!');
+  else showMsg('error', `⚠ ${remaining.length} envio(s) ainda com falha. Tente novamente.`);
   syncInProgress = false;
 }
 
-// postData usa o endpoint direto do Apps Script
-function postData(data) {
-  return postDataComIframe(data, 'form_target');
-}
+function postData(data) { return postDataComIframe(data, 'form_target'); }
 
-// Função base — envia via fetch no-cors (Apps Script não expõe corpo via CORS)
 function postDataComIframe(data, iframeId) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 45000);
-
   return fetch(APPS_SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
+    method: 'POST', mode: 'no-cors',
     body: new URLSearchParams({ payload: JSON.stringify(data) }),
     signal: controller.signal
-  })
-    .then(() => {
-      clearTimeout(timeoutId);
-      return true;
-    })
-    .catch(() => {
-      clearTimeout(timeoutId);
-      return false;
-    });
+  }).then(() => { clearTimeout(timeoutId); return true; })
+    .catch(() => { clearTimeout(timeoutId); return false; });
 }
 
-// ─────────────────────────────────────────────
-// VALIDAÇÃO BÁSICA
-// ─────────────────────────────────────────────
 function validateRequired() {
   const form = document.getElementById('main-form');
-  // Texto/date/number
-  const textEls = form.querySelectorAll('input[required]:not([type=radio]), textarea[required]');
-  for (let el of textEls) {
-    if (!el.value.trim()) {
-      el.style.borderColor = 'var(--red)';
-      el.focus();
-      return false;
-    }
+  for (let el of form.querySelectorAll('input[required]:not([type=radio]), textarea[required]')) {
+    if (!el.value.trim()) { el.style.borderColor = 'var(--red)'; el.focus(); return false; }
     el.style.borderColor = '';
   }
-  // Radio groups obrigatórios
   const radioReq = {};
   form.querySelectorAll('input[type=radio][required]').forEach(el => { radioReq[el.name] = false; });
   form.querySelectorAll('input[type=radio][required]:checked').forEach(el => { radioReq[el.name] = true; });
   for (let name in radioReq) {
     if (!radioReq[name]) {
       const first = form.querySelector(`input[name="${name}"]`);
-      if (first) {
-        const card = first.closest('.section-body');
-        if (card && !card.classList.contains('open')) {
-          card.classList.add('open');
-          card.previousElementSibling.querySelector('.section-toggle').classList.add('open');
-        }
-        first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      if (first) { const card = first.closest('.section-body'); if (card && !card.classList.contains('open')) { card.classList.add('open'); card.previousElementSibling.querySelector('.section-toggle').classList.add('open'); } first.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
       return false;
     }
   }
   return true;
 }
 
-// ─────────────────────────────────────────────
-// SALVAR CSV LOCAL (backup por pesquisa)
-// ─────────────────────────────────────────────
 function salvarCSV(data) {
   try {
-    // Cabeçalhos e valores na mesma ordem
     const cabecalhos = Object.keys(data);
-    const valores    = cabecalhos.map(k => {
+    const valores = cabecalhos.map(k => {
       const v = data[k];
-      // Arrays (checkboxes) viram texto separado por ponto-e-vírgula
       const texto = Array.isArray(v) ? v.join('; ') : (v || '');
-      // Escapa aspas e envolve em aspas se tiver vírgula, quebra de linha ou aspas
       const escapado = String(texto).replace(/"/g, '""');
-      return (escapado.includes(',') || escapado.includes('\n') || escapado.includes('"'))
-        ? `"${escapado}"`
-        : escapado;
+      return (escapado.includes(',') || escapado.includes('\n') || escapado.includes('"')) ? `"${escapado}"` : escapado;
     });
-
-    const csv = '\uFEFF' + // BOM para Excel reconhecer UTF-8
-      cabecalhos.join(',') + '\n' +
-      valores.join(',');
-
-    // Nome do arquivo: maternidade + data/hora
-    const nomeUnidade = (data.s1_nome_hospital || FORM_META.csvBaseName)
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
-      .replace(/[^a-zA-Z0-9\s-]/g, '').trim()
-      .replace(/\s+/g, '_')
-      .substring(0, 30);
-
+    const csv = '﻿' + cabecalhos.join(',') + '\n' + valores.join(',');
+    const nomeUnidade = (data.s1_nome_unidade || FORM_META.csvBaseName)
+      .normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9\s-]/g, '').trim().replace(/\s+/g, '_').substring(0, 30);
     const agora = new Date();
-    const dataHora = agora.getFullYear() +
-      String(agora.getMonth()+1).padStart(2,'0') +
-      String(agora.getDate()).padStart(2,'0') + '_' +
-      String(agora.getHours()).padStart(2,'0') +
-      String(agora.getMinutes()).padStart(2,'0');
-
+    const dataHora = agora.getFullYear() + String(agora.getMonth()+1).padStart(2,'0') + String(agora.getDate()).padStart(2,'0') + '_' + String(agora.getHours()).padStart(2,'0') + String(agora.getMinutes()).padStart(2,'0');
     const nomeArquivo = `visita_${nomeUnidade}_${dataHora}.csv`;
-
-    // Cria e dispara o download
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url  = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.href     = url;
-    link.download = nomeArquivo;
-    link.style.display = 'none';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    link.href = url; link.download = nomeArquivo; link.style.display = 'none';
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
     URL.revokeObjectURL(url);
-
-    console.log('[CSV] Arquivo salvo:', nomeArquivo);
     return nomeArquivo;
-  } catch(e) {
-    console.error('[CSV] Erro ao gerar CSV:', e.message);
-    return null;
-  }
+  } catch(e) { return null; }
 }
 
-// ─────────────────────────────────────────────
-// SUBMIT
-// ─────────────────────────────────────────────
 async function submitForm() {
-  if (!validateRequired()) {
-    showMsg('error', '⚠ Preencha todos os campos obrigatórios (*) antes de enviar.');
-    return;
-  }
-
+  if (!validateRequired()) { showMsg('error', '⚠ Preencha todos os campos obrigatórios (*) antes de enviar.'); return; }
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Enviando...';
-
+  btn.disabled = true; btn.textContent = '⏳ Enviando...';
   const data = collectFormData();
-
   if (!navigator.onLine) {
     enqueueSubmission(data);
-    btn.disabled = false;
-    btn.textContent = '📤 Enviar para o Google Sheets';
-    // Salva CSV mesmo offline
+    btn.disabled = false; btn.textContent = '📤 Enviar para o Google Sheets';
     const nomeCSV = salvarCSV(data);
-    showMsg('queued', `📦 Sem internet. Dados salvos localmente e exportados para CSV${nomeCSV ? ' ('+nomeCSV+')' : ''}. Serão enviados à planilha quando a conexão for restaurada.`);
+    showMsg('queued', `📦 Sem internet. Dados salvos localmente e exportados para CSV${nomeCSV ? ' ('+nomeCSV+')' : ''}. Serão enviados quando a conexão for restaurada.`);
     return;
   }
-
   const ok = await postData(data);
-  btn.disabled = false;
-  btn.textContent = '📤 Enviar para o Google Sheets';
-
-  // Salva CSV em qualquer caso (online ou falha)
+  btn.disabled = false; btn.textContent = '📤 Enviar para o Google Sheets';
   const nomeCSV = salvarCSV(data);
   const infoCSV = nomeCSV ? ` Backup CSV salvo: ${nomeCSV}.` : '';
-
   if (ok) {
     showMsg('success', `✅ Dados enviados para a planilha com sucesso!${infoCSV}`);
-    localStorage.removeItem(STORAGE_KEYS.data);
-    localStorage.removeItem(STORAGE_KEYS.savedAt);
+    localStorage.removeItem(STORAGE_KEYS.data); localStorage.removeItem(STORAGE_KEYS.savedAt);
     document.getElementById('save-status').textContent = '✓ Enviado';
   } else {
     enqueueSubmission(data);
@@ -1468,139 +1021,63 @@ async function submitForm() {
 
 function showMsg(type, text) {
   const el = document.getElementById('status-msg');
-  el.className = type;
-  el.textContent = text;
-  el.style.display = 'block';
+  el.className = type; el.textContent = text; el.style.display = 'block';
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  buildRedeAlyneTable();
   buildDocsTable();
-  buildEquipTable();
+  buildPraticasTable();
+  buildAssistRNTable();
+  buildIndicadoresTable();
   loadFromLocal();
   updateOnlineStatus();
   updateProgress();
   trySyncQueue();
-
   document.getElementById('main-form').addEventListener('input', scheduleAutoSave);
-  document.getElementById('main-form').addEventListener('change', () => {
-    scheduleAutoSave();
-    updateProgress();
-  });
-
-  // Carrega municípios do Ceará via IBGE
+  document.getElementById('main-form').addEventListener('change', () => { scheduleAutoSave(); updateProgress(); });
   carregarMunicipios();
 });
 
-// ─────────────────────────────────────────────
-// MUNICÍPIOS DO CEARÁ (IBGE API + localStorage)
-// ─────────────────────────────────────────────
 async function carregarMunicipios() {
   const hint  = document.getElementById('hint_municipio');
   const lista = document.getElementById('lista_municipios');
-
   function popularLista(municipios) {
     lista.innerHTML = '';
-    municipios.forEach(m => {
-      const opt = document.createElement('option');
-      opt.value = m;
-      lista.appendChild(opt);
-    });
+    municipios.forEach(m => { const opt = document.createElement('option'); opt.value = m; lista.appendChild(opt); });
   }
-
-  // Tenta usar cache do localStorage primeiro
   const cache = localStorage.getItem('municipios_ce');
-  if (cache) {
-    popularLista(JSON.parse(cache));
-    hint.textContent = '✓ ' + JSON.parse(cache).length + ' municípios do Ceará disponíveis';
-    hint.style.color = 'var(--green)';
-  }
-
-  // Se online, atualiza em background
-  if (!navigator.onLine) {
-    if (!cache) {
-      hint.textContent = '⚠ Sem internet. Digite o município manualmente.';
-      hint.style.color = 'var(--orange)';
-    }
-    return;
-  }
-
+  if (cache) { popularLista(JSON.parse(cache)); hint.textContent = '✓ ' + JSON.parse(cache).length + ' municípios do Ceará disponíveis'; hint.style.color = 'var(--green)'; }
+  if (!navigator.onLine) { if (!cache) { hint.textContent = '⚠ Sem internet. Digite o município manualmente.'; hint.style.color = 'var(--orange)'; } return; }
   try {
-    const resp = await fetch(
-      'https://servicodados.ibge.gov.br/api/v1/localidades/estados/CE/municipios'
-    );
+    const resp = await fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados/CE/municipios');
     const dados = await resp.json();
-    const nomes = dados
-      .map(m => m.nome)
-      .sort((a, b) => a.localeCompare(b, 'pt-BR'));
-
+    const nomes = dados.map(m => m.nome).sort((a, b) => a.localeCompare(b, 'pt-BR'));
     localStorage.setItem('municipios_ce', JSON.stringify(nomes));
     popularLista(nomes);
     hint.textContent = '✓ ' + nomes.length + ' municípios do Ceará disponíveis';
     hint.style.color = 'var(--green)';
-  } catch(e) {
-    if (!cache) {
-      hint.textContent = '⚠ Não foi possível carregar. Digite o município manualmente.';
-      hint.style.color = 'var(--orange)';
-    }
-  }
+  } catch(e) { if (!cache) { hint.textContent = '⚠ Não foi possível carregar. Digite o município manualmente.'; hint.style.color = 'var(--orange)'; } }
 }
 </script>
 <iframe name="form_target" id="form_target" style="display:none"></iframe>
 
 <script>
-// ── SERVICE WORKER – registro externo (sw.js) ──
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', {
-      scope: '/formularios-visita-tecnica/'
-    })
-    .then(reg => {
-      console.log('[PWA] Service Worker OK:', reg.scope);
-      reg.update();
-      reg.addEventListener('updatefound', () => {
-        const worker = reg.installing;
-        worker.addEventListener('statechange', () => {
-          if (worker.state === 'installed' && navigator.serviceWorker.controller) {
-            const banner = document.getElementById('offline-banner');
-            if (banner) {
-              banner.style.display = 'block';
-              banner.style.background = '#1e8dd2';
-              banner.textContent = '🔄 Nova versão disponível! Feche e reabra o app para atualizar.';
-            }
-          }
-        });
-      });
-    })
-    .catch(err => console.warn('[PWA] SW erro:', err.message));
+    navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', { scope: '/formularios-visita-tecnica/' })
+      .then(reg => { console.log('[PWA] SW OK:', reg.scope); reg.update(); })
+      .catch(err => console.warn('[PWA] SW erro:', err.message));
   });
 }
-
-// ── INSTALAR COMO APP ──
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
+  e.preventDefault(); deferredPrompt = e;
   const btn = document.getElementById('btn-instalar');
-  if (btn) {
-    btn.style.display = 'block';
-    btn.onclick = () => {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(() => {
-        btn.style.display = 'none';
-        deferredPrompt = null;
-      });
-    };
-  }
+  if (btn) { btn.style.display = 'block'; btn.onclick = () => { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { btn.style.display = 'none'; deferredPrompt = null; }); }; }
 });
-
-window.addEventListener('appinstalled', () => {
-  const btn = document.getElementById('btn-instalar');
-  if (btn) btn.style.display = 'none';
-});
+window.addEventListener('appinstalled', () => { const btn = document.getElementById('btn-instalar'); if (btn) btn.style.display = 'none'; });
 </script>
 
 </body>
