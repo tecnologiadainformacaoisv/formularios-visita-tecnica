@@ -1081,6 +1081,14 @@ function collectFormData() {
       if (el.name && !labelMap[el.name]) labelMap[el.name] = txt;
     });
   });
+  DOCUMENTOS.forEach(function([key, label]) {
+    if (!labelMap[key]) labelMap[key] = label;
+    if (!labelMap[key + '_atual']) labelMap[key + '_atual'] = label + ' (Atual)';
+  });
+  EQUIP_IMAGEM.forEach(function([key, label]) {
+    if (!labelMap[key + '_func']) labelMap[key + '_func'] = label + ' – Status';
+    if (!labelMap[key + '_manut']) labelMap[key + '_manut'] = label + ' – Manutenção';
+  });
   data._labels = labelMap;
 
   return data;

@@ -23,10 +23,10 @@ const TARGETS = {
     descricao: 'Hospitais / CER'
   },
   maternidade: {
-    spreadsheetName: 'Visita Hospital',
-    tabName: 'Visita Hospital',
+    spreadsheetName: 'Visita Maternidade',
+    tabName: 'Visita Maternidade',
     municipioFolderId: PASTA_MUNICIPIOS_ID,
-    descricao: 'Maternidade (fallback hospitalar)'
+    descricao: 'Maternidade'
   },
   ubs: {
     spreadsheetName: 'Visita UBS',
@@ -153,7 +153,12 @@ function sanitizeValue(valor) {
 }
 
 function getCabecalhosDinamicos(dados) {
-  return Object.keys(dados || {}).filter((key, index, arr) => arr.indexOf(key) === index);
+  return Object.keys(dados || {}).filter(key => key !== '_labels');
+}
+
+function getCabecalhosForDisplay(dados) {
+  const labels = dados._labels || {};
+  return getCabecalhosDinamicos(dados).map(key => labels[key] || key);
 }
 
 function getCabecalhoAtual(aba) {
@@ -163,8 +168,16 @@ function getCabecalhoAtual(aba) {
 
 function prepararCabecalho(aba, dados) {
   const cabecalhoAtual = getCabecalhoAtual(aba);
-  const cabecalhosNovos = getCabecalhosDinamicos(dados);
-  const faltantes = cabecalhosNovos.filter(col => cabecalhoAtual.indexOf(col) === -1);
+  const labels = dados._labels || {};
+  const labelToKey = {};
+  Object.keys(labels).forEach(key => { labelToKey[labels[key]] = key; });
+
+  const cabecalhosNovos = getCabecalhosForDisplay(dados);
+  const faltantes = cabecalhosNovos.filter(col => {
+    if (cabecalhoAtual.indexOf(col) !== -1) return false;
+    const rawKey = labelToKey[col] || col;
+    return cabecalhoAtual.indexOf(rawKey) === -1;
+  });
 
   if (aba.getLastRow() === 0 && cabecalhosNovos.length > 0) {
     aba.appendRow(cabecalhosNovos);
@@ -182,22 +195,39 @@ function prepararCabecalho(aba, dados) {
 }
 
 function salvarLinha(aba, dados) {
+  const labels = dados._labels || {};
+  const labelToKey = {};
+  Object.keys(labels).forEach(key => { labelToKey[labels[key]] = key; });
   const cabecalhoAtual = getCabecalhoAtual(aba);
-  const linha = cabecalhoAtual.map(col => sanitizeValue(dados[col]));
+  const linha = cabecalhoAtual.map(col => sanitizeValue(dados[labelToKey[col] || col]));
   aba.appendRow(linha);
+}
+
+function isDuplicateRow(aba, dados) {
+  const ts = dados.timestamp_envio;
+  if (!ts || aba.getLastRow() < 2) return false;
+  const cabecalho = getCabecalhoAtual(aba);
+  const labels = dados._labels || {};
+  const tsLabel = labels.timestamp_envio || 'timestamp_envio';
+  let colTs = cabecalho.indexOf(tsLabel);
+  if (colTs === -1) colTs = cabecalho.indexOf('timestamp_envio');
+  if (colTs === -1) return false;
+  const valores = aba.getRange(2, colTs + 1, aba.getLastRow() - 1, 1).getValues();
+  return valores.some(row => String(row[0]) === String(ts));
 }
 
 function saveDataToTarget(config, dados) {
   const ss = SpreadsheetApp.openById(SHEET_ID_PRINCIPAL);
   const aba = getOrCreateTab(ss, config.tabName || DEFAULT_TAB_NAME);
   if (aba.getLastRow() === 0) {
-    const cabecalhos = getCabecalhosDinamicos(dados);
+    const cabecalhos = getCabecalhosForDisplay(dados);
     aba.appendRow(cabecalhos);
     aba.getRange(1, 1, 1, cabecalhos.length).setFontWeight('bold').setBackground('#0f4c75').setFontColor('#ffffff');
     aba.setFrozenRows(1);
   }
   prepararCabecalho(aba, dados);
-  salvarLinha(aba, dados);
+  SpreadsheetApp.flush();
+  if (!isDuplicateRow(aba, dados)) salvarLinha(aba, dados);
 }
 
 function saveMunicipioData(config, municipio, dados) {
@@ -212,15 +242,24 @@ function saveMunicipioData(config, municipio, dados) {
   }
 
   const aba = getOrCreateTab(planilha, config.tabName || DEFAULT_TAB_NAME);
+
+  // Remove abas padrão vazias criadas automaticamente (ex: "Página1")
+  planilha.getSheets().forEach(function(sheet) {
+    if (sheet.getName() !== aba.getName() && sheet.getLastRow() === 0 && sheet.getLastColumn() === 0) {
+      try { planilha.deleteSheet(sheet); } catch(e) {}
+    }
+  });
+
   if (aba.getLastRow() === 0) {
-    const cabecalhos = getCabecalhosDinamicos(dados);
+    const cabecalhos = getCabecalhosForDisplay(dados);
     aba.appendRow(cabecalhos);
     aba.getRange(1, 1, 1, cabecalhos.length).setFontWeight('bold').setBackground('#0f4c75').setFontColor('#ffffff');
     aba.setFrozenRows(1);
   }
 
   prepararCabecalho(aba, dados);
-  salvarLinha(aba, dados);
+  SpreadsheetApp.flush();
+  if (!isDuplicateRow(aba, dados)) salvarLinha(aba, dados);
 }
 
 function normalizarMunicipio(texto) {
