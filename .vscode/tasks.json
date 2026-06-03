@@ -2,10 +2,17 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"label": "Push Apps Script",
+			"label": "Deploy Apps Script",
 			"type": "shell",
-			"command": "clasp push",
-			"isBackground": false,
+			"command": "powershell -File appscript\\deploy.ps1",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
 			"problemMatcher": []
 		}
 	]

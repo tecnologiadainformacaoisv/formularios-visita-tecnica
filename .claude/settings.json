@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "timeout": 120,
+            "statusMessage": "Deployando Apps Script...",
+            "command": "$raw = [Console]::In.ReadToEnd(); $in = $raw | ConvertFrom-Json; $f = $in.tool_input.file_path; if ($f -match 'appscript[/\\\\].*\\.(js|gs)$') { powershell -File ($f -replace '[/\\\\][^/\\\\]+$', '\\deploy.ps1') }"
+          }
+        ]
+      }
+    ]
+  }
+}
