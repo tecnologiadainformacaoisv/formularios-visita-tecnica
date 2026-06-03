@@ -1169,25 +1169,63 @@ window.addEventListener('offline', updateOnlineStatus);
 // ─────────────────────────────────────────────
 // FILA OFFLINE (sync queue)
 // ─────────────────────────────────────────────
+function createQueueKey(data) {
+  const copy = Object.assign({}, data || {});
+  delete copy.timestamp_envio;
+  return JSON.stringify(Object.keys(copy).sort().reduce((acc, key) => {
+    acc[key] = copy[key];
+    return acc;
+  }, {}));
+}
+
 function getQueue() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.queue) || '[]'); } catch(e) { return []; }
 }
 
 function saveQueue(q) {
-  localStorage.setItem(STORAGE_KEYS.queue, JSON.stringify(q));
+  const unique = [];
+  const seen = new Set();
+
+  q.forEach(item => {
+    const key = createQueueKey(item);
+    if (!seen.has(key)) {
+      seen.add(key);
+      unique.push(item);
+    }
+  });
+
+  localStorage.setItem(STORAGE_KEYS.queue, JSON.stringify(unique));
   const info = document.getElementById('queue-info');
-  if (q.length > 0) {
-    info.textContent = `📦 ${q.length} envio(s) pendente(s) – será(ão) enviado(s) automaticamente quando houver conexão.`;
+  if (unique.length > 0) {
+    info.textContent = `📦 ${unique.length} envio(s) pendente(s) – será(ão) enviado(s) automaticamente quando houver conexão.`;
     info.style.display = 'block';
   } else {
     info.style.display = 'none';
   }
 }
 
+let syncInProgress = false;
+
+function enqueueSubmission(data) {
+  const q = getQueue();
+  const key = createQueueKey(data);
+  const jaExiste = q.some(item => createQueueKey(item) === key);
+  if (!jaExiste) {
+    q.push(data);
+  }
+  saveQueue(q);
+}
+
 // Envia itens da fila um por vez, com delay entre eles
 async function trySyncQueue() {
+  if (syncInProgress) return;
+  syncInProgress = true;
+
   const q = getQueue();
-  if (q.length === 0) return;
+  if (q.length === 0) {
+    syncInProgress = false;
+    return;
+  }
 
   console.log('[SYNC] Iniciando sincronização de', q.length, 'item(ns)');
   const remaining = [];
@@ -1220,6 +1258,8 @@ async function trySyncQueue() {
   } else {
     showMsg('error', `⚠ ${remaining.length} envio(s) ainda com falha. Tente novamente.`);
   }
+
+  syncInProgress = false;
 }
 
 // postData usa o endpoint direto do Apps Script
@@ -1230,7 +1270,7 @@ function postData(data) {
 // Função base — envia via fetch para evitar bloqueio do iframe pelo Google
 function postDataComIframe(data, iframeId) {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const timeoutId = setTimeout(() => controller.abort(), 45000);
 
   return fetch(APPS_SCRIPT_URL, {
     method: 'POST',
@@ -1310,7 +1350,7 @@ function salvarCSV(data) {
       valores.join(',');
 
     // Nome do arquivo: maternidade + data/hora
-    const nomeHospital = (data.s1_nome_hospital || FORM_META.csvBaseName)
+    const nomeUnidade = (data.s1_nome_hospital || FORM_META.csvBaseName)
       .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove acentos
       .replace(/[^a-zA-Z0-9\s-]/g, '').trim()
       .replace(/\s+/g, '_')
@@ -1323,7 +1363,7 @@ function salvarCSV(data) {
       String(agora.getHours()).padStart(2,'0') +
       String(agora.getMinutes()).padStart(2,'0');
 
-    const nomeArquivo = `visita_${nomeHospital}_${dataHora}.csv`;
+    const nomeArquivo = `visita_${nomeUnidade}_${dataHora}.csv`;
 
     // Cria e dispara o download
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1349,11 +1389,6 @@ function salvarCSV(data) {
 // SUBMIT
 // ─────────────────────────────────────────────
 async function submitForm() {
-  if (APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyAySxv-mk-8h8JKh6kp9WuLO8i86GQQKu7rIi7C5rC7YGT9D-JXyHGOrS_1KrcK__i/exec') {
-    showMsg('error', '⚠ Configure a URL do Apps Script no arquivo HTML antes de enviar.');
-    return;
-  }
-
   if (!validateRequired()) {
     showMsg('error', '⚠ Preencha todos os campos obrigatórios (*) antes de enviar.');
     return;
@@ -1366,9 +1401,7 @@ async function submitForm() {
   const data = collectFormData();
 
   if (!navigator.onLine) {
-    const q = getQueue();
-    q.push(data);
-    saveQueue(q);
+    enqueueSubmission(data);
     btn.disabled = false;
     btn.textContent = '📤 Enviar para o Google Sheets';
     // Salva CSV mesmo offline
@@ -1391,9 +1424,7 @@ async function submitForm() {
     localStorage.removeItem(STORAGE_KEYS.savedAt);
     document.getElementById('save-status').textContent = '✓ Enviado';
   } else {
-    const q = getQueue();
-    q.push(data);
-    saveQueue(q);
+    enqueueSubmission(data);
     showMsg('queued', `⚠ Não foi possível conectar ao servidor. Dados na fila para reenvio automático.${infoCSV}`);
   }
 }

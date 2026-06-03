@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Push Apps Script",
+			"type": "shell",
+			"command": "clasp push",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
