@@ -35,6 +35,7 @@
     for (let el of elements) {
       if (!el.name) continue;
       if (el.type === 'radio') {
+        if (!(el.name in data)) data[el.name] = '';
         if (el.checked) data[el.name] = el.value;
       } else if (el.type === 'checkbox') {
         if (!checkboxGroups[el.name]) checkboxGroups[el.name] = [];
@@ -53,7 +54,64 @@
     data.form_title = FORM_META.title || '';
     data.form_version = FORM_META.version || '';
 
+    data._labels = buildLabels(data);
+
     return data;
+  }
+
+  function buildLabels(data) {
+    const labels = {
+      timestamp_envio: 'Data/Hora',
+      form_id: 'ID Formulário',
+      form_tipo: 'Tipo',
+      form_title: 'Título',
+      form_version: 'Versão'
+    };
+    const formEl = document.getElementById('main-form');
+    if (!formEl) return labels;
+
+    const usedLabels = {};
+    const seen = {};
+
+    formEl.querySelectorAll('[name]').forEach(el => {
+      const key = el.name;
+      if (seen[key] || labels[key]) return;
+      seen[key] = true;
+
+      let labelText = key;
+      const field = el.closest('.field');
+      if (field) {
+        const directLabel = Array.from(field.children).find(ch => ch.tagName === 'LABEL');
+        if (directLabel) {
+          const text = Array.from(directLabel.childNodes)
+            .filter(n => n.nodeType === 3)
+            .map(n => n.textContent.trim())
+            .join('').trim();
+          labelText = text || directLabel.textContent.trim();
+        }
+      } else {
+        const subsec = el.closest('.subsec');
+        if (subsec) {
+          const internalTitle = subsec.querySelector('.subsec-title');
+          const prevTitle = subsec.previousElementSibling;
+          const titleEl = internalTitle ||
+            (prevTitle && prevTitle.classList.contains('subsec-title') ? prevTitle : null);
+          if (titleEl) labelText = titleEl.textContent.trim();
+        }
+      }
+
+      if (usedLabels[labelText] !== undefined) {
+        const section = el.closest('.section-card');
+        const sectionTitleEl = section ? section.querySelector('.section-title') : null;
+        const sectionTitle = sectionTitleEl ? sectionTitleEl.textContent.trim() : '';
+        labelText = sectionTitle ? `${labelText} – ${sectionTitle}` : `${labelText} (${key})`;
+      }
+
+      labels[key] = labelText;
+      usedLabels[labelText] = true;
+    });
+
+    return labels;
   }
 
   function scheduleAutoSave() {
