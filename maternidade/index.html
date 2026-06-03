@@ -1051,6 +1051,7 @@ function collectFormData() {
   for (let el of elements) {
     if (!el.name) continue;
     if (el.type === 'radio') {
+      if (!(el.name in data)) data[el.name] = '';
       if (el.checked) data[el.name] = el.value;
     } else if (el.type === 'checkbox') {
       if (!checkboxGroups[el.name]) checkboxGroups[el.name] = [];
@@ -1060,16 +1061,28 @@ function collectFormData() {
     }
   }
 
-  // Mescla checkboxes como arrays
   for (let key in checkboxGroups) {
     data[key] = checkboxGroups[key];
   }
 
-  // Metadados úteis para o backend genérico
   data.form_id = FORM_META.id;
   data.form_tipo = FORM_META.tipo;
   data.form_title = FORM_META.title;
   data.form_version = FORM_META.version;
+
+  const labelMap = {
+    timestamp_envio: 'Data/Hora', form_id: 'ID Formulário',
+    form_tipo: 'Tipo', form_title: 'Título', form_version: 'Versão'
+  };
+  form.querySelectorAll('.field').forEach(function(field) {
+    const lbl = field.querySelector(':scope > label');
+    if (!lbl) return;
+    const txt = lbl.textContent.replace(/\s*\*\s*$/, '').trim();
+    field.querySelectorAll('[name]').forEach(function(el) {
+      if (el.name && !labelMap[el.name]) labelMap[el.name] = txt;
+    });
+  });
+  data._labels = labelMap;
 
   return data;
 }
@@ -1267,23 +1280,20 @@ function postData(data) {
   return postDataComIframe(data, 'form_target');
 }
 
-// Função base — envia via fetch para evitar bloqueio do iframe pelo Google
+// Função base — envia via fetch no-cors (Apps Script não expõe corpo via CORS)
 function postDataComIframe(data, iframeId) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 45000);
 
   return fetch(APPS_SCRIPT_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-    },
+    mode: 'no-cors',
     body: new URLSearchParams({ payload: JSON.stringify(data) }),
     signal: controller.signal
   })
-    .then(async (res) => {
+    .then(() => {
       clearTimeout(timeoutId);
-      const text = await res.text();
-      return res.ok && text.includes('✅ Dados salvos com sucesso.');
+      return true;
     })
     .catch(() => {
       clearTimeout(timeoutId);

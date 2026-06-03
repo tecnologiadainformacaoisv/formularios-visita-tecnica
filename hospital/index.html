@@ -1050,6 +1050,7 @@ function collectFormData() {
   for (let el of elements) {
     if (!el.name) continue;
     if (el.type === 'radio') {
+      if (!(el.name in data)) data[el.name] = '';
       if (el.checked) data[el.name] = el.value;
     } else if (el.type === 'checkbox') {
       if (!checkboxGroups[el.name]) checkboxGroups[el.name] = [];
@@ -1059,7 +1060,6 @@ function collectFormData() {
     }
   }
 
-  // Mescla checkboxes como arrays
   for (let key in checkboxGroups) {
     data[key] = checkboxGroups[key];
   }
@@ -1279,28 +1279,20 @@ function postData(data) {
   return postDataComIframe(data, 'form_target');
 }
 
-// Função base — envia via fetch para evitar bloqueio do iframe pelo Google
+// Função base — envia via fetch no-cors (Apps Script não expõe corpo via CORS)
 function postDataComIframe(data, iframeId) {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 45000);
 
   return fetch(APPS_SCRIPT_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-    },
+    mode: 'no-cors',
     body: new URLSearchParams({ payload: JSON.stringify(data) }),
     signal: controller.signal
   })
-    .then(async (res) => {
+    .then(() => {
       clearTimeout(timeoutId);
-      if (!res.ok) return false;
-      try {
-        const text = await res.text();
-        return text.includes('sucesso');
-      } catch {
-        return true; // 200 OK mas corpo ilegível (CORS redirect) — considera sucesso
-      }
+      return true;
     })
     .catch(() => {
       clearTimeout(timeoutId);
