@@ -1071,7 +1071,26 @@ function collectFormData() {
 
   const labelMap = {
     timestamp_envio: 'Data/Hora', form_id: 'ID Formulário',
-    form_tipo: 'Tipo', form_title: 'Título', form_version: 'Versão'
+    form_tipo: 'Tipo', form_title: 'Título', form_version: 'Versão',
+    s2_obs:  'Obs. Documentação',
+    s3_obs:  'Obs. Hotelaria',
+    s4_obs:  'Obs. SADT',
+    s5_obs:  'Obs. Ambulatório',
+    s6_obs:  'Obs. Urgência/Emergência',
+    s7_obs:  'Obs. Internamento',
+    s8_obs:  'Obs. C. Obstétrico',
+    s9_obs:  'Obs. C. Cirúrgico',
+    s10_obs: 'Obs. UTI',
+    s11_obs: 'Obs. Hemodiálise',
+    s12_obs: 'Obs. Farmácia',
+    s13_obs: 'Obs. Laboratório',
+    s14_obs: 'Obs. CME',
+    s15_obs: 'Obs. Manutenção',
+    s16_obs: 'Obs. Nutrição',
+    s17_obs: 'Obs. Higienização',
+    s18_obs: 'Obs. Lavanderia',
+    s19_obs: 'Obs. Seg. Paciente',
+    s20_obs: 'Obs. Administrativo'
   };
   form.querySelectorAll('.field').forEach(function(field) {
     const lbl = field.querySelector(':scope > label');
