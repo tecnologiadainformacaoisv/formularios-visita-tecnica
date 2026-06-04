@@ -94,6 +94,7 @@
       <h2>Ficha de Visita Técnica – Centro de Reabilitação 2026</h2>
       <p>Formulário de avaliação – Centro Especializado de Reabilitação (CER) 2025. Rede de Cuidados à Pessoa com Deficiência.</p>
     </div>
+    <p class="required-note">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
     <form id="main-form">
 
       <!-- SEÇÃO 1 -->
@@ -106,21 +107,21 @@
         <div class="section-body open">
           <div class="field-grid">
             <div class="field">
-              <label>Município</label>
-              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off">
+              <label>Município <span class="req">*</span></label>
+              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required>
               <datalist id="lista_municipios"></datalist>
               <p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p>
             </div>
             <div class="field">
-              <label>Nome do Serviço / CER</label>
-              <input type="text" name="s1_nome_cer">
+              <label>Nome do Serviço / CER <span class="req">*</span></label>
+              <input type="text" name="s1_nome_cer" required>
             </div>
           </div>
           <div class="subsec">
-            <div class="subsec-title">Tipo de CER</div>
+            <div class="subsec-title">Tipo de CER <span class="req">*</span></div>
             <div class="field">
               <div class="radio-group">
-                <label><input type="radio" name="s1_tipo_cer" value="CER I"><span>CER I</span></label>
+                <label><input type="radio" name="s1_tipo_cer" value="CER I" required><span>CER I</span></label>
                 <label><input type="radio" name="s1_tipo_cer" value="CER II"><span>CER II</span></label>
                 <label><input type="radio" name="s1_tipo_cer" value="CER III"><span>CER III</span></label>
                 <label><input type="radio" name="s1_tipo_cer" value="CER IV"><span>CER IV</span></label>

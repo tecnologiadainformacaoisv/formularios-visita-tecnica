@@ -194,6 +194,7 @@
       <p>Preencha a identificação, os itens operacionais e os indicadores da UBS conforme o roteiro. O formulário salva automaticamente e permanece funcional offline.</p>
     </div>
 
+    <p class="required-note">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
     <form id="main-form">
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
@@ -208,10 +209,10 @@
             <div class="field"><label>Telefone</label><input type="text" name="s1_telefone"></div>
             <div class="field"><label>CNES</label><input type="text" name="s1_cnes"></div>
             <div class="field"><label>Horário de funcionamento</label><input type="text" name="s1_horario"></div>
-            <div class="field"><label>Data da visita</label><input type="date" name="s1_data_visita"></div>
-            <div class="field"><label>Gestão</label>
+            <div class="field"><label>Data da visita <span class="req">*</span></label><input type="date" name="s1_data_visita" required></div>
+            <div class="field"><label>Gestão <span class="req">*</span></label>
               <div class="radio-group">
-                <label><input type="radio" name="s1_gestao" value="Municipal">Municipal</label>
+                <label><input type="radio" name="s1_gestao" value="Municipal" required>Municipal</label>
                 <label><input type="radio" name="s1_gestao" value="OS">OS</label>
                 <label><input type="radio" name="s1_gestao" value="Estadual">Estadual</label>
               </div>

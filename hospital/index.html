@@ -308,10 +308,7 @@
     <p>Instituto São Vicente &nbsp;|&nbsp; (088) 3536-1280 &nbsp;|&nbsp; institutosaovicente@gmail.com<br>
     BR 230 – Bairro Virgílio de Aguiar Gurgel – CEP 63300-000 – Lavras da Mangabeira – CE</p>
   </div>
-    <div style="background:#fef3c7;border:2px solid #d97706;border-radius:8px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:#92400e;">
-    <strong>⚙ MODO DE TESTE</strong> — Apenas "Nome do Hospital" é obrigatório. Substitua pelo arquivo original para uso real.
-  </div>
-  <p class="required-note" style="display:none">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
+    <p class="required-note">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
 
   <form id="main-form" novalidate>
 
@@ -330,9 +327,9 @@
       </div>
       <div class="field-grid mt-12">
         <div class="field">
-          <label>Gestão </label>
+          <label>Gestão <span class="req">*</span></label>
           <div class="radio-group">
-            <label><input type="radio" name="s1_gestao" value="Municipal"><span>Municipal</span></label>
+            <label><input type="radio" name="s1_gestao" value="Municipal" required><span>Municipal</span></label>
             <label><input type="radio" name="s1_gestao" value="Estadual"><span>Estadual</span></label>
             <label><input type="radio" name="s1_gestao" value="Federal"><span>Federal</span></label>
             <label><input type="radio" name="s1_gestao" value="OS"><span>OS</span></label>
@@ -341,9 +338,9 @@
           </div>
         </div>
         <div class="field">
-          <label>Natureza </label>
+          <label>Natureza <span class="req">*</span></label>
           <div class="radio-group">
-            <label><input type="radio" name="s1_natureza" value="Urgência e Emergência"><span>Urgência e Emergência</span></label>
+            <label><input type="radio" name="s1_natureza" value="Urgência e Emergência" required><span>Urgência e Emergência</span></label>
             <label><input type="radio" name="s1_natureza" value="Hospital Geral"><span>Hospital Geral</span></label>
             <label><input type="radio" name="s1_natureza" value="Especializado"><span>Especializado</span></label>
           </div>
@@ -371,8 +368,8 @@
         <div class="field"><label>Diretor Administrativo-Financeiro </label><input type="text" name="s1_diretor_adm"></div>
         <div class="field"><label>CRC </label><input type="text" name="s1_crc"></div>
         <div class="field"><label>Responsável Técnico </label><input type="text" name="s1_resp_tecnico"></div>
-        <div class="field"><label>Data da Visita </label><input type="date" name="s1_data_visita"></div>
-        <div class="field"><label>Responsável(is) pela Visita </label><input type="text" name="s1_responsavel_visita"></div>
+        <div class="field"><label>Data da Visita <span class="req">*</span></label><input type="date" name="s1_data_visita" required></div>
+        <div class="field"><label>Responsável(is) pela Visita <span class="req">*</span></label><input type="text" name="s1_responsavel_visita" required></div>
       </div>
     </div>
   </div>

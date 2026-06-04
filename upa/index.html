@@ -94,6 +94,7 @@
       <h2>Ficha de Visita Técnica – UPA 24h 2026</h2>
       <p>Formulário de avaliação – UPA 24h (Portes I, II, III e IV) – Modelo 2025.</p>
     </div>
+    <p class="required-note">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
     <form id="main-form">
 
       <!-- SEÇÃO 1 -->
@@ -106,30 +107,30 @@
         <div class="section-body open">
           <div class="field-grid">
             <div class="field">
-              <label>Nome da UPA</label>
-              <input type="text" name="s1_nome_upa">
+              <label>Nome da UPA <span class="req">*</span></label>
+              <input type="text" name="s1_nome_upa" required>
             </div>
             <div class="field">
-              <label>Município</label>
-              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off">
+              <label>Município <span class="req">*</span></label>
+              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required>
               <datalist id="lista_municipios"></datalist>
               <p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p>
             </div>
           </div>
           <div class="field-grid mt-12">
             <div class="field">
-              <label>Porte</label>
+              <label>Porte <span class="req">*</span></label>
               <div class="radio-group">
-                <label><input type="radio" name="s1_porte" value="I"><span>I</span></label>
+                <label><input type="radio" name="s1_porte" value="I" required><span>I</span></label>
                 <label><input type="radio" name="s1_porte" value="II"><span>II</span></label>
                 <label><input type="radio" name="s1_porte" value="III"><span>III</span></label>
                 <label><input type="radio" name="s1_porte" value="IV"><span>IV</span></label>
               </div>
             </div>
             <div class="field">
-              <label>Gestão</label>
+              <label>Gestão <span class="req">*</span></label>
               <div class="radio-group">
-                <label><input type="radio" name="s1_gestao" value="Municipal"><span>Municipal</span></label>
+                <label><input type="radio" name="s1_gestao" value="Municipal" required><span>Municipal</span></label>
                 <label><input type="radio" name="s1_gestao" value="Estadual"><span>Estadual</span></label>
                 <label><input type="radio" name="s1_gestao" value="OS"><span>OS</span></label>
                 <label><input type="radio" name="s1_gestao" value="Federal"><span>Federal</span></label>

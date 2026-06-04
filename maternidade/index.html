@@ -123,6 +123,7 @@
     BR 230 – Bairro Virgílio de Aguiar Gurgel – CEP 63300-000 – Lavras da Mangabeira – CE</p>
   </div>
 
+  <p class="required-note">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
   <form id="main-form" novalidate>
 
   <!-- SEÇÃO 1 – IDENTIFICAÇÃO DA UNIDADE -->
@@ -141,7 +142,7 @@
         <div class="field"><label>Telefone</label><input type="text" name="s1_telefone"></div>
         <div class="field"><label>E-mail</label><input type="email" name="s1_email"></div>
         <div class="field"><label>CNPJ / CNES</label><input type="text" name="s1_cnpj_cnes"></div>
-        <div class="field"><label>Data da Visita</label><input type="date" name="s1_data_visita"></div>
+        <div class="field"><label>Data da Visita <span class="req">*</span></label><input type="date" name="s1_data_visita" required></div>
       </div>
       <div class="subsec">
         <div class="subsec-title">Gestão</div>
@@ -161,7 +162,7 @@
         </div>
       </div>
       <div class="subsec">
-        <div class="field"><label>Responsáveis pela Auditoria/Visita</label><input type="text" name="s1_equipe_visita"></div>
+        <div class="field"><label>Responsáveis pela Auditoria/Visita <span class="req">*</span></label><input type="text" name="s1_equipe_visita" required></div>
       </div>
     </div>
   </div>

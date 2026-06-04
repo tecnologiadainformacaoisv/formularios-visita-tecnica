@@ -94,6 +94,7 @@
       <h2>Ficha de Visita Técnica – Vigilância Epidemiológica 2026</h2>
       <p>Formulário de avaliação – Vigilância Epidemiológica (VE) 2025. Conforme SVS/MS, SINAN, PNI e Diretrizes de Vigilância em Saúde.</p>
     </div>
+    <p class="required-note">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
     <form id="main-form">
 
       <!-- SEÇÃO 1 -->
@@ -106,21 +107,21 @@
         <div class="section-body open">
           <div class="field-grid">
             <div class="field">
-              <label>Município</label>
-              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off">
+              <label>Município <span class="req">*</span></label>
+              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required>
               <datalist id="lista_municipios"></datalist>
               <p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p>
             </div>
             <div class="field">
-              <label>Unidade Visitada</label>
-              <input type="text" name="s1_unidade_visitada">
+              <label>Unidade Visitada <span class="req">*</span></label>
+              <input type="text" name="s1_unidade_visitada" required>
             </div>
           </div>
           <div class="subsec">
-            <div class="subsec-title">Tipo de Unidade</div>
+            <div class="subsec-title">Tipo de Unidade <span class="req">*</span></div>
             <div class="field">
               <div class="radio-group">
-                <label><input type="radio" name="s1_tipo_unidade" value="UBS"><span>UBS</span></label>
+                <label><input type="radio" name="s1_tipo_unidade" value="UBS" required><span>UBS</span></label>
                 <label><input type="radio" name="s1_tipo_unidade" value="Hospital"><span>Hospital</span></label>
                 <label><input type="radio" name="s1_tipo_unidade" value="UPA"><span>UPA</span></label>
                 <label><input type="radio" name="s1_tipo_unidade" value="CAPS"><span>CAPS</span></label>

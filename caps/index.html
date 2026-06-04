@@ -94,6 +94,7 @@
       <h2>Ficha de Visita Técnica – CAPS 2026</h2>
       <p>Formulário de supervisão e avaliação – CAPS (RAPS) 2025. Portaria 336/2002.</p>
     </div>
+    <p class="required-note">Campos marcados com <span style="color:var(--red)">*</span> são obrigatórios.</p>
     <form id="main-form">
 
       <!-- SEÇÃO 1 -->
@@ -106,21 +107,21 @@
         <div class="section-body open">
           <div class="field-grid">
             <div class="field">
-              <label>Município</label>
-              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off">
+              <label>Município <span class="req">*</span></label>
+              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required>
               <datalist id="lista_municipios"></datalist>
               <p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p>
             </div>
             <div class="field">
-              <label>Nome do CAPS</label>
-              <input type="text" name="s1_nome_caps">
+              <label>Nome do CAPS <span class="req">*</span></label>
+              <input type="text" name="s1_nome_caps" required>
             </div>
           </div>
           <div class="subsec">
-            <div class="subsec-title">Tipo de CAPS</div>
+            <div class="subsec-title">Tipo de CAPS <span class="req">*</span></div>
             <div class="field">
               <div class="radio-group">
-                <label><input type="radio" name="s1_tipo_caps" value="CAPS I"><span>CAPS I</span></label>
+                <label><input type="radio" name="s1_tipo_caps" value="CAPS I" required><span>CAPS I</span></label>
                 <label><input type="radio" name="s1_tipo_caps" value="CAPS II"><span>CAPS II</span></label>
                 <label><input type="radio" name="s1_tipo_caps" value="CAPS III"><span>CAPS III</span></label>
                 <label><input type="radio" name="s1_tipo_caps" value="CAPS AD"><span>CAPS AD</span></label>
