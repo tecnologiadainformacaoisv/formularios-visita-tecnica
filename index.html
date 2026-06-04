@@ -6,21 +6,22 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Formulários de Visita Técnica">
 <meta name="theme-color" content="#0f2d4e">
-<meta name="app-version" content="1.1">
+<meta name="app-version" content="0.3.0">
 <link rel="manifest" href="config/manifest.json">
 <link rel="icon" href="shared/assets/logo-192.png" type="image/png">
 <link rel="apple-touch-icon" href="shared/assets/logo-192.png">
-<title>Formulários de Visita Técnica • v1.1</title>
+<title>Formulários de Visita Técnica • v0.3.0</title>
 <style>
   :root {
-    color-scheme: dark light;
-    --bg: #f8fafc;                                  
+    --bg: #f8fafc;
     --panel: #ffffff;
     --border: #cbd5e1;
     --text: #0f172a;
     --muted: #475569;
     --accent: #1d4ed8;
-    --accent-2: #0f766e;
+    --green: #16a34a;
+    --orange: #d97706;
+    --red: #dc2626;
     --radius: 18px;
   }
   * { box-sizing: border-box; }
@@ -34,88 +35,308 @@
     color: var(--text);
   }
   .page { max-width: 960px; margin: 0 auto; padding: 32px 20px 50px; }
-  h1 { font-size: 2.2rem; margin-bottom: 12px; }
-  p { color: var(--muted); line-height: 1.75; margin: 0 0 28px; }
+  h1 { font-size: 2rem; margin-bottom: 8px; }
+
+  /* Banners de status */
+  #sync-banner {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  #sync-banner.syncing  { background: #fef3c7; color: var(--orange); border: 1px solid #fde68a; display: flex; }
+  #sync-banner.success  { background: #dcfce7; color: var(--green);  border: 1px solid #bbf7d0; display: flex; }
+  #sync-banner.error    { background: #fee2e2; color: var(--red);    border: 1px solid #fecaca; display: flex; }
+  #sync-banner.offline  { background: #f1f5f9; color: var(--muted);  border: 1px solid var(--border); display: flex; }
+
+  #pending-summary {
+    display: none;
+    padding: 12px 16px;
+    background: #fef3c7;
+    border: 1px solid #fde68a;
+    border-radius: 12px;
+    font-size: 13px;
+    color: #92400e;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  #pending-summary:hover { background: #fde68a; }
+
   .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-  .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: 0 18px 50px rgba(15,23,42,.08); transition: transform .22s ease, border-color .22s ease; }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(15,23,42,.07);
+    transition: transform .22s ease, border-color .22s ease;
+    position: relative;
+  }
   .card:hover { transform: translateY(-2px); border-color: rgba(59,130,246,.35); }
-  .card h2 { margin: 0 0 10px; font-size: 1.2rem; }
-  .card p { margin: 0 0 18px; color: var(--muted); }
-  .card a { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 16px; border-radius: 999px; text-decoration: none; font-weight: 700; color: #fff; background: linear-gradient(135deg, #2563eb, #14b8a6); }
-  .note { margin-top: 26px; padding: 18px 20px; border-radius: 16px; background: #e2e8f0; color: #334155; }
+  .card h2 { margin: 0 0 8px; font-size: 1.1rem; }
+  .card p  { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+  .card a  {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 11px 16px; border-radius: 999px; text-decoration: none;
+    font-weight: 700; font-size: 14px; color: #fff;
+    background: linear-gradient(135deg, #2563eb, #14b8a6);
+  }
+  .card a:hover { opacity: .9; }
+
+  /* Badge de pendentes */
+  .badge {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--orange);
+    color: white;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 999px;
+    display: none;
+  }
+
+  .version-tag {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .note { margin-top: 26px; padding: 16px 20px; border-radius: 14px; background: #e2e8f0; color: #334155; font-size: 13px; }
   @media (max-width: 600px) { .page { padding: 24px 16px 40px; } }
 </style>
 </head>
 <body>
 <div class="page">
   <h1>Formulários de Visita Técnica</h1>
-  <p style="margin-bottom: 12px; font-weight: 700; color: #1d4ed8;">Versão 1.1</p>
-  <p>Escolha o formulário que você deseja preencher. Cada ficha abre seu próprio formulário offline/PWA e envia os dados para o Google Sheets via Apps Script.</p>
+  <p class="version-tag">v0.3.0 — pré-produção</p>
+
+  <div id="sync-banner"></div>
+  <div id="pending-summary" onclick="syncAllQueues()"></div>
 
   <div class="grid">
-      <div class="card">
-        <h2>Hospital</h2>
-        <p>Ficha atual de visita técnica para hospitais. Funciona offline com envio automático quando a conexão retorna.</p>
-        <a href="hospital/">Abrir Hospital</a>
-      </div>
-      <div class="card">
-        <h2>Maternidade</h2>
-        <p>Nova pasta de formulário Maternidade, clonada do modelo Hospital para teste inicial do fluxo.</p>
-        <a href="maternidade/">Abrir Maternidade</a>
-      </div>
-      <div class="card">
-        <h2>UBS</h2>
-        <p>Formulário completo para unidades básicas de saúde, com estrutura, equipes, programas e indicadores de saúde bucal.</p>
-        <a href="ubs/">Abrir UBS</a>
-      </div>
-      <div class="card">
-        <h2>UPA</h2>
-        <p>Ficha de visita técnica para unidades de pronto atendimento, cobrindo estrutura, classificação de risco e segurança.</p>
-        <a href="upa/">Abrir UPA</a>
-      </div>
-      <div class="card">
-        <h2>SADT</h2>
-        <p>Formulário para serviços de atenção domiciliar terapêutica com indicadores de acompanhamento e segurança.</p>
-        <a href="sadt/">Abrir SADT</a>
-      </div>
-      <div class="card">
-        <h2>CAPS</h2>
-        <p>Ficha para centros de atenção psicossocial com avaliação de infraestrutura, fluxo e programas assistenciais.</p>
-        <a href="caps/">Abrir CAPS</a>
-      </div>
-      <div class="card">
-        <h2>Centro de Reabilitação</h2>
-        <p>Formulário de visita técnica para centros de reabilitação, incluindo equipe interdisciplinar, equipamentos e resultados.</p>
-        <a href="centro-reabilitacao/">Abrir Reabilitação</a>
-      </div>
-      <div class="card">
-        <h2>Vigilância Epidemiológica</h2>
-        <p>Ficha voltada para monitoramento de alertas, biossegurança, capacitação e ações em vigilância epidemiológica.</p>
-        <a href="vigilancia-epidemiologica/">Abrir Vigilância</a>
-      </div>
-      <div class="card">
-        <h2>Pesquisa de Satisfação</h2>
-        <p>Formulário rápido para capturar avaliações e o dashboard para visualizar o relatório no tablet.</p>
-        <a href="pesquisa-satisfacao/pesquisa.html">Abrir pesquisa</a>
-        <br><br>
-        <a href="pesquisa-satisfacao/dashboard.html">Abrir dashboard</a>
-      </div>
+    <div class="card" id="card-hospital">
+      <span class="badge" id="badge-hospital"></span>
+      <h2>Hospital</h2>
+      <p>Ficha de visita técnica hospitalar — governança, estrutura, especialidades e recursos humanos.</p>
+      <a href="hospital/">Abrir Hospital</a>
+    </div>
+    <div class="card" id="card-maternidade">
+      <span class="badge" id="badge-maternidade"></span>
+      <h2>Maternidade</h2>
+      <p>Ficha obstétrica — Rede Alyne, centro obstétrico, UTI neonatal, banco de leite e A-SEG.</p>
+      <a href="maternidade/">Abrir Maternidade</a>
+    </div>
+    <div class="card" id="card-ubs">
+      <span class="badge" id="badge-ubs"></span>
+      <h2>UBS</h2>
+      <p>Unidades básicas de saúde — equipes ESF/eSB, programas, saúde bucal e informatização.</p>
+      <a href="ubs/">Abrir UBS</a>
+    </div>
+    <div class="card" id="card-upa">
+      <span class="badge" id="badge-upa"></span>
+      <h2>UPA 24h</h2>
+      <p>Unidades de pronto atendimento — salas por porte, equipamentos, classificação de risco e indicadores.</p>
+      <a href="upa/">Abrir UPA</a>
+    </div>
+    <div class="card" id="card-sadt">
+      <span class="badge" id="badge-sadt"></span>
+      <h2>SADT Domiciliar</h2>
+      <p>Serviço de atenção domiciliar — Melhor em Casa, EMAD/EMAP, coleta e fisioterapia domiciliar.</p>
+      <a href="sadt/">Abrir SADT</a>
+    </div>
+    <div class="card" id="card-caps">
+      <span class="badge" id="badge-caps"></span>
+      <h2>CAPS</h2>
+      <p>Centros de atenção psicossocial — RAPS, processos assistenciais, articulação em rede e indicadores.</p>
+      <a href="caps/">Abrir CAPS</a>
+    </div>
+    <div class="card" id="card-centro-reabilitacao">
+      <span class="badge" id="badge-centro-reabilitacao"></span>
+      <h2>Centro de Reabilitação</h2>
+      <p>CER — modalidades de reabilitação, equipe multiprofissional RCPD e processos assistenciais.</p>
+      <a href="centro-reabilitacao/">Abrir Reabilitação</a>
+    </div>
+    <div class="card" id="card-vigilancia-epidemiologica">
+      <span class="badge" id="badge-vigilancia-epidemiologica"></span>
+      <h2>Vigilância Epidemiológica</h2>
+      <p>VE — sistemas de notificação, SINAN, PNI, investigação epidemiológica e sala de situação.</p>
+      <a href="vigilancia-epidemiologica/">Abrir Vigilância</a>
+    </div>
+    <div class="card">
+      <h2>Pesquisa de Satisfação</h2>
+      <p>Formulário de avaliação e dashboard de relatório para visualização no tablet.</p>
+      <a href="pesquisa-satisfacao/pesquisa.html" style="margin-bottom:10px">Abrir pesquisa</a>
+      <br><br>
+      <a href="pesquisa-satisfacao/dashboard.html">Abrir dashboard</a>
+    </div>
   </div>
 
   <div class="note">
-    <strong>Nota:</strong> o formulário Maternidade foi criado como o segundo formulário para validar a estrutura e o fluxo offline. Em seguida, podemos refinar os campos e replicar para outros tipos.
+    <strong>Uso offline:</strong> abra cada formulário ao menos uma vez com internet para que ele fique disponível offline. Envios realizados sem conexão são salvos automaticamente e sincronizados quando a conexão retornar — mesmo que você esteja nesta tela.
   </div>
 </div>
+
 <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', {
-        scope: '/formularios-visita-tecnica/'
-      })
-      .then(reg => console.log('[PWA] SW registrado:', reg.scope))
-      .catch(err => console.log('[PWA] SW falhou:', err.message));
-    });
+const APPS_SCRIPT_URL = (function() {
+  const stored = localStorage.getItem('formularios-visita-tecnica-appscript-url');
+  return stored || 'https://script.google.com/macros/s/AKfycbygENDGFKSfazR-csNlIgiQ3n5FP1uDJCOd-EeaS6mhlbAJfyap_27d87nFSFPF0QPo/exec';
+})();
+
+// Mapeamento: id do formulário → chave da fila no localStorage
+const FORM_QUEUES = [
+  { id: 'hospital',                    label: 'Hospital' },
+  { id: 'maternidade',                 label: 'Maternidade' },
+  { id: 'ubs',                         label: 'UBS' },
+  { id: 'upa',                         label: 'UPA' },
+  { id: 'sadt',                        label: 'SADT' },
+  { id: 'caps',                        label: 'CAPS' },
+  { id: 'centro-reabilitacao',         label: 'CER' },
+  { id: 'vigilancia-epidemiologica',   label: 'Vigilância' },
+];
+
+function getQueue(id) {
+  try { return JSON.parse(localStorage.getItem(id + '_form_queue') || '[]'); } catch(e) { return []; }
+}
+
+function saveQueue(id, q) {
+  if (q.length === 0) localStorage.removeItem(id + '_form_queue');
+  else localStorage.setItem(id + '_form_queue', JSON.stringify(q));
+}
+
+function countAllPending() {
+  return FORM_QUEUES.reduce((total, f) => total + getQueue(f.id).length, 0);
+}
+
+function updateBadges() {
+  FORM_QUEUES.forEach(f => {
+    const count = getQueue(f.id).length;
+    const badge = document.getElementById('badge-' + f.id);
+    if (!badge) return;
+    if (count > 0) {
+      badge.textContent = count + ' pendente' + (count > 1 ? 's' : '');
+      badge.style.display = 'block';
+    } else {
+      badge.style.display = 'none';
+    }
+  });
+
+  const total = countAllPending();
+  const summary = document.getElementById('pending-summary');
+  if (total > 0 && !navigator.onLine) {
+    summary.textContent = '📦 ' + total + ' envio(s) pendente(s) em formulários offline. Toque aqui quando houver conexão para sincronizar.';
+    summary.style.display = 'block';
+  } else if (total > 0 && navigator.onLine) {
+    summary.textContent = '🔄 ' + total + ' envio(s) pendente(s). Toque aqui para sincronizar agora.';
+    summary.style.display = 'block';
+  } else {
+    summary.style.display = 'none';
   }
+}
+
+function showBanner(type, msg) {
+  const el = document.getElementById('sync-banner');
+  el.className = type;
+  el.textContent = msg;
+}
+
+let syncRunning = false;
+
+async function syncAllQueues() {
+  if (syncRunning || !navigator.onLine) return;
+  syncRunning = true;
+
+  const total = countAllPending();
+  if (total === 0) { syncRunning = false; return; }
+
+  showBanner('syncing', '🔄 Sincronizando ' + total + ' envio(s) pendente(s)...');
+
+  let successCount = 0;
+  let failCount = 0;
+
+  for (const f of FORM_QUEUES) {
+    const q = getQueue(f.id);
+    if (q.length === 0) continue;
+
+    const remaining = [];
+    for (const item of q) {
+      try {
+        await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: new URLSearchParams({ payload: JSON.stringify(item) })
+        });
+        successCount++;
+      } catch(e) {
+        remaining.push(item);
+        failCount++;
+      }
+      // Pequeno delay entre envios para não sobrecarregar o Apps Script
+      await new Promise(r => setTimeout(r, 800));
+    }
+    saveQueue(f.id, remaining);
+  }
+
+  updateBadges();
+
+  if (failCount === 0) {
+    showBanner('success', '✅ Todos os ' + successCount + ' envio(s) sincronizados com sucesso!');
+    setTimeout(() => { document.getElementById('sync-banner').style.display = 'none'; }, 4000);
+  } else {
+    showBanner('error', '⚠ ' + successCount + ' sincronizado(s), ' + failCount + ' com falha. Tente novamente.');
+  }
+
+  syncRunning = false;
+}
+
+function onOnline() {
+  document.getElementById('sync-banner').style.display = 'none';
+  updateBadges();
+  const total = countAllPending();
+  if (total > 0) {
+    showBanner('syncing', '🔄 Conexão restaurada! Sincronizando ' + total + ' envio(s)...');
+    setTimeout(syncAllQueues, 1500);
+  }
+}
+
+function onOffline() {
+  showBanner('offline', '⚠ Sem internet. Envios serão sincronizados automaticamente quando a conexão retornar.');
+  updateBadges();
+}
+
+window.addEventListener('online',  onOnline);
+window.addEventListener('offline', onOffline);
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateBadges();
+  if (!navigator.onLine) {
+    onOffline();
+  } else {
+    // Sincroniza automaticamente ao abrir a página se houver pendentes
+    const total = countAllPending();
+    if (total > 0) {
+      showBanner('syncing', '🔄 Sincronizando ' + total + ' envio(s) pendente(s)...');
+      setTimeout(syncAllQueues, 1000);
+    }
+  }
+});
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', {
+      scope: '/formularios-visita-tecnica/'
+    })
+    .then(reg => console.log('[PWA] SW registrado:', reg.scope))
+    .catch(err => console.log('[PWA] SW falhou:', err.message));
+  });
+}
 </script>
 </body>
 </html>
