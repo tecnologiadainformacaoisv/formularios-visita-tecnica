@@ -1,4 +1,4 @@
-const APP_VERSION = '1.1';
+const APP_VERSION = '0.3.0';
 const CACHE_NAME = `visita-formularios-${APP_VERSION}`;
 const URLS = [
   '/formularios-visita-tecnica/',
