@@ -7,6 +7,7 @@ const URLS = [
   '/formularios-visita-tecnica/config/manifest.json',
   '/formularios-visita-tecnica/shared/styles/instituto.css',
   '/formularios-visita-tecnica/shared/assets/logo-192.png',
+  '/formularios-visita-tecnica/shared/assets/logo-isv.svg',
   // Scripts compartilhados (necessários para CAPS, UBS, UPA, SADT, CER, Vigilância)
   '/formularios-visita-tecnica/scripts/form-core.js',
   '/formularios-visita-tecnica/scripts/appscript-config.js',
