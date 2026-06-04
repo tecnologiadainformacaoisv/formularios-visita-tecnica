@@ -2,7 +2,7 @@
   "name": "Ficha de Visita Técnica – SADT",
   "short_name": "Visita SADT",
   "description": "Formulário PWA de visita técnica para SADT.",
-  "start_url": ".",
+  "start_url": "/formularios-visita-tecnica/sadt/",
   "display": "standalone",
   "background_color": "#0f2d4e",
   "theme_color": "#0f2d4e",

@@ -2,7 +2,7 @@
   "name": "Ficha de Visita Técnica – Maternidade",
   "short_name": "Visita Maternidade",
   "description": "Formulário PWA de visita técnica para maternidades.",
-  "start_url": ".",
+  "start_url": "/formularios-visita-tecnica/maternidade/",
   "display": "standalone",
   "background_color": "#0f2d4e",
   "theme_color": "#0f2d4e",

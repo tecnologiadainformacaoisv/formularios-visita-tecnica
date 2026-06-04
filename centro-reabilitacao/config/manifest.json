@@ -2,7 +2,7 @@
   "name": "Ficha de Visita Técnica – Centro de Reabilitação",
   "short_name": "Visita CER",
   "description": "Formulário PWA de visita técnica para centro de reabilitação.",
-  "start_url": ".",
+  "start_url": "/formularios-visita-tecnica/centro-reabilitacao/",
   "display": "standalone",
   "background_color": "#0f2d4e",
   "theme_color": "#0f2d4e",

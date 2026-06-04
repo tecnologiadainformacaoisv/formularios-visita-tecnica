@@ -2,7 +2,7 @@
   "name": "Ficha de Visita Técnica – UPA",
   "short_name": "Visita UPA",
   "description": "Formulário PWA de visita técnica para UPA.",
-  "start_url": ".",
+  "start_url": "/formularios-visita-tecnica/upa/",
   "display": "standalone",
   "background_color": "#0f2d4e",
   "theme_color": "#0f2d4e",

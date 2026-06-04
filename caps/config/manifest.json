@@ -2,7 +2,7 @@
   "name": "Ficha de Visita Técnica – CAPS",
   "short_name": "Visita CAPS",
   "description": "Formulário PWA de visita técnica para CAPS.",
-  "start_url": ".",
+  "start_url": "/formularios-visita-tecnica/caps/",
   "display": "standalone",
   "background_color": "#0f2d4e",
   "theme_color": "#0f2d4e",

@@ -2,7 +2,7 @@
   "name": "Ficha de Visita Técnica – Hospital",
   "short_name": "Visita Hospital",
   "description": "Formulário PWA de visita técnica para hospitais.",
-  "start_url": ".",
+  "start_url": "/formularios-visita-tecnica/hospital/",
   "display": "standalone",
   "background_color": "#0f2d4e",
   "theme_color": "#0f2d4e",

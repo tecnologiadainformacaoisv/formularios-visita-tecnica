@@ -2,7 +2,7 @@
   "name": "Ficha de Visita Técnica – Vigilância Epidemiológica",
   "short_name": "Visita VE",
   "description": "Formulário PWA de visita técnica para vigilância epidemiológica.",
-  "start_url": ".",
+  "start_url": "/formularios-visita-tecnica/vigilancia-epidemiologica/",
   "display": "standalone",
   "background_color": "#0f2d4e",
   "theme_color": "#0f2d4e",
