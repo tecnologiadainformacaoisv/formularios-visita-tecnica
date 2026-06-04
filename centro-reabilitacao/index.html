@@ -5,7 +5,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Visita Reabilitação">
+  <meta name="apple-mobile-web-app-title" content="Visita CER">
   <meta name="theme-color" content="#0f2d4e">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="/formularios-visita-tecnica/centro-reabilitacao/config/manifest.json">
@@ -38,7 +38,8 @@
     .section-body { padding:20px; display:none; }
     .section-body.open { display:block; }
     .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; }
-    @media (max-width:640px) { .field-grid { grid-template-columns:1fr; } }
+    .field-grid.cols-3 { grid-template-columns:1fr 1fr 1fr; }
+    @media (max-width:640px) { .field-grid, .field-grid.cols-3 { grid-template-columns:1fr; } }
     .field { display:flex; flex-direction:column; gap:6px; }
     .field label { font-size:13px; font-weight:700; color:var(--gray-600); text-transform:uppercase; letter-spacing:.4px; }
     .field label .req { color:var(--red); margin-left:3px; }
@@ -51,6 +52,16 @@
     .radio-group label:active, .check-group label:active { background:var(--accent-bg); border-color:var(--accent); }
     .radio-group label:has(input:checked), .check-group label:has(input:checked) { border-color:var(--accent); background:var(--accent-bg); color:var(--navy); font-weight:700; }
     .radio-group input[type=radio], .check-group input[type=checkbox] { accent-color:var(--accent); cursor:pointer; width:20px; height:20px; flex-shrink:0; }
+    .grid-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:var(--radius); border:1px solid var(--gray-200); }
+    .grid-table { width:100%; border-collapse:collapse; font-size:15px; }
+    .grid-table th { background:var(--navy); color:var(--white); padding:12px 16px; text-align:center; font-size:13px; font-weight:700; letter-spacing:.4px; white-space:nowrap; }
+    .grid-table th:first-child { text-align:left; min-width:220px; }
+    .grid-table td { padding:12px 16px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+    .grid-table td:not(:first-child) { text-align:center; min-width:70px; cursor:pointer; }
+    .grid-table tr:last-child td { border-bottom:none; }
+    .grid-table tr:nth-child(even) { background:var(--gray-50); }
+    .grid-table td:first-child { font-weight:500; color:var(--gray-800); }
+    .grid-table input[type=radio], .grid-table input[type=checkbox] { accent-color:var(--accent); cursor:pointer; width:22px; height:22px; }
     .subsec { margin-top:24px; padding-top:18px; border-top:1px dashed var(--gray-200); }
     .subsec-title { font-size:12px; font-weight:800; color:var(--accent); text-transform:uppercase; letter-spacing:.7px; margin-bottom:14px; }
     #submit-area { max-width:960px; margin:0 auto; padding:0 16px 60px; }
@@ -63,6 +74,7 @@
     #status-msg.queued { background:#fef3c7; color:var(--orange); border:1px solid #fde68a; }
     .sync-queue-info { font-size:13px; color:var(--gray-600); text-align:center; margin-top:10px; display:none; padding:10px; background:#fef3c7; border-radius:8px; }
     .hint { font-size:13px; color:var(--gray-400); font-style:italic; margin-top:2px; }
+    .mt-12 { margin-top:12px; }
     @media (min-width:768px) and (orientation:landscape) { #form-wrap { padding:16px 24px 60px; } .field-grid { gap:14px 28px; } }
   </style>
 </head>
@@ -71,7 +83,7 @@
   <div id="topbar">
     <div id="topbar-inner">
       <h1>Ficha de Visita Técnica – Centro de Reabilitação 2026</h1>
-      <button id="btn-instalar" onclick="" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
+      <button id="btn-instalar" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
       <span id="save-status">–</span>
     </div>
     <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
@@ -80,109 +92,795 @@
   <div id="form-wrap">
     <div class="form-header">
       <h2>Ficha de Visita Técnica – Centro de Reabilitação 2026</h2>
-      <p>Registro de atendimento, equipe interdisciplinar, equipamentos e indicadores de reabilitação.</p>
+      <p>Formulário de avaliação – Centro Especializado de Reabilitação (CER) 2025. Rede de Cuidados à Pessoa com Deficiência.</p>
     </div>
-
     <form id="main-form">
+
+      <!-- SEÇÃO 1 -->
       <div class="section-card">
-        <div class="section-head" onclick="toggleSection(this)">
+        <div class="section-head open" onclick="toggleSection(this)">
           <div class="section-num">1</div>
-          <div class="section-title">Identificação</div>
+          <div class="section-title">Identificação do Serviço</div>
           <div class="section-toggle open">▾</div>
         </div>
         <div class="section-body open">
           <div class="field-grid">
-            <div class="field"><label>Nome do centro <span class="req">*</span></label><input type="text" name="s1_nome_centro" required></div>
-            <div class="field"><label>Município <span class="req">*</span></label><input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required><datalist id="lista_municipios"></datalist><p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p></div>
-            <div class="field"><label>Responsável</label><input type="text" name="s1_responsavel"></div>
-            <div class="field"><label>Telefone</label><input type="text" name="s1_telefone"></div>
-            <div class="field"><label>E-mail</label><input type="email" name="s1_email"></div>
-            <div class="field"><label>Data da Visita</label><input type="date" name="s1_data_visita"></div>
+            <div class="field">
+              <label>Município</label>
+              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off">
+              <datalist id="lista_municipios"></datalist>
+              <p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p>
+            </div>
+            <div class="field">
+              <label>Nome do Serviço / CER</label>
+              <input type="text" name="s1_nome_cer">
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Tipo de CER</div>
+            <div class="field">
+              <div class="radio-group">
+                <label><input type="radio" name="s1_tipo_cer" value="CER I"><span>CER I</span></label>
+                <label><input type="radio" name="s1_tipo_cer" value="CER II"><span>CER II</span></label>
+                <label><input type="radio" name="s1_tipo_cer" value="CER III"><span>CER III</span></label>
+                <label><input type="radio" name="s1_tipo_cer" value="CER IV"><span>CER IV</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Modalidades Atendidas</div>
+            <div class="field">
+              <div class="check-group">
+                <label><input type="checkbox" name="s1_modalidades" value="Reabilitação Física">Reabilitação Física</label>
+                <label><input type="checkbox" name="s1_modalidades" value="Intelectual">Intelectual</label>
+                <label><input type="checkbox" name="s1_modalidades" value="Auditiva">Auditiva</label>
+                <label><input type="checkbox" name="s1_modalidades" value="Visual">Visual</label>
+                <label><input type="checkbox" name="s1_modalidades" value="Ostomia">Ostomia</label>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Gestão e Identificação</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Gestão</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s1_gestao" value="Municipal"><span>Municipal</span></label>
+                  <label><input type="radio" name="s1_gestao" value="Estadual"><span>Estadual</span></label>
+                  <label><input type="radio" name="s1_gestao" value="OS"><span>OS</span></label>
+                  <label><input type="radio" name="s1_gestao" value="OSCIP"><span>OSCIP</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>CNES</label>
+                <input type="text" name="s1_cnes">
+              </div>
+              <div class="field">
+                <label>CNPJ</label>
+                <input type="text" name="s1_cnpj">
+              </div>
+              <div class="field">
+                <label>Telefone</label>
+                <input type="text" name="s1_telefone">
+              </div>
+            </div>
+            <div class="field mt-12">
+              <label>Endereço</label>
+              <input type="text" name="s1_endereco">
+            </div>
+            <div class="field-grid mt-12">
+              <div class="field">
+                <label>Horário de Funcionamento</label>
+                <input type="text" name="s1_horario_func">
+              </div>
+              <div class="field">
+                <label>Horário de Acolhimento</label>
+                <input type="text" name="s1_horario_acolhimento">
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Coordenador(a) do Serviço</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Nome</label>
+                <input type="text" name="s1_coord_nome">
+              </div>
+              <div class="field">
+                <label>Contato</label>
+                <input type="text" name="s1_coord_contato">
+              </div>
+              <div class="field">
+                <label>E-mail</label>
+                <input type="email" name="s1_coord_email">
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Coordenador(a) Municipal da Pessoa com Deficiência</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Nome</label>
+                <input type="text" name="s1_coord_mun_nome">
+              </div>
+              <div class="field">
+                <label>Contato</label>
+                <input type="text" name="s1_coord_mun_contato">
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações Iniciais</div>
+            <div class="field">
+              <textarea name="s1_obs" rows="4"></textarea>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 2 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">2</div>
-          <div class="section-title">Equipe Interdisciplinar</div>
+          <div class="section-title">Documentação, Governança e Regulação</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="field-grid">
-            <div class="field"><label>Médicos</label><input type="number" name="s2_medicos"></div>
-            <div class="field"><label>Fisioterapeutas</label><input type="number" name="s2_fisioterapeutas"></div>
-            <div class="field"><label>Terapeutas ocupacionais</label><input type="number" name="s2_tos"></div>
-            <div class="field"><label>Psicólogos</label><input type="number" name="s2_psicologos"></div>
-            <div class="field"><label>Assistentes sociais</label><input type="number" name="s2_assistentes"></div>
-            <div class="field"><label>Enfermeiros</label><input type="number" name="s2_enfermeiros"></div>
+          <div class="subsec-title">Documentos Institucionais</div>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Documento</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>PTI</td>
+                  <td><input type="radio" name="s2_pti" value="Sim"></td>
+                  <td><input type="radio" name="s2_pti" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Regimento Interno</td>
+                  <td><input type="radio" name="s2_regimento" value="Sim"></td>
+                  <td><input type="radio" name="s2_regimento" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>POPs atualizados</td>
+                  <td><input type="radio" name="s2_pops" value="Sim"></td>
+                  <td><input type="radio" name="s2_pops" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Protocolos Assistenciais (Acolhimento, Reabilitação, Avaliação Funcional, Ostomia, Fono, TO, Fisio)</td>
+                  <td><input type="radio" name="s2_protocolos_assist" value="Sim"></td>
+                  <td><input type="radio" name="s2_protocolos_assist" value="Não"></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="subsec"><div class="check-group">
-            <label><input type="checkbox" name="s2_servicos" value="Avaliação inicial">Avaliação inicial</label>
-            <label><input type="checkbox" name="s2_servicos" value="Reabilitação física">Reabilitação física</label>
-            <label><input type="checkbox" name="s2_servicos" value="Terapia ocupacional">Terapia ocupacional</label>
-            <label><input type="checkbox" name="s2_servicos" value="Acompanhamento psicossocial">Acompanhamento psicossocial</label>
-            <label><input type="checkbox" name="s2_servicos" value="Acompanhamento familiar">Acompanhamento familiar</label>
-          </div></div>
+
+          <div class="subsec">
+            <div class="subsec-title">Regulação e Fluxos</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>Regulado na RCPD municipal?</td>
+                    <td><input type="radio" name="s2_regulado_rcpd" value="Sim"></td>
+                    <td><input type="radio" name="s2_regulado_rcpd" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Fluxo de referência definido</td>
+                    <td><input type="radio" name="s2_fluxo_referencia" value="Sim"></td>
+                    <td><input type="radio" name="s2_fluxo_referencia" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Fluxo de contrarreferência</td>
+                    <td><input type="radio" name="s2_fluxo_contra" value="Sim"></td>
+                    <td><input type="radio" name="s2_fluxo_contra" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Lista de espera organizada</td>
+                    <td><input type="radio" name="s2_lista_espera" value="Sim"></td>
+                    <td><input type="radio" name="s2_lista_espera" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Indicadores acompanhados mensalmente</td>
+                    <td><input type="radio" name="s2_indicadores" value="Sim"></td>
+                    <td><input type="radio" name="s2_indicadores" value="Não"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Conformidades Obrigatórias</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>PCD registrada com avaliação funcional?</td>
+                    <td><input type="radio" name="s2_pcd_aval_func" value="Sim"></td>
+                    <td><input type="radio" name="s2_pcd_aval_func" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>PAD implementado?</td>
+                    <td><input type="radio" name="s2_pad_impl" value="Sim"></td>
+                    <td><input type="radio" name="s2_pad_impl" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Consentimento informado</td>
+                    <td><input type="radio" name="s2_consentimento" value="Sim"></td>
+                    <td><input type="radio" name="s2_consentimento" value="Não"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s2_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 3 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">3</div>
-          <div class="section-title">Infraestrutura e Equipamentos</div>
+          <div class="section-title">Estrutura Física e Acessibilidade</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="check-group">
-            <label><input type="checkbox" name="s3_infra" value="Acesso acessível">Acesso acessível</label>
-            <label><input type="checkbox" name="s3_infra" value="Salas de atendimento">Salas de atendimento</label>
-            <label><input type="checkbox" name="s3_infra" value="Sala de fisioterapia">Sala de fisioterapia</label>
-            <label><input type="checkbox" name="s3_infra" value="Sala de terapia ocupacional">Sala de terapia ocupacional</label>
-            <label><input type="checkbox" name="s3_infra" value="Bancada para avaliações">Bancada para avaliações</label>
-            <label><input type="checkbox" name="s3_infra" value="Aparelhos de mobilização">Aparelhos de mobilização</label>
-            <label><input type="checkbox" name="s3_infra" value="Equipamentos de estimulação">Equipamentos de estimulação</label>
-            <label><input type="checkbox" name="s3_infra" value="Ar-condicionado">Ar-condicionado</label>
+          <div class="subsec-title">Acessibilidade Geral – Lei Brasileira de Inclusão</div>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Rampa de acesso</td>
+                  <td><input type="radio" name="s3_rampa" value="Sim"></td>
+                  <td><input type="radio" name="s3_rampa" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Piso tátil</td>
+                  <td><input type="radio" name="s3_piso_tatil" value="Sim"></td>
+                  <td><input type="radio" name="s3_piso_tatil" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Banheiros acessíveis</td>
+                  <td><input type="radio" name="s3_banheiros_acess" value="Sim"></td>
+                  <td><input type="radio" name="s3_banheiros_acess" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Portas com largura adequada</td>
+                  <td><input type="radio" name="s3_portas_largura" value="Sim"></td>
+                  <td><input type="radio" name="s3_portas_largura" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Circulação interna adequada</td>
+                  <td><input type="radio" name="s3_circulacao" value="Sim"></td>
+                  <td><input type="radio" name="s3_circulacao" value="Não"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Ambiência e Segurança</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Item</th><th>Adequada / Sim</th><th>Inadequada / Não</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>Ventilação</td>
+                    <td><input type="radio" name="s3_ventilacao" value="Adequada"></td>
+                    <td><input type="radio" name="s3_ventilacao" value="Inadequada"></td>
+                  </tr>
+                  <tr>
+                    <td>Iluminação</td>
+                    <td><input type="radio" name="s3_iluminacao" value="Adequada"></td>
+                    <td><input type="radio" name="s3_iluminacao" value="Inadequada"></td>
+                  </tr>
+                  <tr>
+                    <td>Climatização</td>
+                    <td><input type="radio" name="s3_climatizacao" value="Adequada"></td>
+                    <td><input type="radio" name="s3_climatizacao" value="Inadequada"></td>
+                  </tr>
+                  <tr>
+                    <td>Sinalização visual</td>
+                    <td><input type="radio" name="s3_sinalizacao_visual" value="Sim"></td>
+                    <td><input type="radio" name="s3_sinalizacao_visual" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Sinalização tátil</td>
+                    <td><input type="radio" name="s3_sinalizacao_tatil" value="Sim"></td>
+                    <td><input type="radio" name="s3_sinalizacao_tatil" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Extintores válidos</td>
+                    <td><input type="radio" name="s3_extintores" value="Sim"></td>
+                    <td><input type="radio" name="s3_extintores" value="Não"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Ambientes Obrigatórios</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Ambiente</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr><td>Recepção acessível</td><td><input type="radio" name="s3_recepcao" value="Sim"></td><td><input type="radio" name="s3_recepcao" value="Não"></td></tr>
+                  <tr><td>Sala de triagem/acolhimento</td><td><input type="radio" name="s3_sala_triagem" value="Sim"></td><td><input type="radio" name="s3_sala_triagem" value="Não"></td></tr>
+                  <tr><td>Sala de avaliação multiprofissional</td><td><input type="radio" name="s3_sala_aval_multi" value="Sim"></td><td><input type="radio" name="s3_sala_aval_multi" value="Não"></td></tr>
+                  <tr><td>Consultório de Fisiatria/Médico</td><td><input type="radio" name="s3_cons_fisiatria" value="Sim"></td><td><input type="radio" name="s3_cons_fisiatria" value="Não"></td></tr>
+                  <tr><td>Sala de Fisioterapia Motora</td><td><input type="radio" name="s3_sala_fisio_motora" value="Sim"></td><td><input type="radio" name="s3_sala_fisio_motora" value="Não"></td></tr>
+                  <tr><td>Sala de Fisioterapia Respiratória</td><td><input type="radio" name="s3_sala_fisio_resp" value="Sim"></td><td><input type="radio" name="s3_sala_fisio_resp" value="Não"></td></tr>
+                  <tr><td>Sala de Terapia Ocupacional</td><td><input type="radio" name="s3_sala_to" value="Sim"></td><td><input type="radio" name="s3_sala_to" value="Não"></td></tr>
+                  <tr><td>Sala de Fonoaudiologia</td><td><input type="radio" name="s3_sala_fono" value="Sim"></td><td><input type="radio" name="s3_sala_fono" value="Não"></td></tr>
+                  <tr><td>Sala de Psicologia</td><td><input type="radio" name="s3_sala_psico" value="Sim"></td><td><input type="radio" name="s3_sala_psico" value="Não"></td></tr>
+                  <tr><td>Sala de Pedagogia/Reabilitação Intelectual</td><td><input type="radio" name="s3_sala_pedagogia" value="Sim"></td><td><input type="radio" name="s3_sala_pedagogia" value="Não"></td></tr>
+                  <tr><td>Ginásio terapêutico</td><td><input type="radio" name="s3_ginasio" value="Sim"></td><td><input type="radio" name="s3_ginasio" value="Não"></td></tr>
+                  <tr><td>Oficina ortopédica/próteses e órteses</td><td><input type="radio" name="s3_oficina_ortop" value="Sim"></td><td><input type="radio" name="s3_oficina_ortop" value="Não"></td></tr>
+                  <tr><td>Sala de Ostomia</td><td><input type="radio" name="s3_sala_ostomia" value="Sim"></td><td><input type="radio" name="s3_sala_ostomia" value="Não"></td></tr>
+                  <tr><td>Sala de estimulação precoce</td><td><input type="radio" name="s3_sala_estim_precoce" value="Sim"></td><td><input type="radio" name="s3_sala_estim_precoce" value="Não"></td></tr>
+                  <tr><td>Farmácia/dispensação de OPME/dispositivos</td><td><input type="radio" name="s3_farmacia" value="Sim"></td><td><input type="radio" name="s3_farmacia" value="Não"></td></tr>
+                  <tr><td>Auditório/sala de grupos</td><td><input type="radio" name="s3_auditorio" value="Sim"></td><td><input type="radio" name="s3_auditorio" value="Não"></td></tr>
+                  <tr><td>Sala de prontuários</td><td><input type="radio" name="s3_sala_pront" value="Sim"></td><td><input type="radio" name="s3_sala_pront" value="Não"></td></tr>
+                  <tr><td>Sanitários adaptados</td><td><input type="radio" name="s3_sanitarios" value="Sim"></td><td><input type="radio" name="s3_sanitarios" value="Não"></td></tr>
+                  <tr><td>Área externa terapêutica</td><td><input type="radio" name="s3_area_externa" value="Sim"></td><td><input type="radio" name="s3_area_externa" value="Não"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s3_obs" rows="4"></textarea>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 4 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">4</div>
-          <div class="section-title">Atendimento e Resultados</div>
+          <div class="section-title">Equipe Multiprofissional – RCPD</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <p class="hint" style="margin-bottom:14px;">Preencha a carga horária semanal (CH) de cada profissional presente.</p>
+          <div class="field-grid">
+            <div class="field">
+              <label>Médico Fisiatra – CH</label>
+              <input type="number" name="s4_fisiatra_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Neurologista Infantil – CH</label>
+              <input type="number" name="s4_neurologista_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Ortopedista – CH</label>
+              <input type="number" name="s4_ortopedista_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Enfermeiro – CH</label>
+              <input type="number" name="s4_enfermeiro_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Técnico de Enfermagem – CH</label>
+              <input type="number" name="s4_tec_enfermagem_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Fisioterapeuta – CH</label>
+              <input type="number" name="s4_fisio_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Terapeuta Ocupacional – CH</label>
+              <input type="number" name="s4_to_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Fonoaudiólogo – CH</label>
+              <input type="number" name="s4_fono_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Psicólogo – CH</label>
+              <input type="number" name="s4_psicologo_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Assistente Social – CH</label>
+              <input type="number" name="s4_assist_social_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Nutricionista – CH</label>
+              <input type="number" name="s4_nutricionista_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Pedagogo – CH</label>
+              <input type="number" name="s4_pedagogo_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Educador Físico – CH</label>
+              <input type="number" name="s4_educ_fisico_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Técnico Ortopédico – CH</label>
+              <input type="number" name="s4_tec_ortopedico_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Instrutor de Libras – CH</label>
+              <input type="number" name="s4_libras_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Oftalmologista (se CER Visual) – CH</label>
+              <input type="number" name="s4_oftalmo_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Audiologista (se CER Auditivo) – CH</label>
+              <input type="number" name="s4_audiologo_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Odontólogo (se protocolo PNE) – CH</label>
+              <input type="number" name="s4_odontologo_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Motorista – CH</label>
+              <input type="number" name="s4_motorista_ch" min="0" placeholder="CH">
+            </div>
+            <div class="field">
+              <label>Administrativo/Recepção – CH</label>
+              <input type="number" name="s4_admin_ch" min="0" placeholder="CH">
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Avaliação da Equipe</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Equipe completa?</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s4_equipe_completa" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s4_equipe_completa" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Faltam quais profissionais?</label>
+                <input type="text" name="s4_faltam_profissionais">
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s4_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 5 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">5</div>
+          <div class="section-title">Processos Assistenciais</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="subsec-title">Acolhimento e Avaliação Funcional</div>
+          <div class="field-grid">
+            <div class="field">
+              <label>Acolhimento diário?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s5_acolhimento_diario" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s5_acolhimento_diario" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Avaliação multidisciplinar realizada na 1ª visita?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s5_aval_multidisciplinar" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s5_aval_multidisciplinar" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Classificação funcional aplicada?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s5_classif_funcional" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s5_classif_funcional" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Método de Classificação Funcional</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s5_metodo_classif" value="CIF"><span>CIF</span></label>
+                <label><input type="radio" name="s5_metodo_classif" value="Escalas específicas"><span>Escalas específicas</span></label>
+                <label><input type="radio" name="s5_metodo_classif" value="Outros"><span>Outros</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">PAD – Plano de Atendimento Domiciliar</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>Elaborado individualmente?</td>
+                    <td><input type="radio" name="s5_pad_individual" value="Sim"></td>
+                    <td><input type="radio" name="s5_pad_individual" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Revisado periodicamente?</td>
+                    <td><input type="radio" name="s5_pad_revisado" value="Sim"></td>
+                    <td><input type="radio" name="s5_pad_revisado" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Equipe participa?</td>
+                    <td><input type="radio" name="s5_pad_equipe" value="Sim"></td>
+                    <td><input type="radio" name="s5_pad_equipe" value="Não"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Reabilitação por Modalidade</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Modalidade</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr><td>Fisioterapia motora</td><td><input type="radio" name="s5_fisio_motora" value="Sim"></td><td><input type="radio" name="s5_fisio_motora" value="Não"></td></tr>
+                  <tr><td>Fisioterapia respiratória</td><td><input type="radio" name="s5_fisio_resp" value="Sim"></td><td><input type="radio" name="s5_fisio_resp" value="Não"></td></tr>
+                  <tr><td>Terapia Ocupacional</td><td><input type="radio" name="s5_to" value="Sim"></td><td><input type="radio" name="s5_to" value="Não"></td></tr>
+                  <tr><td>Fonoaudiologia</td><td><input type="radio" name="s5_fono" value="Sim"></td><td><input type="radio" name="s5_fono" value="Não"></td></tr>
+                  <tr><td>Reabilitação Intelectual</td><td><input type="radio" name="s5_reab_intelectual" value="Sim"></td><td><input type="radio" name="s5_reab_intelectual" value="Não"></td></tr>
+                  <tr><td>Reabilitação visual</td><td><input type="radio" name="s5_reab_visual" value="Sim"></td><td><input type="radio" name="s5_reab_visual" value="Não"></td></tr>
+                  <tr><td>Reabilitação auditiva</td><td><input type="radio" name="s5_reab_auditiva" value="Sim"></td><td><input type="radio" name="s5_reab_auditiva" value="Não"></td></tr>
+                  <tr><td>Ostomia</td><td><input type="radio" name="s5_ostomia" value="Sim"></td><td><input type="radio" name="s5_ostomia" value="Não"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Grupos Terapêuticos, VD e Educação em Saúde</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Quais grupos terapêuticos são realizados?</label>
+                <input type="text" name="s5_grupos_terapeuticos">
+              </div>
+              <div class="field">
+                <label>Realiza Visita Domiciliar?</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s5_vd" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s5_vd" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Treinamento de cuidadores</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s5_trein_cuidadores" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s5_trein_cuidadores" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Orientações estruturadas</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s5_orientacoes" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s5_orientacoes" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s5_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 6 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">6</div>
+          <div class="section-title">Prontuário e Registros</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Prontuário eletrônico?</td>
+                  <td><input type="radio" name="s6_pront_eletronico" value="Sim"></td>
+                  <td><input type="radio" name="s6_pront_eletronico" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Multiprofissional?</td>
+                  <td><input type="radio" name="s6_pront_multipro" value="Sim"></td>
+                  <td><input type="radio" name="s6_pront_multipro" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Registros organizados?</td>
+                  <td><input type="radio" name="s6_pront_organizado" value="Sim"></td>
+                  <td><input type="radio" name="s6_pront_organizado" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Evolução diária?</td>
+                  <td><input type="radio" name="s6_evolucao_diaria" value="Sim"></td>
+                  <td><input type="radio" name="s6_evolucao_diaria" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Protocolos assinados?</td>
+                  <td><input type="radio" name="s6_protocolos_assinados" value="Sim"></td>
+                  <td><input type="radio" name="s6_protocolos_assinados" value="Não"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s6_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 7 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">7</div>
+          <div class="section-title">Articulação em Rede</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field">
+            <label>Articula com</label>
+            <div class="check-group">
+              <label><input type="checkbox" name="s7_rede" value="APS/ESF">APS/ESF</label>
+              <label><input type="checkbox" name="s7_rede" value="Hospital Municipal">Hospital Municipal</label>
+              <label><input type="checkbox" name="s7_rede" value="Ortopedia/Neurologia de referência">Ortopedia/Neurologia de referência</label>
+              <label><input type="checkbox" name="s7_rede" value="Escolas inclusivas">Escolas inclusivas</label>
+              <label><input type="checkbox" name="s7_rede" value="CRAS/CREAS/Assistência Social">CRAS/CREAS/Assistência Social</label>
+              <label><input type="checkbox" name="s7_rede" value="CAPS/Saúde Mental">CAPS/Saúde Mental</label>
+              <label><input type="checkbox" name="s7_rede" value="SAMU/Transporte">SAMU/Transporte</label>
+              <label><input type="checkbox" name="s7_rede" value="Regulação Municipal">Regulação Municipal</label>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Fluxos</div>
+            <div class="field">
+              <label>Fluxo de retorno para APS</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s7_retorno_aps" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s7_retorno_aps" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s7_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 8 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">8</div>
+          <div class="section-title">Indicadores</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
           <div class="field-grid">
-            <div class="field"><label>Pacientes em acompanhamento</label><input type="number" name="s4_pacientes"></div>
-            <div class="field"><label>Novos casos/mes</label><input type="number" name="s4_novos_casos"></div>
-            <div class="field"><label>Retornos mensais</label><input type="number" name="s4_retorno"></div>
-            <div class="field"><label>Alta funcional</label><div class="radio-group"><label><input type="radio" name="s4_alta" value="Sim">Sim</label><label><input type="radio" name="s4_alta" value="Não">Não</label></div></div>
-            <div class="field"><label>Tempo médio de espera</label><input type="text" name="s4_tempo_espera"></div>
-            <div class="field"><label>Coordenação com rede</label><div class="radio-group"><label><input type="radio" name="s4_coord" value="Boa">Boa</label><label><input type="radio" name="s4_coord" value="Regular">Regular</label><label><input type="radio" name="s4_coord" value="Ruim">Ruim</label></div></div>
+            <div class="field">
+              <label>Nº de usuários ativos</label>
+              <input type="number" name="s8_usuarios_ativos" min="0">
+            </div>
+            <div class="field">
+              <label>Nº de avaliações iniciais/mês</label>
+              <input type="number" name="s8_aval_iniciais" min="0">
+            </div>
+            <div class="field">
+              <label>Nº de sessões/mês</label>
+              <input type="number" name="s8_sessoes_mes" min="0">
+            </div>
+            <div class="field">
+              <label>Fila de espera</label>
+              <input type="number" name="s8_fila_espera" min="0">
+            </div>
+            <div class="field">
+              <label>Adesão aos atendimentos</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s8_adesao" value="Boa"><span>Boa</span></label>
+                <label><input type="radio" name="s8_adesao" value="Regular"><span>Regular</span></label>
+                <label><input type="radio" name="s8_adesao" value="Ruim"><span>Ruim</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Nº de órteses/próteses entregues</label>
+              <input type="number" name="s8_orteses_entregues" min="0">
+            </div>
           </div>
-          <div class="subsec"><div class="field"><label>Observações e recomendações</label><textarea name="s4_observacoes" rows="4"></textarea></div></div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s8_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 9 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
-          <div class="section-num">5</div>
-          <div class="section-title">Segurança e Gestão</div>
+          <div class="section-num">9</div>
+          <div class="section-title">Não Conformidades e Riscos</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="check-group">
-            <label><input type="checkbox" name="s5_gestao" value="Plano de biossegurança">Plano de biossegurança</label>
-            <label><input type="checkbox" name="s5_gestao" value="Controle de pragas">Controle de pragas</label>
-            <label><input type="checkbox" name="s5_gestao" value="Registro de incidentes">Registro de incidentes</label>
-            <label><input type="checkbox" name="s5_gestao" value="Acompanhamento de indicadores">Acompanhamento de indicadores</label>
-            <label><input type="checkbox" name="s5_gestao" value="Treinamento de equipe">Treinamento de equipe</label>
+          <div class="field">
+            <label>Principais Achados</label>
+            <textarea name="s9_nao_conformidades" rows="6"></textarea>
           </div>
-          <div class="subsec"><div class="field-grid"><div class="field"><label>Data da visita</label><input type="date" name="s5_data_visita"></div><div class="field"><label>Assinatura</label><input type="text" name="s5_assinatura"></div></div></div>
         </div>
       </div>
+
+      <!-- SEÇÃO 10 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">10</div>
+          <div class="section-title">Recomendações</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field">
+            <textarea name="s10_recomendacoes" rows="6"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 11 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">11</div>
+          <div class="section-title">Finalização</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field">
+              <label>Data da Visita</label>
+              <input type="date" name="s11_data_visita">
+            </div>
+            <div class="field">
+              <label>Responsável</label>
+              <input type="text" name="s11_responsavel">
+            </div>
+            <div class="field">
+              <label>Profissional que Acompanhou</label>
+              <input type="text" name="s11_acompanhou">
+            </div>
+            <div class="field">
+              <label>Assinatura</label>
+              <input type="text" name="s11_assinatura">
+            </div>
+          </div>
+        </div>
+      </div>
+
     </form>
   </div>
 
@@ -197,14 +895,13 @@
     window.FORM_CONFIG = {
       id: 'centro-reabilitacao',
       title: 'Ficha de Visita Técnica – Centro de Reabilitação',
-      shortName: 'Visita Centro de Reabilitação',
+      shortName: 'Visita CER',
       csvBaseName: 'centro-reabilitacao',
       tipo: 'cer'
     };
   </script>
   <script src="../scripts/form-core.js"></script>
   <iframe name="form_target" id="form_target" style="display:none"></iframe>
-
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -213,17 +910,10 @@
           .catch(err => console.warn('[PWA] SW falhou:', err.message));
       });
     }
-
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       const btn = document.getElementById('btn-instalar');
-      if (btn) {
-        btn.style.display = 'block';
-        btn.onclick = () => {
-          e.prompt();
-          e.userChoice.then(() => { btn.style.display = 'none'; });
-        };
-      }
+      if (btn) { btn.style.display = 'block'; btn.onclick = () => { e.prompt(); e.userChoice.then(() => { btn.style.display = 'none'; }); }; }
     });
   </script>
 </body>

@@ -5,7 +5,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Visita Vigilância">
+  <meta name="apple-mobile-web-app-title" content="Visita Vigilância Ep.">
   <meta name="theme-color" content="#0f2d4e">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="manifest" href="/formularios-visita-tecnica/vigilancia-epidemiologica/config/manifest.json">
@@ -38,7 +38,8 @@
     .section-body { padding:20px; display:none; }
     .section-body.open { display:block; }
     .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; }
-    @media (max-width:640px) { .field-grid { grid-template-columns:1fr; } }
+    .field-grid.cols-3 { grid-template-columns:1fr 1fr 1fr; }
+    @media (max-width:640px) { .field-grid, .field-grid.cols-3 { grid-template-columns:1fr; } }
     .field { display:flex; flex-direction:column; gap:6px; }
     .field label { font-size:13px; font-weight:700; color:var(--gray-600); text-transform:uppercase; letter-spacing:.4px; }
     .field label .req { color:var(--red); margin-left:3px; }
@@ -51,6 +52,16 @@
     .radio-group label:active, .check-group label:active { background:var(--accent-bg); border-color:var(--accent); }
     .radio-group label:has(input:checked), .check-group label:has(input:checked) { border-color:var(--accent); background:var(--accent-bg); color:var(--navy); font-weight:700; }
     .radio-group input[type=radio], .check-group input[type=checkbox] { accent-color:var(--accent); cursor:pointer; width:20px; height:20px; flex-shrink:0; }
+    .grid-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:var(--radius); border:1px solid var(--gray-200); }
+    .grid-table { width:100%; border-collapse:collapse; font-size:15px; }
+    .grid-table th { background:var(--navy); color:var(--white); padding:12px 16px; text-align:center; font-size:13px; font-weight:700; letter-spacing:.4px; white-space:nowrap; }
+    .grid-table th:first-child { text-align:left; min-width:220px; }
+    .grid-table td { padding:12px 16px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+    .grid-table td:not(:first-child) { text-align:center; min-width:70px; cursor:pointer; }
+    .grid-table tr:last-child td { border-bottom:none; }
+    .grid-table tr:nth-child(even) { background:var(--gray-50); }
+    .grid-table td:first-child { font-weight:500; color:var(--gray-800); }
+    .grid-table input[type=radio], .grid-table input[type=checkbox] { accent-color:var(--accent); cursor:pointer; width:22px; height:22px; }
     .subsec { margin-top:24px; padding-top:18px; border-top:1px dashed var(--gray-200); }
     .subsec-title { font-size:12px; font-weight:800; color:var(--accent); text-transform:uppercase; letter-spacing:.7px; margin-bottom:14px; }
     #submit-area { max-width:960px; margin:0 auto; padding:0 16px 60px; }
@@ -63,6 +74,7 @@
     #status-msg.queued { background:#fef3c7; color:var(--orange); border:1px solid #fde68a; }
     .sync-queue-info { font-size:13px; color:var(--gray-600); text-align:center; margin-top:10px; display:none; padding:10px; background:#fef3c7; border-radius:8px; }
     .hint { font-size:13px; color:var(--gray-400); font-style:italic; margin-top:2px; }
+    .mt-12 { margin-top:12px; }
     @media (min-width:768px) and (orientation:landscape) { #form-wrap { padding:16px 24px 60px; } .field-grid { gap:14px 28px; } }
   </style>
 </head>
@@ -71,7 +83,7 @@
   <div id="topbar">
     <div id="topbar-inner">
       <h1>Ficha de Visita Técnica – Vigilância Epidemiológica 2026</h1>
-      <button id="btn-instalar" onclick="" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
+      <button id="btn-instalar" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
       <span id="save-status">–</span>
     </div>
     <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
@@ -80,101 +92,520 @@
   <div id="form-wrap">
     <div class="form-header">
       <h2>Ficha de Visita Técnica – Vigilância Epidemiológica 2026</h2>
-      <p>Registro de alertas, notificação, biossegurança e resposta rápida em vigilância epidemiológica.</p>
+      <p>Formulário de avaliação – Vigilância Epidemiológica (VE) 2025. Conforme SVS/MS, SINAN, PNI e Diretrizes de Vigilância em Saúde.</p>
     </div>
-
     <form id="main-form">
+
+      <!-- SEÇÃO 1 -->
       <div class="section-card">
-        <div class="section-head" onclick="toggleSection(this)">
+        <div class="section-head open" onclick="toggleSection(this)">
           <div class="section-num">1</div>
-          <div class="section-title">Identificação</div>
+          <div class="section-title">Identificação do Município e do Serviço</div>
           <div class="section-toggle open">▾</div>
         </div>
         <div class="section-body open">
           <div class="field-grid">
-            <div class="field"><label>Nome da unidade <span class="req">*</span></label><input type="text" name="s1_nome_unidade" required></div>
-            <div class="field"><label>Município <span class="req">*</span></label><input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required><datalist id="lista_municipios"></datalist><p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p></div>
-            <div class="field"><label>Responsável</label><input type="text" name="s1_responsavel"></div>
-            <div class="field"><label>Telefone</label><input type="text" name="s1_telefone"></div>
-            <div class="field"><label>E-mail</label><input type="email" name="s1_email"></div>
-            <div class="field"><label>Data da Visita</label><input type="date" name="s1_data_visita"></div>
+            <div class="field">
+              <label>Município</label>
+              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off">
+              <datalist id="lista_municipios"></datalist>
+              <p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p>
+            </div>
+            <div class="field">
+              <label>Unidade Visitada</label>
+              <input type="text" name="s1_unidade_visitada">
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Tipo de Unidade</div>
+            <div class="field">
+              <div class="radio-group">
+                <label><input type="radio" name="s1_tipo_unidade" value="UBS"><span>UBS</span></label>
+                <label><input type="radio" name="s1_tipo_unidade" value="Hospital"><span>Hospital</span></label>
+                <label><input type="radio" name="s1_tipo_unidade" value="UPA"><span>UPA</span></label>
+                <label><input type="radio" name="s1_tipo_unidade" value="CAPS"><span>CAPS</span></label>
+                <label><input type="radio" name="s1_tipo_unidade" value="Laboratório"><span>Laboratório</span></label>
+                <label><input type="radio" name="s1_tipo_unidade" value="Outro"><span>Outro</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Responsável e Equipe</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Nome do Responsável Local pela VE</label>
+                <input type="text" name="s1_responsavel_ve">
+              </div>
+              <div class="field">
+                <label>Cargo/Função</label>
+                <input type="text" name="s1_cargo_funcao">
+              </div>
+              <div class="field">
+                <label>Contato</label>
+                <input type="text" name="s1_contato">
+              </div>
+              <div class="field">
+                <label>Equipe presente na visita</label>
+                <input type="text" name="s1_equipe_visita">
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 2 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">2</div>
-          <div class="section-title">Notificação e Alertas</div>
+          <div class="section-title">Governança, Organização e Fluxos da VE</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="field-grid">
-            <div class="field"><label>Casos suspeitos</label><input type="number" name="s2_casos_suspeitos"></div>
-            <div class="field"><label>Casos confirmados</label><input type="number" name="s2_casos_confirmados"></div>
-            <div class="field"><label>Óbitos</label><input type="number" name="s2_obitos"></div>
-            <div class="field"><label>Tempo de notificação</label><input type="text" name="s2_tempo_notificacao"></div>
-            <div class="field"><label>Disseminação de alertas</label><div class="radio-group"><label><input type="radio" name="s2_alertas" value="Sim">Sim</label><label><input type="radio" name="s2_alertas" value="Não">Não</label></div></div>
-            <div class="field"><label>Sistema de comunicação</label><input type="text" name="s2_sistema_comunicacao"></div>
+          <div class="subsec-title">Estrutura e Funcionamento da VE</div>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr><td>Sala/Espaço de VE estruturado</td><td><input type="radio" name="s2_sala_ve" value="Sim"></td><td><input type="radio" name="s2_sala_ve" value="Não"></td></tr>
+                <tr><td>Horário de funcionamento adequado</td><td><input type="radio" name="s2_horario_func" value="Sim"></td><td><input type="radio" name="s2_horario_func" value="Não"></td></tr>
+                <tr><td>Acesso à internet e sistemas</td><td><input type="radio" name="s2_acesso_internet" value="Sim"></td><td><input type="radio" name="s2_acesso_internet" value="Não"></td></tr>
+                <tr><td>Escala de responsáveis definida</td><td><input type="radio" name="s2_escala_resp" value="Sim"></td><td><input type="radio" name="s2_escala_resp" value="Não"></td></tr>
+                <tr><td>Livro de registros/planilhas internas</td><td><input type="radio" name="s2_livro_registros" value="Sim"></td><td><input type="radio" name="s2_livro_registros" value="Não"></td></tr>
+              </tbody>
+            </table>
           </div>
-          <div class="subsec"><div class="field"><label>Detalhes de alertas e surtos</label><textarea name="s2_detalhes" rows="4"></textarea></div></div>
+
+          <div class="subsec">
+            <div class="subsec-title">Sistemas Utilizados – Usa? / Funciona bem?</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead>
+                  <tr><th>Sistema</th><th>Usa?</th><th>Funciona bem?</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>e-SUS Notifica</td>
+                    <td><input type="checkbox" name="s2_esus_notifica_usa" value="Sim"></td>
+                    <td><input type="checkbox" name="s2_esus_notifica_func" value="Sim"></td>
+                  </tr>
+                  <tr>
+                    <td>SINAN</td>
+                    <td><input type="checkbox" name="s2_sinan_usa" value="Sim"></td>
+                    <td><input type="checkbox" name="s2_sinan_func" value="Sim"></td>
+                  </tr>
+                  <tr>
+                    <td>GAL</td>
+                    <td><input type="checkbox" name="s2_gal_usa" value="Sim"></td>
+                    <td><input type="checkbox" name="s2_gal_func" value="Sim"></td>
+                  </tr>
+                  <tr>
+                    <td>SIVEP-Gripe</td>
+                    <td><input type="checkbox" name="s2_sivep_usa" value="Sim"></td>
+                    <td><input type="checkbox" name="s2_sivep_func" value="Sim"></td>
+                  </tr>
+                  <tr>
+                    <td>SI-PNI/SIPNI</td>
+                    <td><input type="checkbox" name="s2_sipni_usa" value="Sim"></td>
+                    <td><input type="checkbox" name="s2_sipni_func" value="Sim"></td>
+                  </tr>
+                  <tr>
+                    <td>SIM/SINASC</td>
+                    <td><input type="checkbox" name="s2_sim_usa" value="Sim"></td>
+                    <td><input type="checkbox" name="s2_sim_func" value="Sim"></td>
+                  </tr>
+                  <tr>
+                    <td>e-SUS AB</td>
+                    <td><input type="checkbox" name="s2_esus_ab_usa" value="Sim"></td>
+                    <td><input type="checkbox" name="s2_esus_ab_func" value="Sim"></td>
+                  </tr>
+                  <tr>
+                    <td>SIA/SUS/CNES</td>
+                    <td><input type="checkbox" name="s2_sia_usa" value="Sim"></td>
+                    <td><input type="checkbox" name="s2_sia_func" value="Sim"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Fluxos e Rotinas</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Fluxo de notificação definido</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_fluxo_notif" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s2_fluxo_notif" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Notificações em até 24h para agravos imediatos?</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_notif_24h" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s2_notif_24h" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Articulação com unidades assistenciais</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_articulacao_assist" value="Adequada"><span>Adequada</span></label>
+                  <label><input type="radio" name="s2_articulacao_assist" value="Insuficiente"><span>Insuficiente</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Comunicação com laboratório</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_comunic_lab" value="Boa"><span>Boa</span></label>
+                  <label><input type="radio" name="s2_comunic_lab" value="Ruim"><span>Ruim</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Participa da Sala de Situação municipal?</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_sala_situacao" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s2_sala_situacao" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s2_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 3 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">3</div>
-          <div class="section-title">Biossegurança e Investigação</div>
+          <div class="section-title">Notificação Compulsória – Checklist</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="check-group">
-            <label><input type="checkbox" name="s3_biosseguranca" value="EPI disponível">EPI disponível</label>
-            <label><input type="checkbox" name="s3_biosseguranca" value="Luvas e máscara">Luvas e máscara</label>
-            <label><input type="checkbox" name="s3_biosseguranca" value="Higienização de mãos">Higienização de mãos</label>
-            <label><input type="checkbox" name="s3_biosseguranca" value="Descarte adequado">Descarte adequado</label>
-            <label><input type="checkbox" name="s3_biosseguranca" value="Isolamento adequado">Isolamento adequado</label>
-            <label><input type="checkbox" name="s3_biosseguranca" value="Vigilância ativa">Vigilância ativa</label>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr><td>Lista de agravos exposta na unidade?</td><td><input type="radio" name="s3_lista_agravos" value="Sim"></td><td><input type="radio" name="s3_lista_agravos" value="Não"></td></tr>
+                <tr><td>Profissionais conhecem os agravos?</td><td><input type="radio" name="s3_prof_conhecem" value="Sim"></td><td><input type="radio" name="s3_prof_conhecem" value="Não"></td></tr>
+                <tr><td>Ficha eletrônica disponível?</td><td><input type="radio" name="s3_ficha_eletronica" value="Sim"></td><td><input type="radio" name="s3_ficha_eletronica" value="Não"></td></tr>
+                <tr><td>Ficha impressa disponível?</td><td><input type="radio" name="s3_ficha_impressa" value="Sim"></td><td><input type="radio" name="s3_ficha_impressa" value="Não"></td></tr>
+              </tbody>
+            </table>
           </div>
-          <div class="subsec"><div class="field"><label>Metodologia de investigação</label><textarea name="s3_metodologia" rows="4"></textarea></div></div>
+          <div class="field mt-12">
+            <label>Tempo de envio</label>
+            <div class="radio-group">
+              <label><input type="radio" name="s3_tempo_envio" value="Adequado (<24h)"><span>Adequado (&lt;24h)</span></label>
+              <label><input type="radio" name="s3_tempo_envio" value="Moderado"><span>Moderado</span></label>
+              <label><input type="radio" name="s3_tempo_envio" value="Atrasado"><span>Atrasado</span></label>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s3_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 4 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">4</div>
-          <div class="section-title">Campanhas e Capacitação</div>
+          <div class="section-title">Investigação Epidemiológica</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="check-group">
-            <label><input type="checkbox" name="s4_capacitacao" value="Vacinação">Vacinação</label>
-            <label><input type="checkbox" name="s4_capacitacao" value="Prevenção de infecções">Prevenção de infecções</label>
-            <label><input type="checkbox" name="s4_capacitacao" value="Educação em saúde">Educação em saúde</label>
-            <label><input type="checkbox" name="s4_capacitacao" value="Treinamento de equipe">Treinamento de equipe</label>
-            <label><input type="checkbox" name="s4_capacitacao" value="Ações em escolas">Ações em escolas</label>
+          <div class="field">
+            <label>Inicia investigação dentro do prazo?</label>
+            <div class="radio-group">
+              <label><input type="radio" name="s4_investig_prazo" value="Sim"><span>Sim</span></label>
+              <label><input type="radio" name="s4_investig_prazo" value="Não"><span>Não</span></label>
+            </div>
           </div>
-          <div class="subsec"><div class="field-grid"><div class="field"><label>Pessoas treinadas</label><input type="number" name="s4_pessoas_treinadas"></div><div class="field"><label>Agenda de ações</label><input type="text" name="s4_agenda"></div></div></div>
+          <div class="subsec">
+            <div class="subsec-title">Situações Investigadas Corretamente</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Situação</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr><td>Arboviroses (Dengue/Zika/Chikungunya)</td><td><input type="radio" name="s4_arboviroses" value="Sim"></td><td><input type="radio" name="s4_arboviroses" value="Não"></td></tr>
+                  <tr><td>Síndrome Respiratória Aguda Grave</td><td><input type="radio" name="s4_srag" value="Sim"></td><td><input type="radio" name="s4_srag" value="Não"></td></tr>
+                  <tr><td>Doenças de Notificação Imediata</td><td><input type="radio" name="s4_doencas_imediatas" value="Sim"></td><td><input type="radio" name="s4_doencas_imediatas" value="Não"></td></tr>
+                  <tr><td>Violências</td><td><input type="radio" name="s4_violencias" value="Sim"></td><td><input type="radio" name="s4_violencias" value="Não"></td></tr>
+                  <tr><td>Doenças imunopreveníveis</td><td><input type="radio" name="s4_imunopreveniv" value="Sim"></td><td><input type="radio" name="s4_imunopreveniv" value="Não"></td></tr>
+                  <tr><td>Doenças de transmissão hídrica/alimentar</td><td><input type="radio" name="s4_hidrica_alim" value="Sim"></td><td><input type="radio" name="s4_hidrica_alim" value="Não"></td></tr>
+                  <tr><td>TB e Hanseníase</td><td><input type="radio" name="s4_tb_hanseniase" value="Sim"></td><td><input type="radio" name="s4_tb_hanseniase" value="Não"></td></tr>
+                  <tr><td>Eventos adversos pós-vacinação (AEFI)</td><td><input type="radio" name="s4_aefi" value="Sim"></td><td><input type="radio" name="s4_aefi" value="Não"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="field mt-12">
+            <label>Tempo de conclusão das investigações</label>
+            <div class="radio-group">
+              <label><input type="radio" name="s4_tempo_conclusao" value="Adequado"><span>Adequado</span></label>
+              <label><input type="radio" name="s4_tempo_conclusao" value="Parcial"><span>Parcial</span></label>
+              <label><input type="radio" name="s4_tempo_conclusao" value="Inadequado"><span>Inadequado</span></label>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s4_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 5 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">5</div>
-          <div class="section-title">Conclusão e Ações</div>
+          <div class="section-title">PNI – Programa Nacional de Imunizações</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="subsec-title">Integração com PNI</div>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr><td>Atualiza doses no SIPNI</td><td><input type="radio" name="s5_atualiza_sipni" value="Sim"></td><td><input type="radio" name="s5_atualiza_sipni" value="Não"></td></tr>
+                <tr><td>Realiza busca ativa de faltosos</td><td><input type="radio" name="s5_busca_ativa" value="Sim"></td><td><input type="radio" name="s5_busca_ativa" value="Não"></td></tr>
+                <tr><td>Controla estoque de imunobiológicos</td><td><input type="radio" name="s5_estoque_imuno" value="Sim"></td><td><input type="radio" name="s5_estoque_imuno" value="Não"></td></tr>
+                <tr><td>Controle de temperatura da rede de frio atualizado</td><td><input type="radio" name="s5_rede_frio" value="Sim"></td><td><input type="radio" name="s5_rede_frio" value="Não"></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="field mt-12">
+            <label>Coberturas vacinais do território</label>
+            <div class="radio-group">
+              <label><input type="radio" name="s5_coberturas" value="Adequadas"><span>Adequadas</span></label>
+              <label><input type="radio" name="s5_coberturas" value="Abaixo da meta"><span>Abaixo da meta</span></label>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s5_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 6 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">6</div>
+          <div class="section-title">Análise de Dados, Indicadores e Sala de Situação</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="subsec-title">Indicadores Acompanhados</div>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Indicador</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr><td>Arboviroses</td><td><input type="radio" name="s6_ind_arboviroses" value="Sim"></td><td><input type="radio" name="s6_ind_arboviroses" value="Não"></td></tr>
+                <tr><td>SRAG/Influenza/COVID-19</td><td><input type="radio" name="s6_ind_srag" value="Sim"></td><td><input type="radio" name="s6_ind_srag" value="Não"></td></tr>
+                <tr><td>Cobertura vacinal</td><td><input type="radio" name="s6_ind_cobertura" value="Sim"></td><td><input type="radio" name="s6_ind_cobertura" value="Não"></td></tr>
+                <tr><td>Notificações violentas (VIVA)</td><td><input type="radio" name="s6_ind_viva" value="Sim"></td><td><input type="radio" name="s6_ind_viva" value="Não"></td></tr>
+                <tr><td>Mortalidade infantil</td><td><input type="radio" name="s6_ind_mort_infantil" value="Sim"></td><td><input type="radio" name="s6_ind_mort_infantil" value="Não"></td></tr>
+                <tr><td>Mortalidade materna</td><td><input type="radio" name="s6_ind_mort_materna" value="Sim"></td><td><input type="radio" name="s6_ind_mort_materna" value="Não"></td></tr>
+                <tr><td>TB/Hanseníase</td><td><input type="radio" name="s6_ind_tb_hans" value="Sim"></td><td><input type="radio" name="s6_ind_tb_hans" value="Não"></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="field-grid mt-12">
+            <div class="field">
+              <label>A unidade utiliza os dados para ação?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s6_uso_dados" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s6_uso_dados" value="Não"><span>Não</span></label>
+                <label><input type="radio" name="s6_uso_dados" value="Parcialmente"><span>Parcialmente</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Existência de Sala de Situação ativa</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s6_sala_situacao_ativa" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s6_sala_situacao_ativa" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s6_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 7 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">7</div>
+          <div class="section-title">Equipe da Vigilância e Capacitação</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field">
+            <label>Equipe presente</label>
+            <div class="check-group">
+              <label><input type="checkbox" name="s7_equipe" value="Enfermeiro VE">Enfermeiro VE</label>
+              <label><input type="checkbox" name="s7_equipe" value="Técnico de Vigilância">Técnico de Vigilância</label>
+              <label><input type="checkbox" name="s7_equipe" value="Digitador">Digitador</label>
+              <label><input type="checkbox" name="s7_equipe" value="Apoio administrativo">Apoio administrativo</label>
+              <label><input type="checkbox" name="s7_equipe" value="Apoiador da APS">Apoiador da APS</label>
+              <label><input type="checkbox" name="s7_equipe" value="Epidemiologista">Epidemiologista (se houver)</label>
+              <label><input type="checkbox" name="s7_equipe" value="Motorista">Motorista</label>
+            </div>
+          </div>
+          <div class="field mt-12">
+            <label>Equipe suficiente?</label>
+            <div class="radio-group">
+              <label><input type="radio" name="s7_equipe_suficiente" value="Sim"><span>Sim</span></label>
+              <label><input type="radio" name="s7_equipe_suficiente" value="Não"><span>Não</span></label>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Capacitações Recebidas nos Últimos 12 Meses</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Capacitação</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr><td>Notificação eletrônica</td><td><input type="radio" name="s7_cap_notif_eletronica" value="Sim"></td><td><input type="radio" name="s7_cap_notif_eletronica" value="Não"></td></tr>
+                  <tr><td>Investigação epidemiológica</td><td><input type="radio" name="s7_cap_investigacao" value="Sim"></td><td><input type="radio" name="s7_cap_investigacao" value="Não"></td></tr>
+                  <tr><td>Arboviroses</td><td><input type="radio" name="s7_cap_arboviroses" value="Sim"></td><td><input type="radio" name="s7_cap_arboviroses" value="Não"></td></tr>
+                  <tr><td>Doenças imunopreveníveis</td><td><input type="radio" name="s7_cap_imunoprev" value="Sim"></td><td><input type="radio" name="s7_cap_imunoprev" value="Não"></td></tr>
+                  <tr><td>Violências</td><td><input type="radio" name="s7_cap_violencias" value="Sim"></td><td><input type="radio" name="s7_cap_violencias" value="Não"></td></tr>
+                  <tr><td>SRAG/COVID-19</td><td><input type="radio" name="s7_cap_srag" value="Sim"></td><td><input type="radio" name="s7_cap_srag" value="Não"></td></tr>
+                  <tr><td>Rede de Frio</td><td><input type="radio" name="s7_cap_rede_frio" value="Sim"></td><td><input type="radio" name="s7_cap_rede_frio" value="Não"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s7_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 8 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">8</div>
+          <div class="section-title">Surtos, Alertas e Eventos Epidemiológicos</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
           <div class="field-grid">
-            <div class="field"><label>Intervenções necessárias</label><input type="text" name="s5_intervencoes"></div>
-            <div class="field"><label>Responsável pela ação</label><input type="text" name="s5_responsavel_acao"></div>
-            <div class="field"><label>Prazo</label><input type="text" name="s5_prazo"></div>
-            <div class="field"><label>Conformidade</label><div class="radio-group"><label><input type="radio" name="s5_conformidade" value="Adequado">Adequado</label><label><input type="radio" name="s5_conformidade" value="Parcial">Parcial</label><label><input type="radio" name="s5_conformidade" value="Inadequado">Inadequado</label></div></div>
+            <div class="field">
+              <label>Existe registro de surtos recentes?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s8_surtos_recentes" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s8_surtos_recentes" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Se sim, quais?</label>
+              <input type="text" name="s8_surtos_quais">
+            </div>
+            <div class="field">
+              <label>Investigações foram concluídas corretamente?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s8_investig_concluidas" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s8_investig_concluidas" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Planos de ação foram elaborados?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s8_planos_acao" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s8_planos_acao" value="Não"><span>Não</span></label>
+              </div>
+            </div>
           </div>
-          <div class="subsec"><div class="field"><label>Observações finais</label><textarea name="s5_observacoes" rows="4"></textarea></div></div>
-          <div class="subsec"><div class="field-grid"><div class="field"><label>Data da visita</label><input type="date" name="s5_data_visita"></div><div class="field"><label>Assinatura</label><input type="text" name="s5_assinatura"></div></div></div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s8_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- SEÇÃO 9 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">9</div>
+          <div class="section-title">Principais Não Conformidades Identificadas</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field">
+            <textarea name="s9_nao_conformidades" rows="6"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 10 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">10</div>
+          <div class="section-title">Recomendações da Visita</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field">
+            <textarea name="s10_recomendacoes" rows="6"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 11 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">11</div>
+          <div class="section-title">Assinaturas</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field">
+              <label>Data</label>
+              <input type="date" name="s11_data">
+            </div>
+            <div class="field">
+              <label>Responsável pela Visita</label>
+              <input type="text" name="s11_responsavel_visita">
+            </div>
+            <div class="field">
+              <label>Cargo/Função</label>
+              <input type="text" name="s11_cargo_funcao">
+            </div>
+            <div class="field">
+              <label>Responsável Local pela VE</label>
+              <input type="text" name="s11_responsavel_ve">
+            </div>
+            <div class="field">
+              <label>Assinatura</label>
+              <input type="text" name="s11_assinatura">
+            </div>
+          </div>
+        </div>
+      </div>
+
     </form>
   </div>
 
@@ -189,14 +620,13 @@
     window.FORM_CONFIG = {
       id: 'vigilancia-epidemiologica',
       title: 'Ficha de Visita Técnica – Vigilância Epidemiológica',
-      shortName: 'Visita Vigilância Epidemiológica',
+      shortName: 'Visita Vigilância',
       csvBaseName: 'vigilancia-epidemiologica',
       tipo: 'vigilancia'
     };
   </script>
   <script src="../scripts/form-core.js"></script>
   <iframe name="form_target" id="form_target" style="display:none"></iframe>
-
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -205,17 +635,10 @@
           .catch(err => console.warn('[PWA] SW falhou:', err.message));
       });
     }
-
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       const btn = document.getElementById('btn-instalar');
-      if (btn) {
-        btn.style.display = 'block';
-        btn.onclick = () => {
-          e.prompt();
-          e.userChoice.then(() => { btn.style.display = 'none'; });
-        };
-      }
+      if (btn) { btn.style.display = 'block'; btn.onclick = () => { e.prompt(); e.userChoice.then(() => { btn.style.display = 'none'; }); }; }
     });
   </script>
 </body>

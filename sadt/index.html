@@ -11,7 +11,7 @@
   <link rel="manifest" href="/formularios-visita-tecnica/sadt/config/manifest.json">
   <link rel="icon" type="image/png" href="../../shared/assets/logo-192.png">
   <link rel="apple-touch-icon" href="../../shared/assets/logo-192.png">
-  <title>Ficha de Visita Técnica – SADT 2026</title>
+  <title>Ficha de Visita Técnica – SADT Domiciliar 2026</title>
   <style>
     :root { --navy:#0f2d4e; --navy-light:#1a3f6b; --accent:#1e8dd2; --accent-bg:#e8f4fd; --green:#16a34a; --red:#dc2626; --orange:#d97706; --gray-50:#f8fafc; --gray-100:#f1f5f9; --gray-200:#e2e8f0; --gray-400:#94a3b8; --gray-600:#475569; --gray-800:#1e293b; --white:#ffffff; --radius:10px; --shadow:0 1px 4px rgba(0,0,0,.1); --shadow-md:0 4px 10px rgba(0,0,0,.12); --touch-min:48px; --font-base:16px; }
     * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
@@ -38,7 +38,8 @@
     .section-body { padding:20px; display:none; }
     .section-body.open { display:block; }
     .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 24px; }
-    @media (max-width:640px) { .field-grid { grid-template-columns:1fr; } }
+    .field-grid.cols-3 { grid-template-columns:1fr 1fr 1fr; }
+    @media (max-width:640px) { .field-grid, .field-grid.cols-3 { grid-template-columns:1fr; } }
     .field { display:flex; flex-direction:column; gap:6px; }
     .field label { font-size:13px; font-weight:700; color:var(--gray-600); text-transform:uppercase; letter-spacing:.4px; }
     .field label .req { color:var(--red); margin-left:3px; }
@@ -51,6 +52,16 @@
     .radio-group label:active, .check-group label:active { background:var(--accent-bg); border-color:var(--accent); }
     .radio-group label:has(input:checked), .check-group label:has(input:checked) { border-color:var(--accent); background:var(--accent-bg); color:var(--navy); font-weight:700; }
     .radio-group input[type=radio], .check-group input[type=checkbox] { accent-color:var(--accent); cursor:pointer; width:20px; height:20px; flex-shrink:0; }
+    .grid-table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:var(--radius); border:1px solid var(--gray-200); }
+    .grid-table { width:100%; border-collapse:collapse; font-size:15px; }
+    .grid-table th { background:var(--navy); color:var(--white); padding:12px 16px; text-align:center; font-size:13px; font-weight:700; letter-spacing:.4px; white-space:nowrap; }
+    .grid-table th:first-child { text-align:left; min-width:220px; }
+    .grid-table td { padding:12px 16px; border-bottom:1px solid var(--gray-100); vertical-align:middle; }
+    .grid-table td:not(:first-child) { text-align:center; min-width:70px; cursor:pointer; }
+    .grid-table tr:last-child td { border-bottom:none; }
+    .grid-table tr:nth-child(even) { background:var(--gray-50); }
+    .grid-table td:first-child { font-weight:500; color:var(--gray-800); }
+    .grid-table input[type=radio], .grid-table input[type=checkbox] { accent-color:var(--accent); cursor:pointer; width:22px; height:22px; }
     .subsec { margin-top:24px; padding-top:18px; border-top:1px dashed var(--gray-200); }
     .subsec-title { font-size:12px; font-weight:800; color:var(--accent); text-transform:uppercase; letter-spacing:.7px; margin-bottom:14px; }
     #submit-area { max-width:960px; margin:0 auto; padding:0 16px 60px; }
@@ -63,6 +74,7 @@
     #status-msg.queued { background:#fef3c7; color:var(--orange); border:1px solid #fde68a; }
     .sync-queue-info { font-size:13px; color:var(--gray-600); text-align:center; margin-top:10px; display:none; padding:10px; background:#fef3c7; border-radius:8px; }
     .hint { font-size:13px; color:var(--gray-400); font-style:italic; margin-top:2px; }
+    .mt-12 { margin-top:12px; }
     @media (min-width:768px) and (orientation:landscape) { #form-wrap { padding:16px 24px 60px; } .field-grid { gap:14px 28px; } }
   </style>
 </head>
@@ -70,8 +82,8 @@
   <div id="offline-banner">⚠ Você está sem internet. O formulário será salvo localmente e enviado quando a conexão for restaurada.</div>
   <div id="topbar">
     <div id="topbar-inner">
-      <h1>Ficha de Visita Técnica – SADT 2026</h1>
-      <button id="btn-instalar" onclick="" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
+      <h1>Ficha de Visita Técnica – SADT Domiciliar 2026</h1>
+      <button id="btn-instalar" style="display:none;background:#1e8dd2;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">📲 Instalar</button>
       <span id="save-status">–</span>
     </div>
     <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
@@ -79,132 +91,553 @@
 
   <div id="form-wrap">
     <div class="form-header">
-      <h2>Ficha de Visita Técnica – SADT 2026</h2>
-      <p>Registro de estrutura, atendimento, equipe e indicadores para o serviço de atenção domiciliar terapêutica.</p>
+      <h2>Ficha de Visita Técnica – SADT Domiciliar 2026</h2>
+      <p>Formulário de avaliação – SADT Domiciliar – Programa Melhor em Casa 2025.</p>
     </div>
-
     <form id="main-form">
+
+      <!-- SEÇÃO 1 -->
       <div class="section-card">
-        <div class="section-head" onclick="toggleSection(this)">
+        <div class="section-head open" onclick="toggleSection(this)">
           <div class="section-num">1</div>
-          <div class="section-title">Identificação</div>
+          <div class="section-title">Identificação do Serviço</div>
           <div class="section-toggle open">▾</div>
         </div>
         <div class="section-body open">
           <div class="field-grid">
-            <div class="field"><label>Nome da SADT <span class="req">*</span></label><input type="text" name="s1_nome_sadt" required></div>
-            <div class="field"><label>Município <span class="req">*</span></label><input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off" required><datalist id="lista_municipios"></datalist><p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p></div>
-            <div class="field"><label>Responsável Técnico</label><input type="text" name="s1_responsavel"></div>
-            <div class="field"><label>Telefone</label><input type="text" name="s1_telefone"></div>
-            <div class="field"><label>E-mail</label><input type="email" name="s1_email"></div>
-            <div class="field"><label>Data da Visita</label><input type="date" name="s1_data_visita"></div>
-            <div class="field"><label>Vínculo de Gestão</label><div class="radio-group"><label><input type="radio" name="s1_gestao" value="Municipal">Municipal</label><label><input type="radio" name="s1_gestao" value="Estadual">Estadual</label><label><input type="radio" name="s1_gestao" value="OS">OS</label></div></div>
+            <div class="field">
+              <label>Município</label>
+              <input type="text" name="s1_municipio" id="campo_municipio" list="lista_municipios" autocomplete="off">
+              <datalist id="lista_municipios"></datalist>
+              <p class="hint" id="hint_municipio">🔄 Carregando municípios do Ceará...</p>
+            </div>
+            <div class="field">
+              <label>Unidade Executora do SADT</label>
+              <input type="text" name="s1_unidade_executora">
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Equipe Vinculada</div>
+            <div class="field">
+              <div class="radio-group">
+                <label><input type="radio" name="s1_equipe_vinculada" value="EMAD"><span>EMAD</span></label>
+                <label><input type="radio" name="s1_equipe_vinculada" value="EMAP"><span>EMAP</span></label>
+                <label><input type="radio" name="s1_equipe_vinculada" value="Ambas"><span>Ambas</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Tipo de SADT Ofertado</div>
+            <div class="field">
+              <div class="check-group">
+                <label><input type="checkbox" name="s1_tipo_sadt" value="Exames Laboratoriais">Exames Laboratoriais</label>
+                <label><input type="checkbox" name="s1_tipo_sadt" value="Exames de Imagem">Exames de Imagem</label>
+                <label><input type="checkbox" name="s1_tipo_sadt" value="Coletas Domiciliares">Coletas Domiciliares</label>
+                <label><input type="checkbox" name="s1_tipo_sadt" value="Fisioterapia">Fisioterapia</label>
+                <label><input type="checkbox" name="s1_tipo_sadt" value="Fonoaudiologia">Fonoaudiologia</label>
+                <label><input type="checkbox" name="s1_tipo_sadt" value="Reabilitação Domiciliar">Reabilitação Domiciliar</label>
+                <label><input type="checkbox" name="s1_tipo_sadt" value="Oxigenoterapia/Ventilação">Oxigenoterapia/Ventilação</label>
+                <label><input type="checkbox" name="s1_tipo_sadt" value="Outros">Outros</label>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Responsáveis</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Coordenador(a) Geral do Melhor em Casa</label>
+                <input type="text" name="s1_coord_geral_nome">
+              </div>
+              <div class="field">
+                <label>Contato do Coordenador(a)</label>
+                <input type="text" name="s1_coord_geral_contato">
+              </div>
+              <div class="field">
+                <label>Responsável Técnico do SADT</label>
+                <input type="text" name="s1_rt_nome">
+              </div>
+              <div class="field">
+                <label>Categoria/Registro do RT</label>
+                <input type="text" name="s1_rt_registro">
+              </div>
+              <div class="field">
+                <label>Contato do RT</label>
+                <input type="text" name="s1_rt_contato">
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações Iniciais</div>
+            <div class="field">
+              <textarea name="s1_obs" rows="4"></textarea>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 2 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">2</div>
-          <div class="section-title">Estrutura e Ambiência</div>
+          <div class="section-title">Estrutura Organizacional e Governança</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="check-group">
-            <label><input type="checkbox" name="s2_estrutura" value="Sala adequada">Sala adequada</label>
-            <label><input type="checkbox" name="s2_estrutura" value="Telefone funcional">Telefone funcional</label>
-            <label><input type="checkbox" name="s2_estrutura" value="Internet estável">Internet estável</label>
-            <label><input type="checkbox" name="s2_estrutura" value="Computador disponível">Computador disponível</label>
-            <label><input type="checkbox" name="s2_estrutura" value="Impressora disponível">Impressora disponível</label>
-            <label><input type="checkbox" name="s2_estrutura" value="Bebedouro funcional">Bebedouro funcional</label>
-            <label><input type="checkbox" name="s2_estrutura" value="Acessibilidade adequada">Acessibilidade adequada</label>
-            <label><input type="checkbox" name="s2_estrutura" value="Segurança física">Segurança física</label>
-            <label><input type="checkbox" name="s2_estrutura" value="Materiais de biossegurança">Materiais de biossegurança</label>
+          <div class="subsec-title">Documentos e Conformidades</div>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Documento</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr><td>POPs atualizados</td><td><input type="radio" name="s2_pops" value="Sim"></td><td><input type="radio" name="s2_pops" value="Não"></td></tr>
+                <tr><td>Protocolos de SADT domiciliar</td><td><input type="radio" name="s2_protocolos_sadt" value="Sim"></td><td><input type="radio" name="s2_protocolos_sadt" value="Não"></td></tr>
+                <tr><td>Protocolos de segurança do paciente</td><td><input type="radio" name="s2_protocolos_seguranca" value="Sim"></td><td><input type="radio" name="s2_protocolos_seguranca" value="Não"></td></tr>
+                <tr><td>Lista de pacientes ativos do SADT</td><td><input type="radio" name="s2_lista_pacientes" value="Sim"></td><td><input type="radio" name="s2_lista_pacientes" value="Não"></td></tr>
+                <tr><td>Escalas atualizadas</td><td><input type="radio" name="s2_escalas" value="Sim"></td><td><input type="radio" name="s2_escalas" value="Não"></td></tr>
+                <tr><td>Controle de transporte e rotas</td><td><input type="radio" name="s2_controle_transporte" value="Sim"></td><td><input type="radio" name="s2_controle_transporte" value="Não"></td></tr>
+              </tbody>
+            </table>
           </div>
-          <div class="subsec"><div class="field"><label>Observações de infraestrutura</label><textarea name="s2_observacoes" rows="4"></textarea></div></div>
+
+          <div class="subsec">
+            <div class="subsec-title">Regulação e Fluxos</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Fluxo de solicitação de SADT estruturado</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_fluxo_sadt" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s2_fluxo_sadt" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Critérios de elegibilidade definidos</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_criterios_elegib" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s2_criterios_elegib" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Regulação municipal integrada</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_regulacao_mun" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s2_regulacao_mun" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Comunicação entre EMAD/EMAP e SADT</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s2_comunicacao_emad" value="Adequada"><span>Adequada</span></label>
+                  <label><input type="radio" name="s2_comunicacao_emad" value="Insuficiente"><span>Insuficiente</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s2_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 3 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">3</div>
-          <div class="section-title">Equipe e Capacitação</div>
+          <div class="section-title">Equipes e Profissionais</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="field-grid">
-            <div class="field"><label>Médicos</label><input type="number" name="s3_medicos"></div>
-            <div class="field"><label>Enfermeiros</label><input type="number" name="s3_enfermeiros"></div>
-            <div class="field"><label>Técnicos de enfermagem</label><input type="number" name="s3_tecnicos"></div>
-            <div class="field"><label>Fisioterapeutas</label><input type="number" name="s3_fisioterapeutas"></div>
-            <div class="field"><label>Assistentes sociais</label><input type="number" name="s3_assistente_social"></div>
-            <div class="field"><label>Agentes de apoio</label><input type="number" name="s3_agentes_apoio"></div>
+          <div class="field">
+            <label>Equipe do SADT</label>
+            <div class="check-group">
+              <label><input type="checkbox" name="s3_equipe" value="Biomédico">Biomédico</label>
+              <label><input type="checkbox" name="s3_equipe" value="Técnico de Laboratório">Técnico de Laboratório</label>
+              <label><input type="checkbox" name="s3_equipe" value="Enfermeiro">Enfermeiro</label>
+              <label><input type="checkbox" name="s3_equipe" value="Técnico de Enfermagem">Técnico de Enfermagem</label>
+              <label><input type="checkbox" name="s3_equipe" value="Fisioterapeuta">Fisioterapeuta</label>
+              <label><input type="checkbox" name="s3_equipe" value="Fonoaudiólogo">Fonoaudiólogo</label>
+              <label><input type="checkbox" name="s3_equipe" value="Terapeuta Ocupacional">Terapeuta Ocupacional</label>
+              <label><input type="checkbox" name="s3_equipe" value="Nutricionista">Nutricionista</label>
+              <label><input type="checkbox" name="s3_equipe" value="Auxiliar administrativo">Auxiliar administrativo</label>
+              <label><input type="checkbox" name="s3_equipe" value="Motorista">Motorista</label>
+            </div>
           </div>
-          <div class="subsec"><div class="check-group">
-            <label><input type="checkbox" name="s3_capacitacoes" value="Atenção domiciliar">Atenção domiciliar</label>
-            <label><input type="checkbox" name="s3_capacitacoes" value="Biossegurança">Biossegurança</label>
-            <label><input type="checkbox" name="s3_capacitacoes" value="Cuidados paliativos">Cuidados paliativos</label>
-            <label><input type="checkbox" name="s3_capacitacoes" value="Administração de medicamentos">Administração de medicamentos</label>
-            <label><input type="checkbox" name="s3_capacitacoes" value="Teleatendimento">Teleatendimento</label>
-          </div></div>
+          <div class="field-grid mt-12">
+            <div class="field">
+              <label>Equipe completa?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s3_equipe_completa" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s3_equipe_completa" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Pendências</label>
+              <input type="text" name="s3_pendencias">
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Capacitações Obrigatórias</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Capacitação</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr><td>Coleta segura</td><td><input type="radio" name="s3_cap_coleta" value="Sim"></td><td><input type="radio" name="s3_cap_coleta" value="Não"></td></tr>
+                  <tr><td>Transporte de amostras biológicas</td><td><input type="radio" name="s3_cap_transporte" value="Sim"></td><td><input type="radio" name="s3_cap_transporte" value="Não"></td></tr>
+                  <tr><td>Boas Práticas Laboratoriais</td><td><input type="radio" name="s3_cap_bpl" value="Sim"></td><td><input type="radio" name="s3_cap_bpl" value="Não"></td></tr>
+                  <tr><td>Segurança do paciente no domicílio</td><td><input type="radio" name="s3_cap_seg_paciente" value="Sim"></td><td><input type="radio" name="s3_cap_seg_paciente" value="Não"></td></tr>
+                  <tr><td>Humanização e PTS domiciliar</td><td><input type="radio" name="s3_cap_humanizacao" value="Sim"></td><td><input type="radio" name="s3_cap_humanizacao" value="Não"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s3_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 4 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">4</div>
-          <div class="section-title">Atendimento e Acompanhamento</div>
+          <div class="section-title">Infraestrutura e Logística do SADT</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="field-grid">
-            <div class="field"><label>Pacientes em tratamento</label><input type="number" name="s4_pacientes"></div>
-            <div class="field"><label>Visitas domiciliares/mês</label><input type="number" name="s4_visitas_mes"></div>
-            <div class="field"><label>Supervisões realizadas</label><input type="number" name="s4_supervisoes"></div>
-            <div class="field"><label>Óbitos relatados</label><input type="number" name="s4_obitos"></div>
-            <div class="field"><label>Alta hospitalar registrada</label><div class="radio-group"><label><input type="radio" name="s4_alta" value="Sim">Sim</label><label><input type="radio" name="s4_alta" value="Não">Não</label></div></div>
-            <div class="field"><label>Encaminhamentos para especialidades</label><input type="text" name="s4_encaminhamentos"></div>
+          <div class="subsec-title">Condições de Funcionamento</div>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Item</th><th>Sim / Adequada</th><th>Não / Inadequada</th></tr></thead>
+              <tbody>
+                <tr><td>Sala de apoio/apoio logístico</td><td><input type="radio" name="s4_sala_apoio" value="Sim"></td><td><input type="radio" name="s4_sala_apoio" value="Não"></td></tr>
+                <tr><td>Área para armazenamento de insumos</td><td><input type="radio" name="s4_armazenamento" value="Adequada"></td><td><input type="radio" name="s4_armazenamento" value="Inadequada"></td></tr>
+                <tr><td>Geladeira para biológicos</td><td><input type="radio" name="s4_geladeira" value="Sim"></td><td><input type="radio" name="s4_geladeira" value="Não"></td></tr>
+                <tr><td>Controle de temperatura</td><td><input type="radio" name="s4_controle_temp" value="Sim"></td><td><input type="radio" name="s4_controle_temp" value="Não"></td></tr>
+                <tr><td>Kit de coleta organizado</td><td><input type="radio" name="s4_kit_coleta" value="Sim"></td><td><input type="radio" name="s4_kit_coleta" value="Não"></td></tr>
+                <tr><td>Kits de fisioterapia e reabilitação completos</td><td><input type="radio" name="s4_kit_fisio" value="Sim"></td><td><input type="radio" name="s4_kit_fisio" value="Não"></td></tr>
+              </tbody>
+            </table>
           </div>
-          <div class="subsec"><div class="field"><label>Fluxo de atendimento e pontos críticos</label><textarea name="s4_fluxo" rows="4"></textarea></div></div>
+
+          <div class="subsec">
+            <div class="subsec-title">Transporte</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Viatura</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s4_viatura" value="Exclusiva"><span>Exclusiva</span></label>
+                  <label><input type="radio" name="s4_viatura" value="Compartilhada"><span>Compartilhada</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Condições do veículo</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s4_condicoes_veiculo" value="Adequada"><span>Adequada</span></label>
+                  <label><input type="radio" name="s4_condicoes_veiculo" value="Inadequada"><span>Inadequada</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Caixa térmica para transporte de amostras</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s4_caixa_termica" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s4_caixa_termica" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>EPIs disponíveis</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s4_epis" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s4_epis" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s4_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 5 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">5</div>
-          <div class="section-title">Acessibilidade e Segurança</div>
+          <div class="section-title">Processos Assistenciais – SADT Domiciliar</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
-          <div class="check-group">
-            <label><input type="checkbox" name="s5_segurança" value="Rampa acessível">Rampa acessível</label>
-            <label><input type="checkbox" name="s5_segurança" value="Piso tátil">Piso tátil</label>
-            <label><input type="checkbox" name="s5_segurança" value="Sinalização adequada">Sinalização adequada</label>
-            <label><input type="checkbox" name="s5_segurança" value="Vigilância eletrônica">Vigilância eletrônica</label>
-            <label><input type="checkbox" name="s5_segurança" value="Kit de biossegurança">Kit de biossegurança</label>
-            <label><input type="checkbox" name="s5_segurança" value="Registro de incidentes">Registro de incidentes</label>
-            <label><input type="checkbox" name="s5_segurança" value="EPI disponível">EPI disponível</label>
+          <div class="subsec-title">Acolhimento/Triagem</div>
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td>Pacientes conferem critérios do Melhor em Casa?</td>
+                  <td><input type="radio" name="s5_criterios_melhor" value="Sim"></td>
+                  <td><input type="radio" name="s5_criterios_melhor" value="Não"></td>
+                </tr>
+                <tr>
+                  <td>Priorização correta (acamados, restritos, cuidados paliativos)?</td>
+                  <td><input type="radio" name="s5_priorizacao" value="Sim"></td>
+                  <td><input type="radio" name="s5_priorizacao" value="Não"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Execução do SADT no Domicílio</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Item</th><th>Sim / Correta</th><th>Não / Incorreta</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>Identificação adequada do paciente</td>
+                    <td><input type="radio" name="s5_identif_paciente" value="Sim"></td>
+                    <td><input type="radio" name="s5_identif_paciente" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Higienização/técnicas assépticas</td>
+                    <td><input type="radio" name="s5_higienizacao" value="Correta"></td>
+                    <td><input type="radio" name="s5_higienizacao" value="Incorreta"></td>
+                  </tr>
+                  <tr>
+                    <td>Preparo de materiais antes da saída</td>
+                    <td><input type="radio" name="s5_preparo_materiais" value="Sim"></td>
+                    <td><input type="radio" name="s5_preparo_materiais" value="Não"></td>
+                  </tr>
+                  <tr>
+                    <td>Registro imediato da coleta/exame</td>
+                    <td><input type="radio" name="s5_registro_imediato" value="Sim"></td>
+                    <td><input type="radio" name="s5_registro_imediato" value="Não"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Coleta Laboratorial</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Item</th><th>Correta / Adequado / Sim</th><th>Incorreta / Inadequado / Não</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>Identificação dos tubos</td>
+                    <td><input type="radio" name="s5_identif_tubos" value="Correta"></td>
+                    <td><input type="radio" name="s5_identif_tubos" value="Incorreta"></td>
+                  </tr>
+                  <tr>
+                    <td>Armazenamento pós-coleta</td>
+                    <td><input type="radio" name="s5_armazenamento_pos" value="Adequado"></td>
+                    <td><input type="radio" name="s5_armazenamento_pos" value="Inadequado"></td>
+                  </tr>
+                  <tr>
+                    <td>Tempo até o laboratório dentro do padrão</td>
+                    <td><input type="radio" name="s5_tempo_laboratorio" value="Sim"></td>
+                    <td><input type="radio" name="s5_tempo_laboratorio" value="Não"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Fisioterapia / Fono / Reabilitação Domiciliar</div>
+            <div class="grid-table-wrap">
+              <table class="grid-table">
+                <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+                <tbody>
+                  <tr><td>Avaliação funcional inicial realizada?</td><td><input type="radio" name="s5_aval_funcional" value="Sim"></td><td><input type="radio" name="s5_aval_funcional" value="Não"></td></tr>
+                  <tr><td>PTS domiciliar registrado?</td><td><input type="radio" name="s5_pts_domiciliar" value="Sim"></td><td><input type="radio" name="s5_pts_domiciliar" value="Não"></td></tr>
+                  <tr><td>Frequência adequada de atendimentos?</td><td><input type="radio" name="s5_freq_atend" value="Sim"></td><td><input type="radio" name="s5_freq_atend" value="Não"></td></tr>
+                  <tr><td>Materiais suficientes para terapia?</td><td><input type="radio" name="s5_materiais_terapia" value="Sim"></td><td><input type="radio" name="s5_materiais_terapia" value="Não"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="subsec">
+            <div class="subsec-title">Exames de Imagem (se houver)</div>
+            <div class="field-grid">
+              <div class="field">
+                <label>Equipamento portátil certificado?</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s5_equip_certificado" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s5_equip_certificado" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label>Laudos liberados no prazo?</label>
+                <div class="radio-group">
+                  <label><input type="radio" name="s5_laudos_prazo" value="Sim"><span>Sim</span></label>
+                  <label><input type="radio" name="s5_laudos_prazo" value="Não"><span>Não</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s5_obs" rows="4"></textarea>
+            </div>
           </div>
         </div>
       </div>
 
+      <!-- SEÇÃO 6 -->
       <div class="section-card">
         <div class="section-head" onclick="toggleSection(this)">
           <div class="section-num">6</div>
-          <div class="section-title">Indicadores e Conclusão</div>
+          <div class="section-title">Segurança do Paciente no Domicílio</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="grid-table-wrap">
+            <table class="grid-table">
+              <thead><tr><th>Item</th><th>Sim</th><th>Não</th></tr></thead>
+              <tbody>
+                <tr><td>Checagem de identificação</td><td><input type="radio" name="s6_checagem_identif" value="Sim"></td><td><input type="radio" name="s6_checagem_identif" value="Não"></td></tr>
+                <tr><td>Ambiente domiciliar adequado</td><td><input type="radio" name="s6_ambiente_adequado" value="Sim"></td><td><input type="radio" name="s6_ambiente_adequado" value="Não"></td></tr>
+                <tr><td>Riscos ambientais notificados</td><td><input type="radio" name="s6_riscos_notificados" value="Sim"></td><td><input type="radio" name="s6_riscos_notificados" value="Não"></td></tr>
+                <tr><td>Notificação de incidentes</td><td><input type="radio" name="s6_notif_incidentes" value="Sim"></td><td><input type="radio" name="s6_notif_incidentes" value="Não"></td></tr>
+                <tr><td>Equipamentos limpos e desinfetados</td><td><input type="radio" name="s6_equip_limpos" value="Sim"></td><td><input type="radio" name="s6_equip_limpos" value="Não"></td></tr>
+                <tr><td>EPI utilizado corretamente</td><td><input type="radio" name="s6_epi_correto" value="Sim"></td><td><input type="radio" name="s6_epi_correto" value="Não"></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s6_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 7 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">7</div>
+          <div class="section-title">Integração com EMAD/EMAP</div>
           <div class="section-toggle">▾</div>
         </div>
         <div class="section-body">
           <div class="field-grid">
-            <div class="field"><label>Tempo médio de resposta</label><input type="text" name="s6_tempo_resposta"></div>
-            <div class="field"><label>Taxa de adesão terapêutica</label><input type="text" name="s6_adesao"></div>
-            <div class="field"><label>Recursos faltantes</label><input type="text" name="s6_recursos_faltantes"></div>
-            <div class="field"><label>Necessidade de suporte técnico</label><input type="text" name="s6_suporte"></div>
+            <div class="field">
+              <label>Comunicação sobre pacientes prioritários</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s7_comunicacao_prior" value="Adequada"><span>Adequada</span></label>
+                <label><input type="radio" name="s7_comunicacao_prior" value="Insuficiente"><span>Insuficiente</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Compartilhamento de evolução</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s7_compart_evolucao" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s7_compart_evolucao" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Participa de reuniões de PTS?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s7_reunioes_pts" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s7_reunioes_pts" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Informações retornam para médico/enfermeiro responsável?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s7_retorno_info" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s7_retorno_info" value="Não"><span>Não</span></label>
+              </div>
+            </div>
           </div>
-          <div class="subsec"><div class="field"><label>Recomendações da visita</label><textarea name="s6_recomendacoes" rows="4"></textarea></div></div>
-          <div class="subsec"><div class="field-grid"><div class="field"><label>Data da visita</label><input type="date" name="s6_data_visita"></div><div class="field"><label>Assinatura</label><input type="text" name="s6_assinatura"></div></div></div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s7_obs" rows="4"></textarea>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- SEÇÃO 8 -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">8</div>
+          <div class="section-title">Família / Cuidador</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field">
+              <label>Cuidador presente na visita?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s8_cuidador_presente" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s8_cuidador_presente" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Recebe orientações adequadas?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s8_orientacoes_adequadas" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s8_orientacoes_adequadas" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Assina confirmação de atendimento?</label>
+              <div class="radio-group">
+                <label><input type="radio" name="s8_assina_confirmacao" value="Sim"><span>Sim</span></label>
+                <label><input type="radio" name="s8_assina_confirmacao" value="Não"><span>Não</span></label>
+              </div>
+            </div>
+          </div>
+          <div class="subsec">
+            <div class="subsec-title">Observações</div>
+            <div class="field">
+              <textarea name="s8_obs" rows="4"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO 9 – FINALIZAÇÃO -->
+      <div class="section-card">
+        <div class="section-head" onclick="toggleSection(this)">
+          <div class="section-num">9</div>
+          <div class="section-title">Finalização</div>
+          <div class="section-toggle">▾</div>
+        </div>
+        <div class="section-body">
+          <div class="field-grid">
+            <div class="field">
+              <label>Data da Visita</label>
+              <input type="date" name="s9_data_visita">
+            </div>
+            <div class="field">
+              <label>Responsável pela Visita</label>
+              <input type="text" name="s9_responsavel">
+            </div>
+            <div class="field">
+              <label>Profissional que Acompanhou</label>
+              <input type="text" name="s9_acompanhou">
+            </div>
+            <div class="field">
+              <label>Assinatura</label>
+              <input type="text" name="s9_assinatura">
+            </div>
+          </div>
+        </div>
+      </div>
+
     </form>
   </div>
 
@@ -218,7 +651,7 @@
   <script>
     window.FORM_CONFIG = {
       id: 'sadt',
-      title: 'Ficha de Visita Técnica – SADT',
+      title: 'Ficha de Visita Técnica – SADT Domiciliar',
       shortName: 'Visita SADT',
       csvBaseName: 'sadt',
       tipo: 'sadt'
@@ -226,7 +659,6 @@
   </script>
   <script src="../scripts/form-core.js"></script>
   <iframe name="form_target" id="form_target" style="display:none"></iframe>
-
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -235,17 +667,10 @@
           .catch(err => console.warn('[PWA] SW falhou:', err.message));
       });
     }
-
     window.addEventListener('beforeinstallprompt', e => {
       e.preventDefault();
       const btn = document.getElementById('btn-instalar');
-      if (btn) {
-        btn.style.display = 'block';
-        btn.onclick = () => {
-          e.prompt();
-          e.userChoice.then(() => { btn.style.display = 'none'; });
-        };
-      }
+      if (btn) { btn.style.display = 'block'; btn.onclick = () => { e.prompt(); e.userChoice.then(() => { btn.style.display = 'none'; }); }; }
     });
   </script>
 </body>
