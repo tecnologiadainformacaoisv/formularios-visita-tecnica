@@ -6,11 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Formulários de Visita Técnica">
 <meta name="theme-color" content="#0f2d4e">
-<meta name="app-version" content="0.3.0">
+<meta name="app-version" content="0.4.0">
 <link rel="manifest" href="config/manifest.json">
 <link rel="icon" href="shared/assets/logo-192.png" type="image/png">
 <link rel="apple-touch-icon" href="shared/assets/logo-192.png">
-<title>Formulários de Visita Técnica • v0.3.0</title>
+<title>Formulários de Visita Técnica</title>
 <style>
   :root {
     --bg: #f8fafc;
@@ -28,14 +28,37 @@
   body {
     margin: 0;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: Inter, system-ui, -apple-system, sans-serif;
     background: radial-gradient(circle at top left, rgba(59,130,246,.12), transparent 30%),
                 radial-gradient(circle at bottom right, rgba(14,165,233,.16), transparent 25%),
                 var(--bg);
     color: var(--text);
   }
-  .page { max-width: 960px; margin: 0 auto; padding: 32px 20px 50px; }
-  h1 { font-size: 2rem; margin-bottom: 8px; }
+  .page {
+    flex: 1;
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 20px 32px;
+  }
+
+  /* Cabeçalho centralizado */
+  .page-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .page-header h1 {
+    font-size: 2rem;
+    margin: 0 0 4px;
+    color: var(--text);
+  }
+  .page-header p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
 
   /* Banners de status */
   #sync-banner {
@@ -66,7 +89,18 @@
   }
   #pending-summary:hover { background: #fde68a; }
 
-  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  /* Grid responsivo: 4 colunas em telas largas, 2 em tablet, 1 em mobile */
+  .grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  @media (max-width: 860px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; }
+  }
 
   .card {
     background: var(--panel);
@@ -76,10 +110,12 @@
     box-shadow: 0 4px 20px rgba(15,23,42,.07);
     transition: transform .22s ease, border-color .22s ease;
     position: relative;
+    display: flex;
+    flex-direction: column;
   }
   .card:hover { transform: translateY(-2px); border-color: rgba(59,130,246,.35); }
-  .card h2 { margin: 0 0 8px; font-size: 1.1rem; }
-  .card p  { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+  .card h2 { margin: 0 0 8px; font-size: 1.05rem; }
+  .card p  { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.6; flex: 1; }
   .card a  {
     display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     padding: 11px 16px; border-radius: 999px; text-decoration: none;
@@ -101,20 +137,36 @@
     display: none;
   }
 
-  .version-tag {
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 24px;
+  .note {
+    margin-top: 26px;
+    padding: 16px 20px;
+    border-radius: 14px;
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 13px;
   }
 
-  .note { margin-top: 26px; padding: 16px 20px; border-radius: 14px; background: #e2e8f0; color: #334155; font-size: 13px; }
-  @media (max-width: 600px) { .page { padding: 24px 16px 40px; } }
+  /* Rodapé */
+  footer {
+    text-align: center;
+    padding: 16px 20px;
+    font-size: 12px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    .page { padding: 24px 16px 24px; }
+    .page-header h1 { font-size: 1.6rem; }
+  }
 </style>
 </head>
 <body>
 <div class="page">
-  <h1>Formulários de Visita Técnica</h1>
-  <p class="version-tag">v0.3.0 — pré-produção</p>
+  <div class="page-header">
+    <h1>Formulários de Visita Técnica</h1>
+    <p>Instituto São Vicente — Assessoria em Saúde</p>
+  </div>
 
   <div id="sync-banner"></div>
   <div id="pending-summary" onclick="syncAllQueues()"></div>
@@ -124,56 +176,49 @@
       <span class="badge" id="badge-hospital"></span>
       <h2>Hospital</h2>
       <p>Ficha de visita técnica hospitalar — governança, estrutura, especialidades e recursos humanos.</p>
-      <a href="hospital/">Abrir Hospital</a>
+      <a href="hospital/">Abrir</a>
     </div>
     <div class="card" id="card-maternidade">
       <span class="badge" id="badge-maternidade"></span>
       <h2>Maternidade</h2>
       <p>Ficha obstétrica — Rede Alyne, centro obstétrico, UTI neonatal, banco de leite e A-SEG.</p>
-      <a href="maternidade/">Abrir Maternidade</a>
+      <a href="maternidade/">Abrir</a>
     </div>
     <div class="card" id="card-ubs">
       <span class="badge" id="badge-ubs"></span>
       <h2>UBS</h2>
       <p>Unidades básicas de saúde — equipes ESF/eSB, programas, saúde bucal e informatização.</p>
-      <a href="ubs/">Abrir UBS</a>
+      <a href="ubs/">Abrir</a>
     </div>
     <div class="card" id="card-upa">
       <span class="badge" id="badge-upa"></span>
       <h2>UPA 24h</h2>
       <p>Unidades de pronto atendimento — salas por porte, equipamentos, classificação de risco e indicadores.</p>
-      <a href="upa/">Abrir UPA</a>
+      <a href="upa/">Abrir</a>
     </div>
     <div class="card" id="card-sadt">
       <span class="badge" id="badge-sadt"></span>
       <h2>SADT Domiciliar</h2>
       <p>Serviço de atenção domiciliar — Melhor em Casa, EMAD/EMAP, coleta e fisioterapia domiciliar.</p>
-      <a href="sadt/">Abrir SADT</a>
+      <a href="sadt/">Abrir</a>
     </div>
     <div class="card" id="card-caps">
       <span class="badge" id="badge-caps"></span>
       <h2>CAPS</h2>
       <p>Centros de atenção psicossocial — RAPS, processos assistenciais, articulação em rede e indicadores.</p>
-      <a href="caps/">Abrir CAPS</a>
+      <a href="caps/">Abrir</a>
     </div>
     <div class="card" id="card-centro-reabilitacao">
       <span class="badge" id="badge-centro-reabilitacao"></span>
       <h2>Centro de Reabilitação</h2>
       <p>CER — modalidades de reabilitação, equipe multiprofissional RCPD e processos assistenciais.</p>
-      <a href="centro-reabilitacao/">Abrir Reabilitação</a>
+      <a href="centro-reabilitacao/">Abrir</a>
     </div>
     <div class="card" id="card-vigilancia-epidemiologica">
       <span class="badge" id="badge-vigilancia-epidemiologica"></span>
       <h2>Vigilância Epidemiológica</h2>
       <p>VE — sistemas de notificação, SINAN, PNI, investigação epidemiológica e sala de situação.</p>
-      <a href="vigilancia-epidemiologica/">Abrir Vigilância</a>
-    </div>
-    <div class="card">
-      <h2>Pesquisa de Satisfação</h2>
-      <p>Formulário de avaliação e dashboard de relatório para visualização no tablet.</p>
-      <a href="pesquisa-satisfacao/pesquisa.html" style="margin-bottom:10px">Abrir pesquisa</a>
-      <br><br>
-      <a href="pesquisa-satisfacao/dashboard.html">Abrir dashboard</a>
+      <a href="vigilancia-epidemiologica/">Abrir</a>
     </div>
   </div>
 
@@ -182,13 +227,16 @@
   </div>
 </div>
 
+<footer>
+  Formulários de Visita Técnica &nbsp;·&nbsp; v0.4.0 &nbsp;·&nbsp; pré-produção
+</footer>
+
 <script>
 const APPS_SCRIPT_URL = (function() {
   const stored = localStorage.getItem('formularios-visita-tecnica-appscript-url');
   return stored || 'https://script.google.com/macros/s/AKfycbygENDGFKSfazR-csNlIgiQ3n5FP1uDJCOd-EeaS6mhlbAJfyap_27d87nFSFPF0QPo/exec';
 })();
 
-// Mapeamento: id do formulário → chave da fila no localStorage
 const FORM_QUEUES = [
   { id: 'hospital',                    label: 'Hospital' },
   { id: 'maternidade',                 label: 'Maternidade' },
@@ -276,7 +324,6 @@ async function syncAllQueues() {
         remaining.push(item);
         failCount++;
       }
-      // Pequeno delay entre envios para não sobrecarregar o Apps Script
       await new Promise(r => setTimeout(r, 800));
     }
     saveQueue(f.id, remaining);
@@ -317,7 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!navigator.onLine) {
     onOffline();
   } else {
-    // Sincroniza automaticamente ao abrir a página se houver pendentes
     const total = countAllPending();
     if (total > 0) {
       showBanner('syncing', '🔄 Sincronizando ' + total + ' envio(s) pendente(s)...');

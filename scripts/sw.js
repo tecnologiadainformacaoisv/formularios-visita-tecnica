@@ -1,4 +1,4 @@
-const APP_VERSION = '0.3.1';
+const APP_VERSION = '0.4.0';
 const CACHE_NAME = `visita-formularios-${APP_VERSION}`;
 const URLS = [
   // Raiz e assets compartilhados
@@ -10,10 +10,6 @@ const URLS = [
   // Scripts compartilhados (necessários para CAPS, UBS, UPA, SADT, CER, Vigilância)
   '/formularios-visita-tecnica/scripts/form-core.js',
   '/formularios-visita-tecnica/scripts/appscript-config.js',
-  // Pesquisa de satisfação
-  '/formularios-visita-tecnica/pesquisa-satisfacao/',
-  '/formularios-visita-tecnica/pesquisa-satisfacao/pesquisa.html',
-  '/formularios-visita-tecnica/pesquisa-satisfacao/dashboard.html',
   // Hospital
   '/formularios-visita-tecnica/hospital/',
   '/formularios-visita-tecnica/hospital/index.html',
