@@ -1,7 +1,7 @@
 {
   "name": "Formulários de Visita Técnica",
   "short_name": "Formulários",
-  "description": "Aplicativo PWA para fichas de visita técnica do Instituto São Vicente. Versão 1.0.0.",
+  "description": "Aplicativo PWA para fichas de visita técnica do Instituto São Vicente. Versão 1.0.3.",
   "start_url": "/formularios-visita-tecnica/",
   "display": "standalone",
   "background_color": "#0f2d4e",
@@ -9,19 +9,19 @@
   "scope": "/formularios-visita-tecnica/",
   "icons": [
     {
-      "src": "/formularios-visita-tecnica/assets/icons/icons/icon-72x72.png",
+      "src": "/formularios-visita-tecnica/assets/icons/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/formularios-visita-tecnica/assets/icons/icons/icon-192x192.png",
+      "src": "/formularios-visita-tecnica/assets/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/formularios-visita-tecnica/assets/icons/icons/icon-512x512.png",
+      "src": "/formularios-visita-tecnica/assets/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
