@@ -154,3 +154,37 @@ O menu lê as filas de todos os formulários e exibe badges de pendentes. Ao cli
 - **Responsável de TI:** Henrique (TI — ISV)
 - **Uso:** técnicos de saúde em visitas de campo (tablets/celulares, frequentemente sem internet)
 - **Backend:** Google Sheets + Apps Script (sem banco de dados dedicado)
+
+---
+
+## Estado atual do desenvolvimento
+
+> Última atualização: 2026-06-26
+
+- **Versão:** v1.0.3. Branch `main`. Em **teste de usabilidade pela diretoria**.
+- **8 formulários hospitalares ativos:** Hospital, Maternidade, UBS, UPA 24h, SADT Domiciliar, CAPS, Centro de Reabilitação (CER) e Vigilância Epidemiológica.
+- **Engine compartilhada** (`scripts/form-core.js`) usada por 6 formulários via `window.FORM_CONFIG`; Hospital e Maternidade têm fluxo próprio.
+- **O que funciona hoje:**
+  - Auto-save no `localStorage` a cada ~1,2s de inatividade.
+  - **Offline-first:** fila por formulário (`{id}_form_queue`); envio ao Apps Script com `fetch mode:'no-cors'`; campo `_labels` (rótulos legíveis) enviado junto.
+  - Tela inicial lê todas as filas, mostra badges de pendentes e sincroniza tudo em sequência via `syncAllQueues()` (800ms entre itens).
+  - PWA com Service Worker (scope `/formularios-visita-tecnica/`); formulários precisam ser abertos ao menos uma vez online para ficarem disponíveis offline.
+- **Hospedado** em GitHub Pages: `https://institutosaovicente.github.io/formularios-visita-tecnica/` (sem build step).
+
+## Decisões técnicas tomadas
+
+- **Zero dependências** — HTML/CSS/JS vanilla puro, sem framework/npm.
+- **Engine única (`form-core.js`)** para a maioria dos formulários, configurada por `window.FORM_CONFIG` — não alterar a estrutura desse objeto sem atualizar todos os formulários que a usam.
+- **Hospital e Maternidade ficaram com fluxo próprio** (complexidade específica), fora da engine.
+- **Campo `_labels` no payload é obrigatório** — o Apps Script depende dele para montar planilhas com cabeçalhos legíveis; não remover.
+- **URL do Apps Script com 3 níveis de override** (`scripts/appscript-config.js`): query `?appscript=URL` → `localStorage` → `DEFAULT_URL`. Para produção, editar `DEFAULT_URL`.
+- **Touch-first:** elementos interativos com `min-height: 48px`; sem `user-select:none` em campos de entrada.
+- **Versão sincronizada em 3 lugares:** `index.html` (`<meta app-version>` + rodapé), `config/manifest.json` e cada `window.FORM_CONFIG.version`.
+- Estrutura de pastas já achatada/padronizada (`assets/icons`), com README na raiz.
+
+## Próximos passos
+
+1. **Concluir o teste de usabilidade da diretoria** e incorporar ajustes apontados.
+2. Avaliar promoção de versão conforme o resultado do teste (subir patch/minor após o feedback).
+3. Garantir que **todos os 8 formulários** estejam refletindo a mesma versão nos 3 pontos de sincronização a cada release.
+4. Possíveis evoluções: validações adicionais por tipo de unidade, melhorias no painel de pendências da tela inicial.
