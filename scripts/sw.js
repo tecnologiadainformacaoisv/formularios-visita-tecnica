@@ -1,4 +1,4 @@
-const APP_VERSION = '1.0.3';
+const APP_VERSION = '1.0.4';
 const CACHE_NAME = `visita-formularios-${APP_VERSION}`;
 const URLS = [
   // Raiz e assets compartilhados
