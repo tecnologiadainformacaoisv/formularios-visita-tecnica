@@ -1,5 +1,7 @@
-const APP_VERSION = '1.0.4';
-const CACHE_NAME = `visita-formularios-${APP_VERSION}`;
+// Só altere CACHE_VERSION quando adicionar/remover URLs da lista abaixo.
+// Bumps de versão do app (index.html, FORM_CONFIG) NÃO devem mudar este valor.
+const CACHE_VERSION = 'v5';
+const CACHE_NAME = `visita-formularios-${CACHE_VERSION}`;
 const URLS = [
   // Raiz e assets compartilhados
   '/formularios-visita-tecnica/',
