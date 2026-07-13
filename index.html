@@ -386,6 +386,12 @@ if ('serviceWorker' in navigator) {
     .catch(err => console.log('[PWA] SW falhou:', err.message));
   });
 }
+
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist().then(granted => {
+    console.log('[PWA] Armazenamento persistente:', granted ? 'concedido' : 'negado');
+  });
+}
 </script>
 </body>
 </html>
