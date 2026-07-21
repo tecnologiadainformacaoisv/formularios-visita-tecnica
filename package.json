@@ -1,0 +1,30 @@
+{
+  "name": "projeto-formularios-visita-tecnica",
+  "version": "1.0.0",
+  "description": "PWA de **fichas de visita técnica** do **Instituto São Vicente (ISV)** para uso em campo pelos técnicos de saúde. Os formulários são **offline-first**: salvam automaticamente no `localStorage` e enviam para o Google Apps Script quando há conexão.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tecnologiadainformacaoisv/formularios-visita-tecnica.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tecnologiadainformacaoisv/formularios-visita-tecnica/issues"
+  },
+  "homepage": "https://github.com/tecnologiadainformacaoisv/formularios-visita-tecnica#readme",
+  "dependencies": {
+    "@capacitor/android": "^8.4.1",
+    "@capacitor/app": "^8.1.0",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1"
+  }
+}

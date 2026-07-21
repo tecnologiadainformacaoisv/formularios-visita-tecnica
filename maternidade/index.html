@@ -1005,6 +1005,7 @@ async function submitForm() {
     btn.disabled = false; btn.textContent = '📤 Enviar para o Google Sheets';
     const nomeCSV = salvarCSV(data);
     showMsg('queued', `📦 Sem internet. Dados salvos localmente e exportados para CSV${nomeCSV ? ' ('+nomeCSV+')' : ''}. Serão enviados quando a conexão for restaurada.`);
+    resetForm();
     return;
   }
   const ok = await postData(data);
@@ -1013,12 +1014,21 @@ async function submitForm() {
   const infoCSV = nomeCSV ? ` Backup CSV salvo: ${nomeCSV}.` : '';
   if (ok) {
     showMsg('success', `✅ Dados enviados para a planilha com sucesso!${infoCSV}`);
-    localStorage.removeItem(STORAGE_KEYS.data); localStorage.removeItem(STORAGE_KEYS.savedAt);
-    document.getElementById('save-status').textContent = '✓ Enviado';
+    resetForm();
   } else {
     enqueueSubmission(data);
     showMsg('queued', `⚠ Não foi possível conectar ao servidor. Dados na fila para reenvio automático.${infoCSV}`);
+    resetForm();
   }
+}
+
+function resetForm() {
+  const form = document.getElementById('main-form');
+  if (form) form.reset();
+  localStorage.removeItem(STORAGE_KEYS.data); localStorage.removeItem(STORAGE_KEYS.savedAt);
+  const status = document.getElementById('save-status');
+  if (status) status.textContent = '–';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function showMsg(type, text) {

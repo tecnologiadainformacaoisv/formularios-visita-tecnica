@@ -425,6 +425,7 @@
         btn.textContent = '📤 Enviar para o Google Sheets';
       }
       showMsg('queued', `📦 Sem internet. Dados salvos localmente e exportados para CSV${nomeCSV ? ' (' + nomeCSV + ')' : ''}. Serão enviados automaticamente quando a conexão voltar.`);
+      resetForm();
       return;
     }
 
@@ -439,16 +440,25 @@
 
     if (ok) {
       showMsg('success', `✅ Dados enviados com sucesso!${infoCSV}`);
-      localStorage.removeItem(STORAGE_KEYS.data);
-      localStorage.removeItem(STORAGE_KEYS.savedAt);
-      const status = document.getElementById('save-status');
-      if (status) status.textContent = '✓ Enviado';
+      resetForm();
     } else {
       const q = getQueue();
       q.push(data);
       saveQueue(q);
       showMsg('queued', `⚠ Não foi possível conectar ao servidor. Dados na fila para reenvio automático.${infoCSV}`);
+      resetForm();
     }
+  }
+
+  function resetForm() {
+    const form = document.getElementById('main-form');
+    if (form) form.reset();
+    localStorage.removeItem(STORAGE_KEYS.data);
+    localStorage.removeItem(STORAGE_KEYS.savedAt);
+    const status = document.getElementById('save-status');
+    if (status) status.textContent = '–';
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function showMsg(type, text) {

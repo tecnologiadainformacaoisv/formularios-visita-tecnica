@@ -1,2 +1,15 @@
 appscript/deploy.log
 .clasp.json
+
+# Capacitor / Android build
+node_modules/
+www/
+*.apk
+android/app/build/
+android/app/release/
+android/build/
+android/.gradle/
+android/local.properties
+android/captures/
+android/*.iml
+android/.idea/
