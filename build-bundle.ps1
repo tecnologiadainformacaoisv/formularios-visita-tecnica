@@ -93,14 +93,48 @@ $content = $content -replace '</body>', $backScriptIndex
 Set-Content $indexHtml $content -Encoding UTF8
 
 # 3. Empacota www/ em um zip versionado (arquivos na raiz do zip, sem pasta pai)
-Write-Host "[3/4] Empacotando bundle-$Version.zip..."
+Write-Host "[3/5] Empacotando bundle-$Version.zip..."
 if (-not (Test-Path $updates)) { New-Item $updates -ItemType Directory | Out-Null }
 $zipPath = Join-Path $updates "bundle-$Version.zip"
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
-Compress-Archive -Path (Join-Path $www "*") -DestinationPath $zipPath -CompressionLevel Optimal
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$esperados = (Get-ChildItem $www -Recurse -File).Count
+$tentativas = 0
+$ok = $false
+do {
+  $tentativas++
+  if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+  $erro = $null
+  Compress-Archive -Path (Join-Path $www "*") -DestinationPath $zipPath -CompressionLevel Optimal -ErrorVariable erro -ErrorAction SilentlyContinue
+
+  $noZip = 0
+  if (-not $erro -and (Test-Path $zipPath)) {
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($zipPath)
+    $noZip = $zip.Entries.Count
+    $zip.Dispose()
+  }
+
+  if (-not $erro -and $noZip -eq $esperados) {
+    $ok = $true
+  } else {
+    Write-Host "  Bundle incompleto ou com erro (tentativa ${tentativas}: www/ tem $esperados arquivo(s), zip tem $noZip), tentando novamente..."
+    Start-Sleep -Milliseconds 500
+  }
+} while (-not $ok -and $tentativas -lt 3)
+
+if (-not $ok) {
+  Write-Host ""
+  Write-Host "ERRO: nao foi possivel gerar um bundle completo apos $tentativas tentativas."
+  Write-Host "Isso costuma acontecer quando outro processo (editor, antivirus) trava um arquivo durante o empacotamento."
+  Write-Host "Feche esses programas e rode de novo."
+  if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+  exit 1
+}
+Write-Host "  OK: $noZip arquivo(s) confirmados no bundle."
 
 # 4. Atualiza o manifesto (updates/channel.json) que os apps instalados consultam
-Write-Host "[4/4] Atualizando updates\channel.json..."
+Write-Host "[4/5] Atualizando updates\channel.json..."
 $checksum = (Get-FileHash -Path $zipPath -Algorithm SHA256).Hash.ToLower()
 $manifest = @{
   version  = $Version
