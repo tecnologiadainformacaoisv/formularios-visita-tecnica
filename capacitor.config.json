@@ -2,9 +2,6 @@
   "appId": "br.org.isv.formularios",
   "appName": "Formularios ISV",
   "webDir": "www",
-  "android": {
-    "allowMixedContent": true
-  },
   "server": {
     "androidScheme": "https"
   }
