@@ -158,7 +158,7 @@ $manifest = @{
   url      = "$pagesBaseUrl/bundle-$Version.zip"
   checksum = $checksum
 } | ConvertTo-Json
-Set-Content (Join-Path $updates "channel.json") $manifest -Encoding UTF8
+Set-ContentSafe (Join-Path $updates "channel.json") $manifest
 
 Write-Host ""
 Write-Host "Bundle $Version pronto em updates\bundle-$Version.zip"
