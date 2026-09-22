@@ -215,6 +215,15 @@
     }
   }
 
+  function createQueueKey(data) {
+    const copy = Object.assign({}, data || {});
+    delete copy.timestamp_envio;
+    return JSON.stringify(Object.keys(copy).sort().reduce((acc, key) => {
+      acc[key] = copy[key];
+      return acc;
+    }, {}));
+  }
+
   function getQueue() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEYS.queue) || '[]');
@@ -223,7 +232,25 @@
     }
   }
 
+  function enqueueSubmission(data) {
+    const q = getQueue();
+    const key = createQueueKey(data);
+    const jaExiste = q.some(item => createQueueKey(item) === key);
+    if (!jaExiste) q.push(data);
+    saveQueue(q);
+  }
+
   function saveQueue(q) {
+    const unique = [];
+    const seen = new Set();
+    q.forEach(item => {
+      const key = createQueueKey(item);
+      if (!seen.has(key)) {
+        seen.add(key);
+        unique.push(item);
+      }
+    });
+    q = unique;
     localStorage.setItem(STORAGE_KEYS.queue, JSON.stringify(q));
     const info = document.getElementById('queue-info');
     if (!info) return;
@@ -297,9 +324,13 @@
     return postDataComIframe(data, 'form_target');
   }
 
+  let syncInProgress = false;
+
   async function trySyncQueue() {
+    if (syncInProgress) return;
     const q = getQueue();
     if (q.length === 0) return;
+    syncInProgress = true;
 
     const remaining = [];
 
@@ -312,6 +343,7 @@
     }
 
     saveQueue(remaining);
+    syncInProgress = false;
 
     if (remaining.length === 0) {
       showMsg('success', '✅ Todos os envios pendentes foram sincronizados com sucesso!');
@@ -416,9 +448,7 @@
     const data = collectFormData();
 
     if (!navigator.onLine) {
-      const q = getQueue();
-      q.push(data);
-      saveQueue(q);
+      enqueueSubmission(data);
       const nomeCSV = salvarCSV(data);
       if (btn) {
         btn.disabled = false;
@@ -442,9 +472,7 @@
       showMsg('success', `✅ Dados enviados com sucesso!${infoCSV}`);
       resetForm();
     } else {
-      const q = getQueue();
-      q.push(data);
-      saveQueue(q);
+      enqueueSubmission(data);
       showMsg('queued', `⚠ Não foi possível conectar ao servidor. Dados na fila para reenvio automático.${infoCSV}`);
       resetForm();
     }
@@ -526,7 +554,6 @@
     loadFromLocal();
     updateOnlineStatus();
     updateProgress();
-    trySyncQueue();
 
     form.addEventListener('input', scheduleAutoSave);
     form.addEventListener('change', () => {
