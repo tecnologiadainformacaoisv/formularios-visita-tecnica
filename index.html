@@ -377,7 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 
 <script>
-if ('serviceWorker' in navigator) {
+const isNativeApp = !!(window.Capacitor && window.Capacitor.isNativePlatform());
+
+if ('serviceWorker' in navigator && !isNativeApp) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/formularios-visita-tecnica/scripts/sw.js', {
       scope: '/formularios-visita-tecnica/'
@@ -392,6 +394,57 @@ if (navigator.storage && navigator.storage.persist) {
     console.log('[PWA] Armazenamento persistente:', granted ? 'concedido' : 'negado');
   });
 }
+</script>
+
+<script>
+// Live update do bundle web dentro do APK (Capacitor Updater).
+// Só roda dentro do app nativo — não afeta o PWA no navegador.
+// O app abre sempre offline com o bundle ja instalado; isto so troca
+// silenciosamente o conteudo quando ha internet e uma versao nova publicada
+// em updates/channel.json. Ver build-bundle.ps1.
+(function () {
+  if (!isNativeApp) return;
+
+  const CHANNEL_URL = 'https://tecnologiadainformacaoisv.github.io/formularios-visita-tecnica/updates/channel.json';
+  const FETCH_TIMEOUT_MS = 8000;
+
+  async function checkForUpdate() {
+    const CapacitorUpdater = window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorUpdater;
+    if (!CapacitorUpdater) return;
+
+    try {
+      await CapacitorUpdater.notifyAppReady();
+
+      const atual = await CapacitorUpdater.current();
+      const bundleId = atual && atual.bundle && atual.bundle.id;
+      // No primeiro boot (sem update baixado ainda) o plugin reporta o bundle
+      // "builtin", cuja versão não é confiável — usa a versão gravada no
+      // próprio HTML embutido no APK como referência nesse caso.
+      const versaoAtual = (!bundleId || bundleId === 'builtin')
+        ? (document.querySelector('meta[name="app-version"]')?.content || '')
+        : atual.bundle.version;
+
+      const resp = await fetch(CHANNEL_URL, { cache: 'no-store', signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+      if (!resp.ok) return;
+      const manifest = await resp.json();
+      if (!manifest || !manifest.version || !manifest.url) return;
+
+      if (manifest.version !== versaoAtual) {
+        console.log('[UPDATE] Nova versão disponível:', manifest.version, '(atual:', versaoAtual, ')');
+        const bundle = await CapacitorUpdater.download({
+          url: manifest.url,
+          version: manifest.version
+        });
+        await CapacitorUpdater.set({ id: bundle.id });
+        console.log('[UPDATE] Bundle', manifest.version, 'sera aplicado na proxima abertura do app.');
+      }
+    } catch (e) {
+      console.warn('[UPDATE] Falha ao checar atualização:', e && e.message);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', checkForUpdate);
+})();
 </script>
 </body>
 </html>
