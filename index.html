@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Formulários de Visita Técnica">
 <meta name="theme-color" content="#0f2d4e">
-<meta name="app-version" content="1.0.6">
+<meta name="app-version" content="1.0.7">
 <link rel="manifest" href="config/manifest.json">
 <link rel="icon" href="shared/assets/logo-192.png" type="image/png">
 <link rel="apple-touch-icon" href="shared/assets/logo-192.png">
@@ -232,7 +232,8 @@
 </div>
 
 <footer>
-  Formulários de Visita Técnica &nbsp;·&nbsp; v1.0.6
+  Formulários de Visita Técnica &nbsp;·&nbsp; v1.0.7
+  <div id="update-status" style="margin-top:4px;font-size:10px;opacity:.65;display:none;"></div>
 </footer>
 
 <script>
@@ -409,9 +410,20 @@ if (navigator.storage && navigator.storage.persist) {
   const CHANNEL_URL = 'https://tecnologiadainformacaoisv.github.io/formularios-visita-tecnica/updates/channel.json';
   const FETCH_TIMEOUT_MS = 8000;
 
+  // Indicador visivel de diagnostico (so no app nativo) - como nao da pra
+  // ver o console do navegador no tablet, isso mostra o resultado da
+  // checagem direto na tela pra facilitar suporte remoto.
+  function mostrarStatus(texto) {
+    const el = document.getElementById('update-status');
+    if (!el) return;
+    const agora = new Date().toLocaleTimeString('pt-BR');
+    el.textContent = `[update] ${texto} - ${agora}`;
+    el.style.display = 'block';
+  }
+
   async function checkForUpdate() {
     const CapacitorUpdater = window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorUpdater;
-    if (!CapacitorUpdater) return;
+    if (!CapacitorUpdater) { mostrarStatus('plugin CapacitorUpdater nao encontrado'); return; }
 
     try {
       await CapacitorUpdater.notifyAppReady();
@@ -425,13 +437,18 @@ if (navigator.storage && navigator.storage.persist) {
         ? (document.querySelector('meta[name="app-version"]')?.content || '')
         : atual.bundle.version;
 
-      const resp = await fetch(CHANNEL_URL, { cache: 'no-store', signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
-      if (!resp.ok) return;
+      const fetchOptions = { cache: 'no-store' };
+      if (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+        fetchOptions.signal = AbortSignal.timeout(FETCH_TIMEOUT_MS);
+      }
+      const resp = await fetch(CHANNEL_URL, fetchOptions);
+      if (!resp.ok) { mostrarStatus(`falha ao buscar manifesto (HTTP ${resp.status})`); return; }
       const manifest = await resp.json();
-      if (!manifest || !manifest.version || !manifest.url) return;
+      if (!manifest || !manifest.version || !manifest.url) { mostrarStatus('manifesto invalido'); return; }
 
       if (manifest.version !== versaoAtual) {
         console.log('[UPDATE] Nova versão disponível:', manifest.version, '(atual:', versaoAtual, ')');
+        mostrarStatus(`baixando ${manifest.version} (atual: ${versaoAtual})`);
         const bundle = await CapacitorUpdater.download({
           url: manifest.url,
           version: manifest.version,
@@ -439,9 +456,13 @@ if (navigator.storage && navigator.storage.persist) {
         });
         await CapacitorUpdater.set({ id: bundle.id });
         console.log('[UPDATE] Bundle', manifest.version, 'sera aplicado na proxima abertura do app.');
+        mostrarStatus(`${manifest.version} pronto, aplica ao reabrir`);
+      } else {
+        mostrarStatus(`ja atualizado (${versaoAtual})`);
       }
     } catch (e) {
       console.warn('[UPDATE] Falha ao checar atualização:', e && e.message);
+      mostrarStatus(`erro: ${(e && e.message) || e}`);
     }
   }
 
