@@ -101,9 +101,11 @@ Compress-Archive -Path (Join-Path $www "*") -DestinationPath $zipPath -Compressi
 
 # 4. Atualiza o manifesto (updates/channel.json) que os apps instalados consultam
 Write-Host "[4/4] Atualizando updates\channel.json..."
+$checksum = (Get-FileHash -Path $zipPath -Algorithm SHA256).Hash.ToLower()
 $manifest = @{
-  version = $Version
-  url     = "$pagesBaseUrl/bundle-$Version.zip"
+  version  = $Version
+  url      = "$pagesBaseUrl/bundle-$Version.zip"
+  checksum = $checksum
 } | ConvertTo-Json
 Set-Content (Join-Path $updates "channel.json") $manifest -Encoding UTF8
 

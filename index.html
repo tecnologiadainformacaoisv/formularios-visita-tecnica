@@ -433,7 +433,8 @@ if (navigator.storage && navigator.storage.persist) {
         console.log('[UPDATE] Nova versão disponível:', manifest.version, '(atual:', versaoAtual, ')');
         const bundle = await CapacitorUpdater.download({
           url: manifest.url,
-          version: manifest.version
+          version: manifest.version,
+          checksum: manifest.checksum || undefined
         });
         await CapacitorUpdater.set({ id: bundle.id });
         console.log('[UPDATE] Bundle', manifest.version, 'sera aplicado na proxima abertura do app.');
