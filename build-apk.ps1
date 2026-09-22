@@ -101,18 +101,37 @@ Write-Host "[3/5] Sincronizando Capacitor..."
 Set-Location $root
 npx cap sync android | Out-Null
 
-# 4. Copia pasta android para path sem caracteres especiais e corrige configs
+# 4. Copia pasta android (e os plugins usados) para path isolado, sem caracteres
+#    especiais e sem depender da node_modules/ do projeto principal — o Gradle
+#    escreve arquivos de build dentro da pasta do plugin, e como a node_modules/
+#    do projeto fica aberta no editor/sincronizada, isso causava lock de arquivo
+#    ("Unable to delete directory ...") de forma consistente.
 Write-Host "[4/5] Preparando pasta de build..."
 if (Test-Path $apkBuild) { Remove-Item $apkBuild -Recurse -Force }
 Copy-Item (Join-Path $root "android") $apkBuild -Recurse
 Set-Content "$apkBuild\local.properties" "sdk.dir=C\:\\Users\\usuario\\AppData\\Local\\Android\\Sdk"
-Set-Content "$apkBuild\capacitor.settings.gradle" @"
-include ':capacitor-android'
-project(':capacitor-android').projectDir = new File('C:/dev/formularios-isv/node_modules/@capacitor/android/capacitor')
 
-include ':capacitor-app'
-project(':capacitor-app').projectDir = new File('C:/dev/formularios-isv/node_modules/@capacitor/app/android')
-"@
+# Reaproveita o capacitor.settings.gradle real (gerado por "npx cap sync"),
+# copiando cada plugin referenciado para dentro da propria pasta de build
+# isolada, em vez de apontar para a node_modules/ do projeto principal.
+# Assim sempre reflete os plugins Capacitor instalados no momento, sem
+# precisar editar este script a cada plugin novo.
+$nodeModulesBuild = Join-Path $apkBuild "node_modules"
+New-Item $nodeModulesBuild -ItemType Directory -Force | Out-Null
+$settingsContent = Get-Content (Join-Path $root "android\capacitor.settings.gradle") -Raw
+$matches = [regex]::Matches($settingsContent, "new File\('\.\./node_modules/([^']+)'\)")
+foreach ($m in $matches) {
+  $pluginRelPath = $m.Groups[1].Value
+  $origem = Join-Path $root "node_modules\$($pluginRelPath -replace '/', '\')"
+  $destino = Join-Path $nodeModulesBuild ($pluginRelPath -replace '/', '\')
+  if (Test-Path $origem) {
+    New-Item (Split-Path $destino -Parent) -ItemType Directory -Force | Out-Null
+    Copy-Item $origem $destino -Recurse -Force
+  }
+}
+$nodeModulesBuildAbs = $nodeModulesBuild -replace '\\', '/'
+$settingsContent = $settingsContent -replace [regex]::Escape('../node_modules'), $nodeModulesBuildAbs
+[System.IO.File]::WriteAllText("$apkBuild\capacitor.settings.gradle", $settingsContent, (New-Object System.Text.UTF8Encoding $false))
 (Get-Content "$apkBuild\build.gradle") -replace "com.android.tools.build:gradle:[\d\.]+", "com.android.tools.build:gradle:8.9.1" | Set-Content "$apkBuild\build.gradle"
 (Get-Content "$apkBuild\gradle\wrapper\gradle-wrapper.properties") -replace "gradle-[\d\.]+-all\.zip", "gradle-8.11.1-all.zip" | Set-Content "$apkBuild\gradle\wrapper\gradle-wrapper.properties"
 
