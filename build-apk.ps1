@@ -10,6 +10,24 @@ $root     = $PSScriptRoot
 $www      = Join-Path $root "www"
 $apkBuild = "C:\dev\apk-build"
 
+# Grava um arquivo com ate 5 tentativas: em pastas sincronizadas/indexadas
+# (OneDrive, antivirus, editor) e comum um processo travar o arquivo por um
+# instante e o Set-Content falhar silenciosamente sem abortar o script,
+# deixando o www/ com uma correcao a menos e sem ninguem perceber.
+function Set-ContentSafe($Path, $Content) {
+  $tentativas = 0
+  do {
+    $tentativas++
+    try {
+      [System.IO.File]::WriteAllText($Path, $Content, (New-Object System.Text.UTF8Encoding $false))
+      return
+    } catch {
+      if ($tentativas -ge 5) { throw }
+      Start-Sleep -Milliseconds 300
+    }
+  } while ($true)
+}
+
 # 1. Popula www/ com os arquivos web
 Write-Host "[1/5] Atualizando www/..."
 if (Test-Path $www) { Remove-Item $www -Recurse -Force }
@@ -32,7 +50,7 @@ foreach ($pasta in $subforms) {
     $content = $content -replace [regex]::Escape('/formularios-visita-tecnica/'), '../'
     # Remove registro do Service Worker (nao e necessario no APK, arquivos ja estao bundled)
     $content = $content -replace "(?s)if\s*\('serviceWorker'\s*in\s*navigator\).*?}\s*}\s*</script>", '</script>'
-    Set-Content $html $content -Encoding UTF8
+    Set-ContentSafe $html $content
   }
 }
 # Corrige o index.html raiz:
@@ -44,7 +62,7 @@ $formas = @("hospital","maternidade","ubs","upa","sadt","caps","centro-reabilita
 foreach ($f in $formas) {
   $content = $content -replace "href=""$f/""", "href=""$f/index.html"""
 }
-Set-Content $indexHtml $content -Encoding UTF8
+Set-ContentSafe $indexHtml $content
 
 # Corrige botao "Voltar ao Menu" nos formularios: ../ -> ../index.html
 foreach ($pasta in $subforms) {
@@ -52,7 +70,7 @@ foreach ($pasta in $subforms) {
   if (Test-Path $html) {
     $content = Get-Content $html -Raw -Encoding UTF8
     $content = $content -replace 'href="\.\./"', 'href="../index.html"'
-    Set-Content $html $content -Encoding UTF8
+    Set-ContentSafe $html $content
   }
 }
 
@@ -74,7 +92,7 @@ foreach ($pasta in $subforms) {
   if (Test-Path $html) {
     $content = Get-Content $html -Raw -Encoding UTF8
     $content = $content -replace '</body>', $backScriptForm
-    Set-Content $html $content -Encoding UTF8
+    Set-ContentSafe $html $content
   }
 }
 
@@ -94,7 +112,32 @@ document.addEventListener('DOMContentLoaded', function() {
 $indexHtml = Join-Path $www "index.html"
 $content = Get-Content $indexHtml -Raw -Encoding UTF8
 $content = $content -replace '</body>', $backScriptIndex
-Set-Content $indexHtml $content -Encoding UTF8
+Set-ContentSafe $indexHtml $content
+
+# 2b. Verifica se as correcoes realmente foram salvas (nao so tentadas).
+#     Sem isso, um lock de arquivo transiente vira um APK com navegacao
+#     quebrada (links de pasta sem index.html) sem nenhum aviso.
+$problemas = @()
+foreach ($pasta in $subforms) {
+  $html = Join-Path $www "$pasta\index.html"
+  if (Test-Path $html) {
+    $c = Get-Content $html -Raw -Encoding UTF8
+    if ($c -match [regex]::Escape('/formularios-visita-tecnica/')) { $problemas += "$pasta/index.html ainda tem caminho absoluto /formularios-visita-tecnica/" }
+    if ($c -notmatch 'Capacitor\.Plugins\.App') { $problemas += "$pasta/index.html sem o handler de botao voltar" }
+  }
+}
+$rootContent = Get-Content $indexHtml -Raw -Encoding UTF8
+foreach ($f in $formas) {
+  if ($rootContent -match "href=`"$f/`"(?!index)") { $problemas += "index.html: link de $f ainda sem index.html explicito" }
+}
+if ($problemas.Count -gt 0) {
+  Write-Host ""
+  Write-Host "ERRO: www/ ficou com correcoes incompletas (provavel lock de arquivo transiente):"
+  $problemas | ForEach-Object { Write-Host "  - $_" }
+  Write-Host "Rode o script de novo."
+  exit 1
+}
+Write-Host "  OK: caminhos e handlers confirmados em www/."
 
 # 3. Sincroniza Capacitor
 Write-Host "[3/5] Sincronizando Capacitor..."

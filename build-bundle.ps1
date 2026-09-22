@@ -20,6 +20,23 @@ $www     = Join-Path $root "www"
 $updates = Join-Path $root "updates"
 $pagesBaseUrl = "https://tecnologiadainformacaoisv.github.io/formularios-visita-tecnica/updates"
 
+# Grava um arquivo com ate 5 tentativas: em pastas sincronizadas/indexadas
+# (OneDrive, antivirus, editor) e comum um processo travar o arquivo por um
+# instante e o Set-Content falhar silenciosamente sem abortar o script.
+function Set-ContentSafe($Path, $Content) {
+  $tentativas = 0
+  do {
+    $tentativas++
+    try {
+      [System.IO.File]::WriteAllText($Path, $Content, (New-Object System.Text.UTF8Encoding $false))
+      return
+    } catch {
+      if ($tentativas -ge 5) { throw }
+      Start-Sleep -Milliseconds 300
+    }
+  } while ($true)
+}
+
 # 1. Popula www/ com os arquivos web (igual ao build-apk.ps1)
 Write-Host "[1/4] Atualizando www/..."
 if (Test-Path $www) { Remove-Item $www -Recurse -Force }
@@ -39,7 +56,7 @@ foreach ($pasta in $subforms) {
     $content = Get-Content $html -Raw -Encoding UTF8
     $content = $content -replace [regex]::Escape('/formularios-visita-tecnica/'), '../'
     $content = $content -replace "(?s)if\s*\('serviceWorker'\s*in\s*navigator\).*?}\s*}\s*</script>", '</script>'
-    Set-Content $html $content -Encoding UTF8
+    Set-ContentSafe $html $content
   }
 }
 $indexHtml = Join-Path $www "index.html"
@@ -47,13 +64,13 @@ $content = Get-Content $indexHtml -Raw -Encoding UTF8
 foreach ($f in $subforms) {
   $content = $content -replace "href=""$f/""", "href=""$f/index.html"""
 }
-Set-Content $indexHtml $content -Encoding UTF8
+Set-ContentSafe $indexHtml $content
 foreach ($pasta in $subforms) {
   $html = Join-Path $www "$pasta\index.html"
   if (Test-Path $html) {
     $content = Get-Content $html -Raw -Encoding UTF8
     $content = $content -replace 'href="\.\./"', 'href="../index.html"'
-    Set-Content $html $content -Encoding UTF8
+    Set-ContentSafe $html $content
   }
 }
 $backScriptForm = @'
@@ -73,7 +90,7 @@ foreach ($pasta in $subforms) {
   if (Test-Path $html) {
     $content = Get-Content $html -Raw -Encoding UTF8
     $content = $content -replace '</body>', $backScriptForm
-    Set-Content $html $content -Encoding UTF8
+    Set-ContentSafe $html $content
   }
 }
 $backScriptIndex = @'
@@ -90,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
 '@
 $content = Get-Content $indexHtml -Raw -Encoding UTF8
 $content = $content -replace '</body>', $backScriptIndex
-Set-Content $indexHtml $content -Encoding UTF8
+Set-ContentSafe $indexHtml $content
 
 # 3. Empacota www/ em um zip versionado (arquivos na raiz do zip, sem pasta pai)
 Write-Host "[3/5] Empacotando bundle-$Version.zip..."
