@@ -45,7 +45,11 @@ if ($Version -eq $versaoAtual) {
 Write-Host "Sincronizando versao em index.html, config/manifest.json e nos formularios..."
 
 $conteudoIndex = $conteudoIndex -replace "name=`"app-version`" content=`"$([regex]::Escape($versaoAtual))`"", "name=`"app-version`" content=`"$Version`""
-$conteudoIndex = $conteudoIndex -replace "v$([regex]::Escape($versaoAtual))", "v$Version"
+# Ancorado ao trecho exato do rodape (nao troca qualquer "v<versao>" solto
+# que apareca em outro contexto do arquivo no futuro). Usa "." no lugar do
+# caractere "·" para nao depender de encoding non-ASCII na leitura deste
+# proprio arquivo .ps1 (sem BOM, PowerShell 5.1 pode le-lo errado).
+$conteudoIndex = $conteudoIndex -replace "(&nbsp;.&nbsp; v)$([regex]::Escape($versaoAtual))", "`${1}$Version"
 [System.IO.File]::WriteAllText($indexHtml, $conteudoIndex, (New-Object System.Text.UTF8Encoding $false))
 
 $manifestPath = Join-Path $root "config\manifest.json"
