@@ -148,8 +148,20 @@ function getOrCreateTab(planilha, nomeTab) {
 }
 
 function sanitizeValue(valor) {
-  if (Array.isArray(valor)) return valor.join(', ');
-  return valor !== undefined && valor !== null ? String(valor) : '';
+  let texto;
+  if (Array.isArray(valor)) {
+    texto = valor.join(', ');
+  } else {
+    texto = valor !== undefined && valor !== null ? String(valor) : '';
+  }
+  // Previne injecao de formula no Google Sheets: se o texto (digitado
+  // livremente pelo tecnico) comecar com =, +, -, @, tab ou retorno de
+  // carro, o Sheets pode interpretar como formula ao abrir/editar a
+  // celula. Prefixa com apostrofo para forcar interpretacao como texto.
+  if (/^[=+\-@\t\r]/.test(texto)) {
+    texto = "'" + texto;
+  }
+  return texto;
 }
 
 function getCabecalhosDinamicos(dados) {
