@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Formulários de Visita Técnica">
 <meta name="theme-color" content="#0f2d4e">
-<meta name="app-version" content="1.0.12">
+<meta name="app-version" content="1.0.13">
 <link rel="manifest" href="config/manifest.json">
 <link rel="icon" href="shared/assets/logo-192.png" type="image/png">
 <link rel="apple-touch-icon" href="shared/assets/logo-192.png">
@@ -232,7 +232,7 @@
 </div>
 
 <footer>
-  Formulários de Visita Técnica &nbsp;·&nbsp; v1.0.12
+  Formulários de Visita Técnica &nbsp;·&nbsp; v1.0.13
   <div id="update-status" style="margin-top:4px;font-size:10px;opacity:.65;display:none;"></div>
 </footer>
 
@@ -449,6 +449,10 @@ if (navigator.storage && navigator.storage.persist) {
       if (!resp.ok) { mostrarStatus(`falha ao buscar manifesto (HTTP ${resp.status})`); return; }
       const manifest = await resp.json();
       if (!manifest || !manifest.version || !manifest.url) { mostrarStatus('manifesto invalido'); return; }
+      // Checksum e obrigatorio: sem ele o plugin nativo instala o bundle sem
+      // nenhuma verificacao de integridade. Preferimos nao atualizar a
+      // aplicar um pacote nao verificado.
+      if (!manifest.checksum) { mostrarStatus('manifesto sem checksum, atualizacao recusada'); return; }
 
       if (manifest.version !== versaoAtual) {
         console.log('[UPDATE] Nova versão disponível:', manifest.version, '(atual:', versaoAtual, ')');
@@ -456,7 +460,7 @@ if (navigator.storage && navigator.storage.persist) {
         const bundle = await CapacitorUpdater.download({
           url: manifest.url,
           version: manifest.version,
-          checksum: manifest.checksum || undefined
+          checksum: manifest.checksum
         });
         await CapacitorUpdater.set({ id: bundle.id });
         console.log('[UPDATE] Bundle', manifest.version, 'sera aplicado na proxima abertura do app.');
