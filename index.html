@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Formulários de Visita Técnica">
 <meta name="theme-color" content="#0f2d4e">
-<meta name="app-version" content="1.0.8">
+<meta name="app-version" content="1.0.9">
 <link rel="manifest" href="config/manifest.json">
 <link rel="icon" href="shared/assets/logo-192.png" type="image/png">
 <link rel="apple-touch-icon" href="shared/assets/logo-192.png">
@@ -232,7 +232,7 @@
 </div>
 
 <footer>
-  Formulários de Visita Técnica &nbsp;·&nbsp; v1.0.8
+  Formulários de Visita Técnica &nbsp;·&nbsp; v1.0.9
   <div id="update-status" style="margin-top:4px;font-size:10px;opacity:.65;display:none;"></div>
 </footer>
 
@@ -467,6 +467,17 @@ if (navigator.storage && navigator.storage.persist) {
   }
 
   document.addEventListener('DOMContentLoaded', checkForUpdate);
+
+  // A checagem acima so roda no carregamento inicial da pagina. Se o
+  // Android mantem o app em segundo plano sem matar o processo (o normal
+  // ao so trocar de app ou apertar voltar), o WebView nao recarrega e essa
+  // checagem nunca roda de novo. Escuta tambem o retorno ao primeiro plano
+  // via plugin App, pra nao depender de um "forcar parada" manual.
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.Capacitor.Plugins.App && window.Capacitor.Plugins.App.addListener) {
+      window.Capacitor.Plugins.App.addListener('resume', checkForUpdate);
+    }
+  });
 })();
 </script>
 </body>
