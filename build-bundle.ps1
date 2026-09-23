@@ -115,7 +115,28 @@ if (-not (Test-Path $updates)) { New-Item $updates -ItemType Directory | Out-Nul
 $zipPath = Join-Path $updates "bundle-$Version.zip"
 if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 
+Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
+
+# Compress-Archive grava os caminhos internos do zip com barra invertida
+# (ex: "upa\index.html"), que e o separador do Windows mas nao e valido no
+# formato ZIP (exige "/"). O Capacitor Updater no Android rejeita esses
+# arquivos ("Unzip failed: Windows path not supported"), entao montamos o
+# zip manualmente entrada por entrada, forcando barra normal em cada nome.
+function New-ZipComBarraNormal($origemDir, $destZip) {
+  if (Test-Path $destZip) { Remove-Item $destZip -Force }
+  $zip = [System.IO.Compression.ZipFile]::Open($destZip, [System.IO.Compression.ZipArchiveMode]::Create)
+  try {
+    $base = (Resolve-Path $origemDir).Path
+    Get-ChildItem $origemDir -Recurse -File | ForEach-Object {
+      $relPath = $_.FullName.Substring($base.Length + 1) -replace '\\', '/'
+      [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, $relPath, [System.IO.Compression.CompressionLevel]::Optimal) | Out-Null
+    }
+  } finally {
+    $zip.Dispose()
+  }
+}
+
 $esperados = (Get-ChildItem $www -Recurse -File).Count
 $tentativas = 0
 $ok = $false
@@ -123,7 +144,11 @@ do {
   $tentativas++
   if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
   $erro = $null
-  Compress-Archive -Path (Join-Path $www "*") -DestinationPath $zipPath -CompressionLevel Optimal -ErrorVariable erro -ErrorAction SilentlyContinue
+  try {
+    New-ZipComBarraNormal $www $zipPath
+  } catch {
+    $erro = $_
+  }
 
   $noZip = 0
   if (-not $erro -and (Test-Path $zipPath)) {
