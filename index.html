@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Formulários de Visita Técnica">
 <meta name="theme-color" content="#0f2d4e">
-<meta name="app-version" content="1.0.10">
+<meta name="app-version" content="1.0.11">
 <link rel="manifest" href="config/manifest.json">
 <link rel="icon" href="shared/assets/logo-192.png" type="image/png">
 <link rel="apple-touch-icon" href="shared/assets/logo-192.png">
@@ -421,10 +421,14 @@ if (navigator.storage && navigator.storage.persist) {
     el.style.display = 'block';
   }
 
+  let checkingUpdate = false;
+
   async function checkForUpdate() {
+    if (checkingUpdate) return;
     const CapacitorUpdater = window.Capacitor.Plugins && window.Capacitor.Plugins.CapacitorUpdater;
     if (!CapacitorUpdater) { mostrarStatus('plugin CapacitorUpdater nao encontrado'); return; }
 
+    checkingUpdate = true;
     try {
       await CapacitorUpdater.notifyAppReady();
 
@@ -463,6 +467,8 @@ if (navigator.storage && navigator.storage.persist) {
     } catch (e) {
       console.warn('[UPDATE] Falha ao checar atualização:', e && e.message);
       mostrarStatus(`erro: ${(e && e.message) || e}`);
+    } finally {
+      checkingUpdate = false;
     }
   }
 
